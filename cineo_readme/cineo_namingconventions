@@ -3,11 +3,89 @@ Hallo hier findet ihr unsere Naming Conventions :)
 
 Alles auf Englisch benennen :)
 
-Generell bei dem anlegen von Strukturen und Ordnern: cineo_
+Generell bei dem anlegen von Strukturen und Überordnern: cineo_
 
-nameStructure.html
-nameStyle.css
-nameScript.js
+Ordner:
+    nameStructure.html
+    nameStyle.css
+    nameScript.js
 
-container class: con_stDatei_bezeichnung (wenn main dann _mainStDatei_) (Alles Englisch außer Kommentare)
+class:
+(wenn main dann _mainStDatei_) (Alles Englisch außer Kommentare)
+    con_stDatei_bezeichnung (container)
+    bot_stDatei_bezeichnung (bottons)
+    ...
+
+ÜberKategorien:
+    cineo_project
+    cineo_repository
+    cineo_server
+    cineo_database
+    ...
+
+Images:
+FullPoster<Bezeichnung>
+Icon<Bezeihnung><CssDatei>
+Logo<Bezeichnung><CssDatei>
+TrailerPoster<Bezeichnung>
+
+
+Sortierung von CSS Dateien:
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Globals */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    a {
+      color: blue;
+      text-decoration: none;
+    }
+
+    /* Layout */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: #fff;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #222;
+      color: #fff;
+    }
+
+    /* Components */
+    .button {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Utilities */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-center {
+      text-align: center;
+    }
 

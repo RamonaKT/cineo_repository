@@ -1,0 +1,1 @@
+ a) Datenzugriff und b) model, Datenstrukturen 

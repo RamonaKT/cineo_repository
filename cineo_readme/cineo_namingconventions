@@ -1,7 +1,7 @@
 
 Hallo hier findet ihr unsere Naming Conventions :)
 
-Alles auf Englisch benennen :)
+Alles auf Englisch benennen :) Keine Umlaute (Ö,Ä,Ü)
 
 Generell bei dem anlegen von Strukturen und Überordnern: cineo_
 
@@ -89,3 +89,5 @@ Sortierung von CSS Dateien:
       text-align: center;
     }
 
+Branches:
+cineo_<Bezeichnung>branch

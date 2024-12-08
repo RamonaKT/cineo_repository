@@ -1,1 +1,1 @@
- a) Datenzugriff und b) model, Datenstrukturen 
+Kann beinhalten a) den Datenzugriff und b) das Model, die Datenstrukturen 

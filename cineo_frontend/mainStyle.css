@@ -61,16 +61,16 @@ a {
     display: flex; /* Flexbox zur Anordnung der Links */
     justify-content: right; /* Zentriert die Links horizontal */
     align-items: center; /* Zentriert die Links vertikal */
-    border: 1px solid white; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
-    border-radius: 10px; /* Ecken abrunden */
+    border: 1px solid slateblue; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
+    border-radius: 5px; /* Ecken abrunden */
 }
 .div_mainStyle_navigationTop a {
-    color: #fff; /* Textfarbe der Links */
+    color: #ffffff; /* Textfarbe der Links */
     text-decoration: none; /* Entfernt die Unterstreichung der Links */
     margin: 0 5vw; /* Abstand zwischen den Links */
     font-size: 3vh; /* Schriftgröße der Links */
     font-family: "Lato", sans-serif; /*Schriftart*/
-    font-weight: normal;
+    font-weight: lighter;
 }
 .div_mainStyle_navigationTop a:hover {
     color: #5afff5;
@@ -86,8 +86,8 @@ a {
     position: fixed;
     z-index: 10;
     opacity: 70%;
-    border: 1px solid white; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
-    border-radius: 10px; /* Ecken abrunden */
+    border: 1px solid slateblue; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
+    border-radius: 5px; /* Ecken abrunden */
 }
 
 /* Components */

@@ -19,6 +19,11 @@ async function fetchMovies() {
     movies.forEach(movie => {
       const card = document.createElement('div');
       card.classList.add('movie-card');
+
+    // click event to navigate to the movie details page
+    card.addEventListener('click', () => {
+        window.location.href = `/movie/${movie.id}`; // Navigiert zur Film-Detail-Seite
+      });
   
       const cover = document.createElement('img');
       cover.src = movie.image;

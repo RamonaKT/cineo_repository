@@ -42,6 +42,11 @@ app.get('/program', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/programpageStructure.html'));
 });
 
+app.get('/movie/:id', (req, res) => {
+    const movieId = req.params.id;
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/movieStructure.html'));
+  });
+
 app.get('/specials', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/specialpageStructure.html'));
 });
@@ -77,6 +82,21 @@ app.get('/api/filme', (req, res) => {
         res.json(results);
     });
 });
+
+app.get('/api/filme/:id', (req, res) => {
+    const movieId = req.params.id;
+    // Angenommen, du holst den Film mit der ID aus der DB
+    const query = `SELECT * FROM filme WHERE id = ?`;
+    
+    
+    db.query(query, [movieId], (err, result) => {
+      if (err) {
+        res.status(500).send('Error fetching movie details');
+      } else {
+        res.json(result[0]); // Sende den ersten Film als Antwort
+      }
+    });
+  });
 
 // Ticket buchen
 app.post('/api/tickets', (req, res) => {

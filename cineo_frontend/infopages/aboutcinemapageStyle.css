@@ -1,0 +1,36 @@
+/* Container für den gesamten Bereich */
+.kino-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #200033; /* Dunkler Hintergrund passend zum Design */
+    border: 2px solid #6f00b0;
+    border-radius: 10px;
+    max-width: 1000px;
+}
+
+/* Einzelne Kino-Boxen */
+.kino-box {
+    flex: 1;
+    margin: 0 20px;
+    padding: 20px;
+    background-color: #2a003d; /* Etwas helleres Lila für die Boxen */
+    border-radius: 8px;
+    color: #9cf1f1;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+/* Icons innerhalb der Boxen */
+.kino-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+/* Kino-Items (Text und Icons) */
+.kino-item {
+    margin-bottom: 20px;
+}

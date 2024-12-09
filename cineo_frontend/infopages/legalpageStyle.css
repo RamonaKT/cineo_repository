@@ -1,0 +1,55 @@
+/* Allgemeines Styling für den Impressum-Bereich */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Heller Hintergrund für Lesbarkeit */
+    color: #333; /* Dunkler Text */
+}
+
+/* Container für den Impressum-Inhalt */
+.legal-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff; /* Weißer Hintergrund */
+    border: 1px solid #ddd; /* Dezenter Rahmen */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Abschnittstitel */
+.legal-section h2 {
+    font-size: 1.5em;
+    color: #444;
+    border-bottom: 2px solid #6f00b0; /* Lila Linie */
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+/* Text in jedem Abschnitt */
+.legal-section p {
+    font-size: 1em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Kontaktinformationen */
+.legal-section:first-child p {
+    font-weight: bold;
+    color: #222;
+}
+
+/* Footer-Navigation */
+.div_mainStyle_navigationBottom a {
+    text-decoration: none;
+    color: #6f00b0; /* Lila Farbe */
+    margin: 0 15px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.div_mainStyle_navigationBottom a:hover {
+    color: #d480ff; /* Helleres Lila bei Hover */
+}

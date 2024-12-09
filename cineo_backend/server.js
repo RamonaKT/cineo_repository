@@ -39,6 +39,10 @@ app.get('/tickets', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/ticketsStructure.html'));
 });
 
+app.get('/program', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/programpageStructure.html'));
+});
+
 // Alle Filme abrufen
 app.get('/api/filme', (req, res) => {
     db.query('SELECT * FROM Filme', (err, results) => {

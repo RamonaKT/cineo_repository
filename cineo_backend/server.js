@@ -30,18 +30,42 @@ app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images
 // 1. Static Files aus dem Frontend-Ordner bereitstellen
 app.use(express.static(path.join(__dirname, '../cineo_frontend/mainpages')));
 
+app.use(express.static(path.join(__dirname, '../cineo_frontend/specialpages')));
+
+
 // 2. HTML-Seiten ausliefern
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/homepageStructure.html'));
+});
+
+app.get('/program', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/programpageStructure.html'));
+});
+
+app.get('/specials', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/specialpageStructure.html'));
+});
+
+app.get('/offers', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/offerpageStructure.html'));
+});
+
+app.get('/gastro', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/gastropageStructure.html'));
+});
+
+app.get('/shop', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/shoppageStructure.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/loginpageStructure.html'));
 });
 
 app.get('/tickets', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/ticketsStructure.html'));
 });
 
-app.get('/program', (req, res) => {
-    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/programpageStructure.html'));
-});
 
 // Alle Filme abrufen
 app.get('/api/filme', (req, res) => {

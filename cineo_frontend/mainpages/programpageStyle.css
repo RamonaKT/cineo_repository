@@ -1,14 +1,29 @@
-/* Hauptlayout: Content-Wrapper */
+/* Hauptlayout: Content-Wrapper 
 .content-wrapper {
-    display: flex; /* Horizontale Anordnung */
-    justify-content: flex-start; /* Inhalt am oberen Rand ausrichten */
-    align-items: center; /* Startet Inhalte oben */
-    padding: 20px;
-    gap: 60px; /* Abstand zwischen Filter und Filmen */
-    margin-top: 100px; /* Abstand nach oben */
+    width: 100%;
+    display: flex; 
+    justify-content: flex-start; 
+    align-items: center; 
+    
+    gap: 5%; 
+    margin-top: 100px; 
 }
 
-/* Filterkasten */
+.filter-container {
+    margin-left: 5%;
+    flex: 1;
+    min-width: 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;  //Abstand zwischen den Dropdowns 
+    width:fit-content;
+    padding: 10px;
+    background-color: #560192;
+    border-radius: 10px;
+    color: white;
+}
+
+// Filterkasten 
 .filter-box {
     width: 220px;
     background-color: #560192;
@@ -16,31 +31,24 @@
     border-radius: 10px;
     text-align: center;
     display: flex;
-    /* Flex für die enthaltenen Elemente */
+    // Flex für die enthaltenen Elemente 
     justify-content: flex-start;
-    /* Elemente nach links ausrichten */
+     Elemente nach links ausrichten 
 }
 
 .filter-box h2 {
     font-size: 1.2em;
-    color: #88e4ff;
+    color:  #5afff5;
     margin-bottom: 20px;
 }
 
-.filter-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Abstand zwischen den Dropdowns */
-    padding: 20px;
-    background-color: #560192;
-    border-radius: 10px;
-    color: white;
-}
+
 
 .filter-container label {
     font-size: 1.2rem;
     margin-bottom: 5px;
 }
+
 
 .filter-container select {
     width: 100%;
@@ -48,26 +56,69 @@
     font-size: 1rem;
     border: 1px solid black;
     border-radius: 5px;
-    background-color: #88e4ff;
+    background-color:  #5afff5;
     color: Black;
 }
 
 .left-aligned {
     display: flex;
-    /* Flex für die enthaltenen Elemente */
+    // Flex für die enthaltenen Elemente 
     justify-content: flex-start;
-    /* Elemente nach links ausrichten */
+    // Elemente nach links ausrichten 
     width: 100%;
-    /* Nimmt die volle Breite ein */
+    // Nimmt die volle Breite ein 
 
 }
+    */
 
-/* Filme-Container */
+.movie-grid {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .movie-card {
+    background-color: #560192;
+    border: 1px solid #560192;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-card img {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+  }
+  
+  .movie-details {
+    padding: 10px;
+  }
+  
+  .movie-title {
+    font-size: 16px;
+    font-weight: bold;
+    color:  #5afff5;
+    margin-bottom: 5px;
+  }
+  
+  
+
+  
+
+
+/*
+
+Filme-Container
+
 .film-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 Filme pro Reihe */
+    grid-template-columns: repeat(6, 1fr);  6 Filme pro Reihe 
     gap: 20px;
-    max-width: 800px; /* Begrenzte Breite für Filme */
+    max-width: 800px;  Begrenzte Breite für Filme 
 }
 
 .movie-card {
@@ -90,4 +141,4 @@
     margin-top: 10px;
     font-size: 0.9em;
     font-weight: bold;
-}
+}*/

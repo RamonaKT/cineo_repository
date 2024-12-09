@@ -23,6 +23,9 @@ db.connect((err) => {
 // Middleware zum Parsen von JSON
 app.use(express.json());
 
+// Statische Dateien bereitstellen (für Bilder)
+app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
+
 
 // 1. Static Files aus dem Frontend-Ordner bereitstellen
 app.use(express.static(path.join(__dirname, '../cineo_frontend/mainpages')));

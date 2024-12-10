@@ -1,0 +1,128 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Globals */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #220537;
+    position: relative;
+    overflow: hidden; /* Falls die Inhalte größer als der Bildschirm sind */
+}
+a {
+    color: white;
+    text-decoration: none;
+}
+/* Layout */
+.img_mainStyle_cineoLogo {
+    position: absolute;
+    top: 1vh;
+    left: 1vw;
+    height: 10vh; /* Variable Höhe */
+    object-fit: contain; /* Passt das Bild an ohne es zu verzerren */
+}
+
+.img_mainStyle_accountLogin {
+    position: absolute;
+    top: 1vh;
+    right: 1vw;
+    height: 10vh; /* Variable Höhe */
+    object-fit: contain;
+}
+
+.h1_mainStyle_headingTopMiddle {
+    position: absolute;
+    top: 5vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5vh;
+    text-align: center;
+    color: white;
+    font-family: Futura, Serif; /* Notfalls die Schriftart anpassen */
+}
+
+.div_mainStyle_navigationTop{
+    position: absolute;
+    top: 12vh;
+    width: 100vw; /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
+    height: 5vh; /* Höhe des Balkens */
+    background-color: rgba(86, 1, 146, 0.7); /* Farbe des Balkens mit 70% Deckkraft */
+    margin: 0; /* Entfernt Abstände um den Balken herum */
+    padding: 0; /* Entfernt Füllungen im Balken */
+    box-sizing: border-box; /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
+    display: flex; /* Flexbox zur Anordnung der Links */
+    justify-content: right; /* Zentriert die Links horizontal */
+    align-items: center; /* Zentriert die Links vertikal */
+    border: 1px solid slateblue; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
+    border-radius: 5px; /* Ecken abrunden */
+}
+.div_mainStyle_navigationTop a {
+    color: #ffffff; /* Textfarbe der Links */
+    text-decoration: none; /* Entfernt die Unterstreichung der Links */
+    margin: 0 5vw; /* Abstand zwischen den Links */
+    font-size: 3vh; /* Schriftgröße der Links */
+    font-family: "Lato", sans-serif; /*Schriftart*/
+    font-weight: lighter;
+}
+.div_mainStyle_navigationTop a:hover {
+    color: #5afff5;
+}
+.div_mainStyle_navigationBeamBottom{
+    background-color: #560192;
+    width: 100vw; /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
+    height: 2vh; /* Höhe des Balkens */
+    margin: 0; /* Entfernt Abstände um den Balken herum */
+    padding: 0; /* Entfernt Füllungen im Balken */
+    box-sizing: border-box; /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
+    bottom: 9vh;
+    position: fixed;
+    z-index: 10;
+    opacity: 70%;
+    border: 1px solid slateblue; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
+    border-radius: 5px; /* Ecken abrunden */
+}
+
+/* Components */
+.div_mainStyle_navigationTop .a_mainStyle_highlightLink{
+    font-size: 3vh;
+    font-weight: bold;
+    text-decoration: underline;
+    color: #5afff5;
+}
+.div_mainStyle_navigationBottom{
+    background-color:#220537;
+    width: 100%; /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
+    height: 9vh; /* Höhe des Balkens */
+    margin: 0; /* Entfernt Abstände um den Balken herum */
+    padding: 0; /* Entfernt Füllungen im Balken */
+    box-sizing: border-box; /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
+    bottom: 0px;
+    position: fixed;
+    display: flex; /* Flexbox zur Anordnung der Links */
+    justify-content: center; /* Zentriert die Links horizontal */
+    align-items: center; /* Zentriert die Links vertikal */
+    z-index: 10;
+}
+.div_mainStyle_navigationBottom a {
+    color: #ffffff; /* Textfarbe der Links */
+    text-decoration: none; /* Entfernt die Unterstreichung der Links */
+    margin: 0 5vw; /* Abstand zwischen den Links */
+    font-size: 2vh; /* Schriftgröße der Links */
+    font-family: "Lato", sans-serif; /*Schriftart*/
+    font-weight: normal;
+}
+.div_mainStyle_navigationBottom a:hover{
+    text-decoration: underline;
+}
+.div_mainStyle_navigationBottom .a_mainStyle_highlightLinkBottom{
+    font-weight: bold;
+}
+/* Utilities */

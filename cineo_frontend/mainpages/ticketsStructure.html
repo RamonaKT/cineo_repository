@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kino Ticket Buchung</title>
+    <link rel="stylesheet" href="ticketsStyle.css">
+</head>
+<body>
+    <h1>Willkommen im Kino!</h1>
+    
+    <div id="filme">
+        <!-- Filme werden hier geladen -->
+    </div>
+
+    <h2>Ticket buchen</h2>
+    <form id="ticketForm">
+        <label for="film">Film auswählen:</label>
+        <select id="film" required>
+            <!-- Filme werden hier geladen -->
+        </select>
+
+        <label for="sitznummer">Sitznummer:</label>
+        <input type="text" id="sitznummer" required>
+
+        <button type="submit">Buchen</button>
+    </form>
+
+    <div id="buchungStatus"></div>
+
+    <script src="ticketsScript.js"></script>
+</body>
+</html>

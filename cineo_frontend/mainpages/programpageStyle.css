@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
+
 /* Hauptlayout: Content-Wrapper 
 .content-wrapper {
     width: 100%;
@@ -70,6 +73,24 @@
 
 }
     */
+.body {
+    display: flex;
+    flex-direction: column;
+    /* Vertikale Anordnung */
+    justify-content: flex-start;
+    /* Inhalt am oberen Rand ausrichten */
+    align-items: center;
+    /* Horizontale Zentrierung */
+    height: 100vh;
+    /* Volle Höhe des Viewports */
+    margin: 0;
+    /* Standardmargin entfernen */
+    /*font-family: "Lato", sans-serif;*/
+    overflow-y: auto;
+    /* Vertikale Scrollbar bei Bedarf anzeigen */
+    overflow-x: hidden;
+    padding: 0;
+}
 
 .movie-grid {
     width: 80%;

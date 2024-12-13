@@ -9,9 +9,9 @@ async function fetchMovieDetails() {
       // Movie-Details in die HTML-Elemente einfügen
       document.getElementById('movie-title').textContent = movie.title;
       document.getElementById('movie-image').src = movie.image;
-      document.getElementById('movie-year').textContent = `Year: ${movie.year}`;
-      document.getElementById('movie-genre').textContent = `Genre: ${movie.genre}`;
-      document.getElementById('movie-length').textContent = `Length: ${movie.length} minutes`;
+      document.getElementById('movie-year').textContent = `${movie.year}`;
+      document.getElementById('movie-genre').textContent = `${movie.genre}`;
+      document.getElementById('movie-length').textContent = `${movie.length} minutes`;
     } catch (error) {
       console.error('Error fetching movie details:', error);
     }

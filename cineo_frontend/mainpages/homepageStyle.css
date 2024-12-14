@@ -5,16 +5,49 @@
   box-sizing: border-box;
 }
 
-.container {
-  
-  max-width: 1500px;
-  width: 60vw;
-  position: relative;
-  margin-right: 5vw;
-  height: 45vh;
+
+/* Öffnungszeiten und Standort */
+.h2_homepage_oeffnungszeitenTitel {
+  color: white;
+  font-size: 3vh;
+  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-weight: lighter;
+}
+.div_homepage_oeffnungszeiten{
+  font-size: 2vh;
+  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-weight: lighter;
+  color: white;
+}
+
+.div_homepage_standort{
+  text-align: left;
+}
+
+.h2_homepage_standort {
+  color: white;
+  font-size: 3vh;
+  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-weight: lighter;
+}
+.div_homepage_standortAdresse {
+  font-size: 2vh;
+  font-family: "Lato", sans-serif;
+  font-weight: lighter;
+  color: #fff;
 }
 
 
+
+
+/* Karussel, Scrollbuttons */
+
+.container {
+  max-width: 1500px;
+  width: 60vw;
+  position: relative;
+  height: 45vh;
+}
 .sliding-wrapper .slide-button {
   height: 50px;
   width: 50px;
@@ -30,15 +63,12 @@
   transform: translateY(-50%);
 
 }
-
 .slide-button {
   position: relative;
 }
-
 .sliding-wrapper .slide-button:hover{
   opacity: 1;
 }
-
 .sliding-wrapper .slide-button#prev-slide{
   left: -60px;
 
@@ -55,23 +85,20 @@
   font-size: 0;
   overflow-x: auto;
   scrollbar-width: none;
-
-}      
+}
 
 
 
 .sliding-wrapper .image-list .image-item{
-    width: 90vh;
-    height: 45vh;
-    object-fit: cover;
+  width: 90vh;
+  height: 45vh;
+  object-fit: cover;
 }
 
 .image-container {
   position: relative; /* Positionierung relativ zum übergeordneten Element */
   display: inline-block;
 }
-
-
 .play-button {
   position: absolute;
   top: 50%;
@@ -82,52 +109,10 @@
   opacity: 0; /* Unsichtbar, solange nicht gehovered */
   transition: opacity 0.3s ease; /* Weicher Übergang beim Hover */
   cursor: pointer;
-  
 }
-
 .image-container:hover .play-button {
   opacity: 0.8; /* Sichtbar beim Hover */
 }
-
 .sliding-wrapper .image-list::-webkit-scrollbar{
   display: none;
-
 }
-
-.container2 {
-  margin-right: 12vw;
-}
-
-
-.Standort, .Öffnungszeiten {
-  font-size: 3vh;
-  font-family: "Lato", sans-serif;
-  text-decoration: underline;
-  font-weight: bold;
-  color: #fff;
-  margin-bottom: 2vh; /* Fügt Abstand zwischen den Abschnitten hinzu */
-}
-.Adresse {
-  font-size: 2.5vh;
-  text-decoration-line: none;
-  margin-right: 13px;
-  text-align: right;
-  margin-right: 0%;
-  margin-left: 12vw;
-  color: #fff;
-  font-family: "Lato",sans-serif;
-  margin-bottom: 2vh;
-}
-.Zeiten{
-  font-size: 2.5vh;
-  color: #fff;
-  text-align: right;
-  margin-right: 0%;
-  font-family: "Lato", sans-serif;
-}
-
-
-.Standort i, .Öffnungszeiten i {
-  margin-right: 8px; /* Abstand zwischen Icon und Text */
-}
-

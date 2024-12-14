@@ -1,0 +1,101 @@
+/* Allgemeine Stile */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #3e006a;
+    color: white;
+    line-height: 1.6;
+}
+
+/* Hauptcontainer */
+.information-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Überschrift */
+.information-container h2 {
+    font-size: 2rem;
+    color: #6f00b0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Sektionen */
+.info-section {
+    margin-bottom: 30px;
+}
+
+.info-section h3 {
+    font-size: 1.5rem;
+    color: #6f00b0;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #6f00b0;
+    padding-bottom: 5px;
+}
+
+.info-section p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Listen */
+.info-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.info-section ul li {
+    margin-bottom: 15px;
+}
+
+.info-section ul li strong {
+    color: #6f00b0;
+    font-size: 1.1rem;
+}
+
+.info-section ul li p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Link-Stil für die Kontaktseite */
+.link-contact-page {
+    color: #6f00b0;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.link-contact-page:hover {
+    color: #440066;
+    text-decoration: underline;
+}
+
+/* Medienabfragen für responsives Design */
+@media (max-width: 768px) {
+    .information-container {
+        padding: 15px;
+    }
+
+    .information-container h2 {
+        font-size: 1.8rem;
+    }
+
+    .info-section h3 {
+        font-size: 1.3rem;
+    }
+
+    .info-section p, 
+    .info-section ul li p {
+        font-size: 0.9rem;
+    }
+}

@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './cineo_backend/.env'});  // Lade die Variablen aus der .env-Datei
+require('dotenv').config({ path: './cineo_backend/.env' });  // Lade die Variablen aus der .env-Datei
 
 const cors = require('cors');
 const express = require('express');
@@ -16,8 +16,8 @@ const supabaseKey = process.env.SUPABASE_KEY;
 
 // Überprüfe, ob die Umgebungsvariablen korrekt geladen wurden
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Supabase URL oder Schlüssel fehlen!');
-  process.exit(1);  // Beendet das Programm, wenn eine der Variablen fehlt
+    console.error('Supabase URL oder Schlüssel fehlen!');
+    process.exit(1);  // Beendet das Programm, wenn eine der Variablen fehlt
 }
 
 console.log('Supabase URL:', supabaseUrl);  // Gibt die URL aus
@@ -28,43 +28,54 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 app.get('/api/filme/:movieId', async (req, res) => {
-  const movieId = req.params.movieId;
+    const movieId = req.params.movieId;
 
-  const { data, error } = await supabase
-    .from('movies')
-    .select('*')
-    .eq('movie_id', movieId);
+    const { data, error } = await supabase
+        .from('movies')
+        .select('*')
+        .eq('movie_id', movieId);
 
-  if (error) {
-    return res.status(500).json({ error: error.message });
-  }
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
 
-  console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
+    console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
 
-  if (data.length === 0) {
-    return res.status(404).json({ error: 'Film nicht gefunden' });
-  }
+    if (data.length === 0) {
+        return res.status(404).json({ error: 'Film nicht gefunden' });
+    }
 
-  res.json(data[0]);
+    res.json(data[0]);
 });
 
 // API-Endpunkt, um alle Filme abzurufen
 app.get('/api/filme', async (req, res) => {
     const { data, error } = await supabase
-      .from('movies') // Greift auf die "movies"-Tabelle zu
-      .select('title, image'); // Wählt nur "title" und "image"-Spalten aus
-  
+        .from('movies') // Greift auf die "movies"-Tabelle zu
+        .select('movie_id, title, image'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
+
     if (error) {
-      return res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
-  
+
     if (!data || data.length === 0) {
-      return res.status(404).json({ error: 'Keine Filme gefunden' });
+        return res.status(404).json({ error: 'Keine Filme gefunden' });
     }
-  
-    res.json(data); // Gibt die Filmdaten zurück
-  });
-  
+
+    res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
+});
+
+/*
+// Alle Filme abrufen
+app.get('/api/filme', (req, res) => {
+    db.query('SELECT * FROM Filme', (err, results) => {
+        if (err) {
+            res.status(500).send('Fehler beim Abrufen der Filme');
+            return;
+        }
+        res.json(results);
+    });
+});*/
 
 // Statische Dateien bereitstellen (für Bilder)
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
@@ -72,21 +83,53 @@ app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images
 // 1. Static Files aus dem Frontend-Ordner bereitstellen
 app.use(express.static(path.join(__dirname, '../cineo_frontend/mainpages')));
 
+
 // 2. HTML-Seiten ausliefern
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/homepageStructure.html'));
-
-
 });
 
 app.get('/program', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/programpageStructure.html'));
 });
 
+app.get('/movie/:id', (req, res) => {
+    const movieId = req.params.id;
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/movieStructure.html'));
+  });
+
+app.get('/specials', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/specialpageStructure.html'));
+});
+
+app.get('/offers', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/offerpageStructure.html'));
+});
+
+app.get('/gastro', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/gastropageStructure.html'));
+});
+
+app.get('/shop', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/shoppageStructure.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/loginpageStructure.html'));
+});
+
+app.get('/tickets', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/ticketsStructure.html'));
+});
+
+
 // Den Server starten
 app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
 
-  
+
+
+
+
 /*
 const express = require('express');
 

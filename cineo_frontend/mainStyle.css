@@ -15,8 +15,36 @@ body {
     height: 100vh;
     background-color: #220537;
     position: relative;
-    overflow: hidden; /* Falls die Inhalte größer als der Bildschirm sind */
+    /*overflow: hidden; Falls die Inhalte größer als der Bildschirm sind */
+    overflow-y: auto;
+    /* Vertikale Scrollbar bei Bedarf anzeigen */
+    overflow-x: hidden;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    /* Breite der Scrollbar */
+}
+
+/* Hintergrund der Scrollbar */
+::-webkit-scrollbar-track {
+    background: #b089f2;
+    border-radius: 10px;
+}
+
+/* Scroll-Leiste */
+::-webkit-scrollbar-thumb {
+    background: white;
+    /* Farbe der Scroll-Leiste */
+    border-radius: 10px;
+}
+
+/* Scroll-Leiste beim Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #5afff5;
+    /* Farbe der Scroll-Leiste beim Hover */
+}
+
 a {
     color: white;
     text-decoration: none;

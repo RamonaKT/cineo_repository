@@ -1,9 +1,99 @@
+require('dotenv').config({ path: './cineo_backend/.env'});  // Lade die Variablen aus der .env-Datei
+
+const cors = require('cors');
+const express = require('express');
+const app = express();
+const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+
+// CORS Middleware aktivieren
+app.use(cors());
+
+// Lese die Variablen aus der .env-Datei
+//const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+
+// Überprüfe, ob die Umgebungsvariablen korrekt geladen wurden
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Supabase URL oder Schlüssel fehlen!');
+  process.exit(1);  // Beendet das Programm, wenn eine der Variablen fehlt
+}
+
+console.log('Supabase URL:', supabaseUrl);  // Gibt die URL aus
+console.log('Supabase Key:', supabaseKey);  // Gibt den Key aus
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+
+
+app.get('/api/filme/:movieId', async (req, res) => {
+  const movieId = req.params.movieId;
+
+  const { data, error } = await supabase
+    .from('movies')
+    .select('*')
+    .eq('movie_id', movieId);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
+
+  if (data.length === 0) {
+    return res.status(404).json({ error: 'Film nicht gefunden' });
+  }
+
+  res.json(data[0]);
+});
+
+// API-Endpunkt, um alle Filme abzurufen
+app.get('/api/filme', async (req, res) => {
+    const { data, error } = await supabase
+      .from('movies') // Greift auf die "movies"-Tabelle zu
+      .select('title, image'); // Wählt nur "title" und "image"-Spalten aus
+  
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Keine Filme gefunden' });
+    }
+  
+    res.json(data); // Gibt die Filmdaten zurück
+  });
+  
+
+// Statische Dateien bereitstellen (für Bilder)
+app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
+
+// 1. Static Files aus dem Frontend-Ordner bereitstellen
+app.use(express.static(path.join(__dirname, '../cineo_frontend/mainpages')));
+
+// 2. HTML-Seiten ausliefern
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/homepageStructure.html'));
+
+
+});
+
+app.get('/program', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/programpageStructure.html'));
+});
+
+// Den Server starten
+app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
+
+  
+/*
 const express = require('express');
 
 const app = express();
 const path = require('path');
 const port = 4000;
-/*const mysql = require('mysql2/promise');*/
+
 const mysql = require('mysql2');
 
 // MySQL-Verbindung
@@ -13,32 +103,6 @@ const db = mysql.createConnection({
     password: 'cineo4life*',  // Gebt hier euer MySQL-Passwort ein
     database: 'cineo'
 });
-
-/*
-// MySQL-Verbindung mit Connection Pool
-const db = mysql.createPool({
-    host: 'localhost',
-    user: 'granate',
-    password: 'cineo4life*', // Gebt hier euer MySQL-Passwort ein
-    database: 'cineo'
-});*/
-
-
-/*
-// Verbindung testen
-async function testDbConnection() {
-    try {
-        // Verbindung aus dem Pool holen und Abfrage ausführen
-        const [rows, fields] = await db.query('SELECT 1');
-        console.log('Datenbankverbindung erfolgreich getestet:', rows);
-    } catch (err) {
-        console.error('Fehler beim Testen der Datenbankverbindung:', err);
-    }
-}
-
-// Verbindung testen
-testDbConnection();
-*/
 
 
 db.connect((err) => {
@@ -112,17 +176,7 @@ app.get('/api/filme', (req, res) => {
     });
 });
 
-/*
-// Alle Filme abrufen
-app.get('/api/filme', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM Filme');
-        res.json(rows); // Erfolgreiche Antwort
-    } catch (err) {
-        console.error('Fehler beim Abrufen der Filme:', err);
-        res.status(500).json({ error: 'Fehler beim Abrufen der Filme' }); // JSON-Fehler
-    }
-});*/
+
 
 
 app.get('/api/filme/:filme_id', (req, res) => {
@@ -165,102 +219,6 @@ app.get('/api/filme/:filme_id', (req, res) => {
 });
 
 
-/*
-// Alle Showtimes für einen bestimmten Film abrufen
-app.get('/api/showtimes/:showtimeId', (req, res) => {
-    const showtimeId = req.params.showtimeId;
-    const query = 'SELECT * FROM Showtimes WHERE showtime_id = ?';
-    db.query(query, [showtimeId], (err, result) => {
-        if (err) {
-            res.status(500).send('Fehler beim Abrufen der Showtimes');
-        } else {
-            res.json(result[0]);
-        }
-    });
-});*/
-
-/*
-app.get('/api/showtimes/:filme_id', async (req, res) => {
-    const filme_id = req.params.filme_id;
-    console.log('API-Aufruf mit filme_id:', filme_id); // Logge die angefragte ID
-
-    try {
-        // Datenbankabfrage im Promise-Stil
-        const [rows] = await db.query('SELECT * FROM showtimes WHERE filme_id = ?', [filme_id]);
-        console.log('Datenbank-Ergebnisse:', rows);
-
-        if (!rows || rows.length === 0) {
-            console.warn('Keine Vorstellungen gefunden für filme_id:', filme_id);
-            return res.status(404).json({ error: 'Keine Vorstellungen gefunden.' });
-        }
-
-        res.json(rows); // Sende die Ergebnisse zurück
-    } catch (err) {
-        console.error('Fehler bei der Abfrage:', err);
-        res.status(500).json({ error: 'Interner Serverfehler.' });
-    }
-});*/
-
-
-/*
-// Ticket buchen
-app.post('/api/tickets', (req, res) => {
-    const { movie_id, showtime_id, seat_id, ticket_type } = req.body;
-    const query = 'INSERT INTO Tickets (movie_id, showtime_id, seat_id, ticket_type) VALUES (?, ?, ?, ?)';
-    db.query(query, [movie_id, showtime_id, seat_id, ticket_type], (err, results) => {
-        if (err) {
-            res.status(500).send('Fehler beim Buchen des Tickets');
-        } else {
-            res.status(201).json({ message: 'Ticket gebucht', ticketId: results.insertId });
-        }
-    });
-});*/
-
-/*
-// Ticket buchen
-app.post('/api/tickets', (req, res) => {
-    const { movie_id, showtime_id, seat_id, ticket_type } = req.body;
-    
-    // Preis je nach Tickettyp festlegen
-    let price;
-    switch (ticket_type) {
-        case 'Adult':
-            price = 10.00;  // Beispielpreis für Erwachsene
-            break;
-        case 'Child':
-            price = 5.00;  // Beispielpreis für Kinder
-            break;
-        case 'Student':
-            price = 8.00;  // Beispielpreis für Studenten
-            break;
-        case 'VIP':
-            price = 15.00;  // Beispielpreis für VIP
-            break;
-        default:
-            return res.status(400).send('Ungültiger Tickettyp');
-    }
-
-    // Ticket in die Tickets-Tabelle einfügen
-    const query = 'INSERT INTO Tickets (showtime_id, seat_id, ticket_type, price, created_at) VALUES (?, ?, ?, ?, NOW())';
-    
-    db.query(query, [showtime_id, seat_id, ticket_type, price], (err, result) => {
-        if (err) {
-            res.status(500).send('Fehler beim Buchen des Tickets');
-        } else {
-            // Sitzplatz als reserviert markieren
-            const updateSeatQuery = 'UPDATE Seats SET is_reserved = TRUE WHERE seat_id = ?';
-            db.query(updateSeatQuery, [seat_id], (err2, result2) => {
-                if (err2) {
-                    res.status(500).send('Fehler beim Aktualisieren des Sitzplatzes');
-                } else {
-                    res.status(201).json({ message: 'Ticket erfolgreich gebucht' });
-                }
-            });
-        }
-    });
-});
-*/
-
 app.post('/api/tickets', (req, res) => {
     const { showtime_id, ticket_type, price } = req.body;
 
@@ -284,3 +242,4 @@ app.post('/api/tickets', (req, res) => {
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
 });
+*/

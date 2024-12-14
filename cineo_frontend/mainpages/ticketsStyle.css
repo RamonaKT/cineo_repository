@@ -1,22 +1,37 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 10px;
+.seat {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    cursor: pointer;
 }
 
-h1 {
-    color: #333;
+.seat.available {
+    background-color: #8fbc8f;
 }
 
-#filme {
+.seat.reserved {
+    background-color: #f08080;
+    cursor: not-allowed;
+}
+
+.seat.selected {
+    background-color: #ffd700;
+}
+
+.row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.ticket-options {
+    margin: 20px 0;
+}
+
+#ticket-price {
+    font-size: 18px;
     margin-bottom: 20px;
-}
-
-form {
-    margin-top: 20px;
-}
-
-input, select, button {
-    padding: 10px;
-    margin: 5px 0;
 }

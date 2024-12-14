@@ -22,7 +22,7 @@ async function fetchMovies() {
 
     // click event to navigate to the movie details page
     card.addEventListener('click', () => {
-        window.location.href = `/movie/${movie.id}`; // Navigiert zur Film-Detail-Seite
+        window.location.href = `/movie/${movie.filme_id}`; // Navigiert zur Film-Detail-Seite
       });
   
       const cover = document.createElement('img');

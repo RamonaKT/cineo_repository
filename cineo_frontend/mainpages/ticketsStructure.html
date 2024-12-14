@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kino Ticket Buchung</title>
-    <link rel="stylesheet" href="ticketsStyle.css">
+    <title>Ticketbuchung</title>
+    <link rel="stylesheet" href="/ticketsStyle.css">
 </head>
 <body>
-    <h1>Willkommen im Kino!</h1>
-    
-    <div id="filme">
-        <!-- Filme werden hier geladen -->
-    </div>
+    <h1>Ticketbuchung</h1>
 
-    <h2>Ticket buchen</h2>
-    <form id="ticketForm">
-        <label for="film">Film auswählen:</label>
-        <select id="film" required>
-            <!-- Filme werden hier geladen -->
-        </select>
+    <!-- Auswahl der Vorstellung -->
+    <label for="showtime-select">Vorstellung wählen:</label>
+    <select id="showtime-select"></select>
 
-        <label for="sitznummer">Sitznummer:</label>
-        <input type="text" id="sitznummer" required>
+    <!-- Auswahl der Ticketart -->
+    <label for="ticket-type">Ticketart:</label>
+    <select id="ticket-type">
+        <option value="Adult">Erwachsener</option>
+        <option value="Child">Kind</option>
+        <option value="Student">Student</option>
+        <option value="VIP">VIP</option>
+    </select>
 
-        <button type="submit">Buchen</button>
-    </form>
+    <!-- Preis anzeigen -->
+    <p id="ticket-price">Preis: <span>0</span>€</p>
 
-    <div id="buchungStatus"></div>
+    <!-- Buchungs-Button -->
+    <button id="book-ticket-btn">Ticket buchen</button>
 
-    <script src="ticketsScript.js"></script>
+    <script src="/ticketsScript.js"></script>
 </body>
 </html>

@@ -9,6 +9,8 @@ const { createClient } = require('@supabase/supabase-js');
 // CORS Middleware aktivieren
 app.use(cors());
 
+app.use(express.json());
+
 // Lese die Variablen aus der .env-Datei
 //const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -136,24 +138,28 @@ app.get('/api/filme', async (req, res) => {
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
 
+
 app.post('/api/tickets', async (req, res) => {
     const { show_id, ticket_type, price } = req.body;
-
-    // Validierung der Eingabedaten
+    console.log(req.body);
+    
     if (!show_id || !ticket_type || !price) {
-        return res.status(400).json({ error: 'Alle Felder (show_id, ticket_type, price) sind erforderlich.' });
+        return res.status(400).json({ error: "Fehlende Ticketdaten" });
     }
 
-    // Ticket in die Datenbank einfügen
-    const { data, error } = await supabase
-        .from('tickets')
-        .insert([{ show_id, ticket_type, price }]);
+    try {
+        const { data, error } = await supabase
+            .from('tickets')
+            .insert([{ show_id, ticket_type, price }]);
 
-    if (error) {
-        return res.status(500).json({ error: error.message });
+        if (error) {
+            throw error;
+        }
+
+        res.status(201).json({ message: "Ticket erfolgreich gespeichert", ticket: data });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.status(201).json({ message: 'Ticket erfolgreich erstellt', ticket: data[0] });
 });
 
 

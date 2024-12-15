@@ -10,59 +10,49 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     background-color: #220537;
-    position: relative;
-    /*overflow: hidden; Falls die Inhalte größer als der Bildschirm sind */
-    overflow-y: auto;
-    /* Vertikale Scrollbar bei Bedarf anzeigen */
-    overflow-x: hidden;
+    color: white;
+    overflow-x: hidden; /* Keine horizontale Scrollbar */
 }
 
 ::-webkit-scrollbar {
     width: 10px;
-    /* Breite der Scrollbar */
 }
 
-/* Hintergrund der Scrollbar */
 ::-webkit-scrollbar-track {
     background: #b089f2;
     border-radius: 10px;
 }
 
-/* Scroll-Leiste */
 ::-webkit-scrollbar-thumb {
     background: white;
-    /* Farbe der Scroll-Leiste */
     border-radius: 10px;
 }
 
-/* Scroll-Leiste beim Hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #5afff5;
-    /* Farbe der Scroll-Leiste beim Hover */
 }
 
 a {
     color: white;
     text-decoration: none;
 }
-/* Layout */
+
+/* Logo und Header */
 .img_mainStyle_cineoLogo {
     position: absolute;
     top: 1vh;
     left: 1vw;
-    height: 10vh; /* Variable Höhe */
-    object-fit: contain; /* Passt das Bild an ohne es zu verzerren */
+    height: 10vh;
+    object-fit: contain;
 }
 
 .img_mainStyle_accountLogin {
     position: absolute;
     top: 1vh;
     right: 1vw;
-    height: 10vh; /* Variable Höhe */
+    height: 10vh;
     object-fit: contain;
 }
 
@@ -74,83 +64,87 @@ a {
     font-size: 5vh;
     text-align: center;
     color: white;
-    font-family: Futura, Serif; /* Notfalls die Schriftart anpassen */
+    font-family: Futura, Serif;
 }
 
-.div_mainStyle_navigationTop{
-    position: absolute;
+/* Navigation oben */
+.div_mainStyle_navigationTop {
+    position: fixed;
     top: 12vh;
-    width: 100vw; /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
-    height: 5vh; /* Höhe des Balkens */
-    background-color: rgba(86, 1, 146, 0.7); /* Farbe des Balkens mit 70% Deckkraft */
-    margin: 0; /* Entfernt Abstände um den Balken herum */
-    padding: 0; /* Entfernt Füllungen im Balken */
-    box-sizing: border-box; /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
-    display: flex; /* Flexbox zur Anordnung der Links */
-    justify-content: right; /* Zentriert die Links horizontal */
-    align-items: center; /* Zentriert die Links vertikal */
-    border: 1px solid slateblue; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
-    border-radius: 5px; /* Ecken abrunden */
+    width: 100vw;
+    height: 5vh;
+    background-color: rgba(86, 1, 146, 0.7);
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    z-index: 10;
+    border: 1px solid slateblue;
+    border-radius: 5px;
 }
+
 .div_mainStyle_navigationTop a {
-    color: #ffffff; /* Textfarbe der Links */
-    text-decoration: none; /* Entfernt die Unterstreichung der Links */
-    margin: 0 5vw; /* Abstand zwischen den Links */
-    font-size: 3vh; /* Schriftgröße der Links */
-    font-family: "Lato", sans-serif; /*Schriftart*/
+    color: #ffffff;
+    margin: 0 5vw;
+    font-size: 3vh;
+    font-family: "Lato", sans-serif;
     font-weight: lighter;
 }
+
 .div_mainStyle_navigationTop a:hover {
     color: #5afff5;
 }
-.div_mainStyle_navigationBeamBottom{
+
+/* Navigations-Balken unten */
+.div_mainStyle_navigationBeamBottom {
     background-color: #560192;
-    width: 100vw; /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
-    height: 2vh; /* Höhe des Balkens */
-    margin: 0; /* Entfernt Abstände um den Balken herum */
-    padding: 0; /* Entfernt Füllungen im Balken */
-    box-sizing: border-box; /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
-    bottom: 9vh;
+    width: 100vw;
+    height: 2vh;
     position: fixed;
+    bottom: 9vh;
     z-index: 10;
     opacity: 70%;
-    border: 1px solid slateblue; /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
-    border-radius: 5px; /* Ecken abrunden */
+    border: 1px solid slateblue;
+    border-radius: 5px;
 }
 
-/* Components */
-.div_mainStyle_navigationTop .a_mainStyle_highlightLink{
-    font-size: 3vh;
-    font-weight: bold;
-    text-decoration: underline;
-    color: #5afff5;
-}
-.div_mainStyle_navigationBottom{
-    background-color:#220537;
-    width: 100%; /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
-    height: 9vh; /* Höhe des Balkens */
-    margin: 0; /* Entfernt Abstände um den Balken herum */
-    padding: 0; /* Entfernt Füllungen im Balken */
-    box-sizing: border-box; /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
-    bottom: 0px;
+.div_mainStyle_navigationBottom {
+    background-color: #220537;
+    width: 100%;
+    height: 9vh;
     position: fixed;
-    display: flex; /* Flexbox zur Anordnung der Links */
-    justify-content: center; /* Zentriert die Links horizontal */
-    align-items: center; /* Zentriert die Links vertikal */
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 10;
 }
+
 .div_mainStyle_navigationBottom a {
-    color: #ffffff; /* Textfarbe der Links */
-    text-decoration: none; /* Entfernt die Unterstreichung der Links */
-    margin: 0 5vw; /* Abstand zwischen den Links */
-    font-size: 2vh; /* Schriftgröße der Links */
-    font-family: "Lato", sans-serif; /*Schriftart*/
+    color: #ffffff;
+    margin: 0 5vw;
+    font-size: 2vh;
+    font-family: "Lato", sans-serif;
     font-weight: normal;
 }
-.div_mainStyle_navigationBottom a:hover{
+
+.div_mainStyle_navigationBottom a:hover {
     text-decoration: underline;
 }
-.div_mainStyle_navigationBottom .a_mainStyle_highlightLinkBottom{
+
+.div_mainStyle_navigationBottom .a_mainStyle_highlightLinkBottom {
     font-weight: bold;
 }
-/* Utilities */
+
+/* Hauptinhalt */
+.main-content {
+    flex-grow: 1; /* Nutzt den verfügbaren Platz zwischen Header und Footer */
+    margin-top: calc(12vh + 5vh); /* Platz für Header und Navigation oben */
+    margin-bottom: calc(9vh + 2vh); /* Platz für unteren Balken und Footer */
+    width: 100%; /* Breite auf die gesamte Seite anpassen */
+    padding: 20px; /* Innenabstand für Inhalte */
+    overflow-y: auto; /* Inhalt scrollbar, falls zu groß */
+    color: white; /* Textfarbe */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Inhalte oben ausrichten */
+}

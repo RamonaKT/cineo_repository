@@ -1,0 +1,137 @@
+
+Css
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+/* Öffnungszeiten und Standort */
+.div_homepage_infoZeitenStandortContainer{
+  position: relative;
+  top: 10vh;
+  margin-right: 40vh;
+}
+
+.h2_homepage_oeffnungszeitenTitel {
+  color: white;
+  font-size: 3vh;
+  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-weight: lighter;
+  margin-bottom: 3vh;
+}
+.div_homepage_oeffnungszeiten{
+  font-size: 2vh;
+  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-weight: lighter;
+  color: white;
+  margin-bottom: 5vh;
+}
+.div_homePage_oeffnungszeiten p {
+  margin: 8px 0; /* Weniger Abstand zwischen den Öffnungszeiten */
+}
+
+/* Spezifisch für <p> innerhalb .div_homepage_standortAdresse */
+.div_homepage_standortAdresse p {
+  margin: 5px 0; /* Noch geringerer Abstand für die Standort-Adresse */
+}
+.div_homepage_standort{
+  text-align: left;
+}
+
+.h2_homepage_standort {
+  margin-bottom: 3vh;
+  color: white;
+  font-size: 3vh;
+  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-weight: lighter;
+}
+.div_homepage_standortAdresse {
+  font-size: 2vh;
+  font-family: "Lato", sans-serif;
+  font-weight: lighter;
+  color: #fff;
+}
+
+
+
+
+/* Karussel, Scrollbuttons */
+
+.container {
+  max-width: 1500px;
+  width: 60vw;
+  position: relative;
+  height: 45vh;
+  top: 10vh;
+}
+.sliding-wrapper .slide-button {
+  height: 50px;
+  width: 50px;
+  color: #fff;
+  background: none;
+  font-size: 2.2rem;
+  cursor: pointer;
+  border: none;
+  opacity: 0.6;
+  outline: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+}
+.slide-button {
+  position: relative;
+}
+.sliding-wrapper .slide-button:hover{
+  opacity: 1;
+}
+.sliding-wrapper .slide-button#prev-slide{
+  left: -60px;
+
+}
+
+.sliding-wrapper .slide-button#next-slide{
+  right: -60px;
+}
+
+.sliding-wrapper .image-list {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(10, 1fr);
+  font-size: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+
+
+.sliding-wrapper .image-list .image-item{
+  width: 90vh;
+  height: 45vh;
+  object-fit: cover;
+}
+
+.image-container {
+  position: relative; /* Positionierung relativ zum übergeordneten Element */
+  display: inline-block;
+}
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40%; /* Größe des Playbuttons */
+  height: 80%;
+  transform: translate(-50%, -50%);
+  opacity: 0; /* Unsichtbar, solange nicht gehovered */
+  transition: opacity 0.3s ease; /* Weicher Übergang beim Hover */
+  cursor: pointer;
+}
+.image-container:hover .play-button {
+  opacity: 0.8; /* Sichtbar beim Hover */
+}
+.sliding-wrapper .image-list::-webkit-scrollbar{
+  display: none;
+}

@@ -15,7 +15,9 @@
 
 <body>
 
-<! mainStyle: Logo - Überschrift - Login !/>
+
+
+<!--- mainStyle: Logo - Überschrift - Login !-->
 <a href="../mainpages/homepageStructure.html">
     <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
 </a>
@@ -38,79 +40,81 @@
 </div>
 
 
+
 <div class="main-content">
-<! homepageStyle: Karussel Standort Öffnungszeiten !/>
 
-<div class="div_homePage_oeffnungszeiten">
-    <h2 class="h2_homepage_oeffnungszeitenTitel">Öffnungszeiten</h2>
-    <div class="div_homepage_oeffnungszeiten">
-        <p>Mo-Fr: 10-23 Uhr</p>
-        <p>Sa: 12-24 Uhr</p>
-        <p>So: 12-22 Uhr</p>
+    <!--homepageStyle: Karussel Standort Öffnungszeiten !-->
+
+    <div class = "div_homepage_infoZeitenStandortContainer">
+
+        <div class="div_homePage_oeffnungszeiten">
+            <h2 class="h2_homepage_oeffnungszeitenTitel">Öffnungszeiten</h2>
+            <div class="div_homepage_oeffnungszeiten">
+                <p>Mo-Fr: 10-23 Uhr</p>
+                <p>Sa: 12-24 Uhr</p>
+                <p>So: 12-22 Uhr</p>
+            </div>
+        </div>
+
+        <div class = "div_homepage_standort">
+            <h2 class="h2_homepage_standort">Standort </h2>
+            <div class="div_homepage_standortAdresse">
+                <p>Cineo Straße 103</p>
+                <p>65321 Mannheim</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sliding-wrapper">
+            <button id="prev-slide" class="slide-button material-symbols-outlined"> chevron_left </button>
+            <div class="image-list">
+
+                <div class="image-container">
+                    <a href="../mainpages/programpageStructur.html" class="image-link">
+                        <img src="../images/FullPosterDigimon.jpg" alt="Digimon" class="image-item" />
+                        <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="../mainpages/programpageStructur.html" class="image-link">
+                        <img src="../images/FullPosterFallGuy.webp" alt="FallGuy" class="image-item" />
+                        <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
+                    </a>
+                </div>
+
+                <!-- Planet der Affen -->
+                <div class="image-container">
+                    <a href="../mainpages/programpageStructur.html" class="image-link">
+                        <img src="../images/FullPosterPlanetDerAffen.jpg" alt="PlanetDerAffen" class="image-item" />
+                        <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
+                    </a>
+                </div>
+
+                <!-- Dune 2 -->
+                <div class="image-container">
+                    <a href="../mainpages/programpageStructur.html" class="image-link" >
+                        <img src="../images/FullPosterDuneRot.jpg" alt="Dune" class="image-item" />
+                        <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
+                    </a>
+                </div>
+
+                <!-- Civil War -->
+                <div class="image-container">
+                    <a href="../mainpages/programpageStructur.html" class="image-link">
+                        <img src="../images/FullPosterCivilWar.jpg" alt="CivilWar" class="image-item" />
+                        <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
+                    </a>
+                </div>
+
+            </div>
+            <button id="next-slide" class="slide-button material-symbols-outlined"> chevron_right </button>
+        </div>
     </div>
 </div>
 
-
-
-<div class = "div_homepage_standort">
-    <h2 class="h2_homepage_standort">Standort </h2>
-    <div class="div_homepage_standortAdresse">
-        <p>Cineo Straße 103</p>
-        <p>65321 Mannheim</p>
-    </div>
-</div>
-
-
-<div class="container">
-  <div class="sliding-wrapper">
-    <button id="prev-slide" class="slide-button material-symbols-outlined"> chevron_left </button>
-    <div class="image-list">
-
-      <div class="image-container">
-        <a href="../mainpages/programpageStructur.html" class="image-link">
-          <img src="../images/FullPosterDigimon.jpg" alt="Digimon" class="image-item" />
-          <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
-      </a>
-      </div>
-
-      <div class="image-container">
-        <a href="../mainpages/programpageStructur.html" class="image-link">
-            <img src="../images/FullPosterFallGuy.webp" alt="FallGuy" class="image-item" />
-            <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
-        </a>
-    </div>
-    
-    <!-- Planet der Affen -->
-    <div class="image-container">
-        <a href="../mainpages/programpageStructur.html" class="image-link">
-            <img src="../images/FullPosterPlanetDerAffen.jpg" alt="PlanetDerAffen" class="image-item" />
-            <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
-        </a>
-    </div>
-    
-    <!-- Dune 2 -->
-    <div class="image-container">
-        <a href="../mainpages/programpageStructur.html"" class="image-link">
-            <img src="../images/FullPosterDuneRot.jpg" alt="Dune" class="image-item" />
-            <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
-        </a>
-    </div>
-    
-    <!-- Civil War -->
-    <div class="image-container">
-        <a href="../mainpages/programpageStructur.html"" class="image-link">
-            <img src="../images/FullPosterCivilWar.jpg" alt="CivilWar" class="image-item" />
-            <img src="../images/IconPlaybuttonHomepage.png" alt="Play Button" class="play-button" />
-        </a>
-    </div>
-
-    </div>
-    <button id="next-slide" class="slide-button material-symbols-outlined"> chevron_right </button>
-  </div>
-</div>
-</div>
-
-<! mainStyle (home/Info): Verlinkung der InfoSeiten unten !/>
+<!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
 <div class="div_mainStyle_navigationBeamBottom"> </div>
 
 <div class="div_mainStyle_navigationBottom">

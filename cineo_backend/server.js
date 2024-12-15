@@ -91,7 +91,7 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
     }
 
     res.json(data);
-   
+
 });
 
 
@@ -138,11 +138,11 @@ app.get('/api/filme', async (req, res) => {
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
 
-
+/*
 app.post('/api/tickets', async (req, res) => {
     const { show_id, ticket_type, price } = req.body;
     console.log(req.body);
-    
+
     if (!show_id || !ticket_type || !price) {
         return res.status(400).json({ error: "Fehlende Ticketdaten" });
     }
@@ -158,6 +158,98 @@ app.post('/api/tickets', async (req, res) => {
 
         res.status(201).json({ message: "Ticket erfolgreich gespeichert", ticket: data });
     } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+*/
+
+app.post('/api/tickets', async (req, res) => {
+    const { show_id, ticket_type, price } = req.body;
+    console.log(req.body);
+
+    if (!show_id || !ticket_type || !price) {
+        return res.status(400).json({ error: "Fehlende Ticketdaten" });
+    }
+
+    try {
+        // Schritt 1: Hole die Raumkapazität der Show
+        const { data: showData, error: showError } = await supabase
+            .from('shows')
+            .select('room_id')
+            .eq('show_id', show_id)
+            .single();
+
+        console.log('Show-Daten:', showData);
+
+        if (showError || !showData) {
+            throw new Error('Vorstellung nicht gefunden');
+        }
+
+        const roomId = showData.room_id;
+        console.log('Gefundene room_id für Show', show_id, ':', roomId);
+
+
+        console.log('room_id:', roomId);
+
+
+        // Schritt 2: Hole die Kapazität des Raums
+        const { data: roomData, error: roomError } = await supabase
+            .from('rooms')
+            .select('capacity')
+            .eq('room_id', roomId)
+            .single();
+
+        // Debugging: Zeige die Raum-Daten
+        console.log('Raum-Daten:', roomData);
+
+        if (roomError || !roomData) {
+            throw new Error('Raumkapazität nicht gefunden');
+        }
+
+        const roomCapacity = roomData.capacity;
+
+
+        // Schritt 3: Berechne die bereits verkauften Tickets für die Show
+        const { data: ticketsData, error: ticketsError } = await supabase
+            .from('tickets')
+            .select('ticket_id')
+            .eq('show_id', show_id);
+
+        // Debugging: Zeige die zurückgegebenen Ticket-Daten
+        console.log('Tickets-Daten für show_id', show_id, ':', ticketsData);
+
+
+        if (ticketsError) {
+            throw ticketsError;
+        }
+
+        //const soldTicketsCount = ticketsData.length;
+        const soldTicketsCount = ticketsData ? ticketsData.length : 0;
+        console.log('Bereits verkaufte Tickets:', soldTicketsCount);
+
+
+        // Schritt 4: Prüfe, ob ein weiteres Ticket die Kapazität überschreiten würde
+        if (soldTicketsCount >= roomCapacity) {
+            return res.status(400).json({ error: "Kapazität überschritten" });
+        }
+
+        // Schritt 5: Füge das Ticket hinzu
+        const { data: newTicket, error: insertError } = await supabase
+            .from('tickets')
+            .insert([{ show_id, ticket_type, price }])
+            .single();
+
+        if (insertError) {
+            throw insertError;
+        }
+
+        res.status(201).json({
+            message: "Ticket erfolgreich gespeichert",
+            ticket: newTicket
+        });
+
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -194,7 +286,7 @@ app.get('/program', (req, res) => {
 app.get('/movie/:id', (req, res) => {
     const movieId = req.params.id;
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/movieStructure.html'));
-  });
+});
 
 app.get('/specials', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/specialpages/specialpageStructure.html'));
@@ -218,6 +310,14 @@ app.get('/login', (req, res) => {
 
 app.get('/tickets', (req, res) => {
     res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/ticketsStructure.html'));
+});
+
+app.get('/shows', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/showsStructure.html'));
+});
+
+app.get('/confirmation', (req, res) => {
+    res.sendFile(path.join(__dirname, '../cineo_frontend/mainpages/confrimationpageStructure.html'));
 });
 
 

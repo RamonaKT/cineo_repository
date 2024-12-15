@@ -48,6 +48,77 @@ app.get('/api/filme/:movieId', async (req, res) => {
     res.json(data[0]);
 });
 
+/*
+app.get('/api/vorstellungen/:showId', async (req, res) => {
+    const showId = req.params.showId;
+
+    const { data, error } = await supabase
+        .from('shows')
+        .select('*')
+        .eq('show_id', showId);
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
+
+    if (data.length === 0) {
+        return res.status(404).json({ error: 'Vorstellung nicht gefunden' });
+    }
+
+    res.json(data[0]);
+});*/
+
+app.get('/api/vorstellungen/:movieId', async (req, res) => {
+    const movieId = req.params.movieId;
+
+    const { data, error } = await supabase
+        .from('shows')
+        .select('*')
+        .eq('movie_id', movieId);
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
+
+    if (data.length === 0) {
+        return res.status(404).json({ error: 'Shows dieses Filmes nicht gefunden' });
+    }
+
+    res.json(data);
+   
+});
+
+
+/*
+app.get('/api/vorstellungen/:movieId', (req, res) => {
+    const movieId = req.params.movieId;
+
+    const query = 'SELECT * FROM shows WHERE movie_id = ?';
+
+    // Hier verwenden wir den Callback-Ansatz, der typisch für die MySQL2-Callback-API ist
+    db.query(query, [movieId], (err, results) => {
+        if (err) {
+            console.error('Fehler beim Abrufen der Shows:', err);
+            res.status(500).json({ error: 'Interner Serverfehler' });
+            return;
+        }
+
+        if (results.length === 0) {
+            // Wenn keine Showtimes gefunden wurden
+            return res.status(404).json({ error: 'Keine Vorstellungen gefunden für diesen Film.' });
+        }
+
+        // Zeige die Ergebnisse als JSON zurück
+        res.json(results);
+    });
+});*/
+
+
+
 // API-Endpunkt, um alle Filme abzurufen
 app.get('/api/filme', async (req, res) => {
     const { data, error } = await supabase
@@ -64,6 +135,27 @@ app.get('/api/filme', async (req, res) => {
 
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
+
+app.post('/api/tickets', async (req, res) => {
+    const { show_id, ticket_type, price } = req.body;
+
+    // Validierung der Eingabedaten
+    if (!show_id || !ticket_type || !price) {
+        return res.status(400).json({ error: 'Alle Felder (show_id, ticket_type, price) sind erforderlich.' });
+    }
+
+    // Ticket in die Datenbank einfügen
+    const { data, error } = await supabase
+        .from('tickets')
+        .insert([{ show_id, ticket_type, price }]);
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    res.status(201).json({ message: 'Ticket erfolgreich erstellt', ticket: data[0] });
+});
+
 
 /*
 // Alle Filme abrufen

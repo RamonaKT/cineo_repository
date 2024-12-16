@@ -1,0 +1,62 @@
+/* Container für die Shop-Elemente */
+.shop-container {
+    display: flex;
+    justify-content: center; /* Zentriert die Boxen horizontal */
+    gap: 30px; /* Abstand zwischen den Boxen */
+    flex-wrap: wrap; /* Umbruch bei kleinen Bildschirmen */
+    margin: 40px auto; /* Abstand zum Rand */
+    padding: 20px;
+}
+
+/* Einzelne Shop-Elemente */
+.shop-item {
+    background-color: #2a002e; /* Dunkles Lila */
+    color: #ffffff; /* Weißer Text */
+    border-radius: 10px; /* Abgerundete Ecken */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Schatten für Tiefe */
+    max-width: 300px; /* Maximale Breite der Boxen */
+    text-align: center; /* Inhalt zentrieren */
+    padding: 20px;
+    transition: transform 0.3s ease; /* Smooth Hover-Effekt */
+}
+
+/* Hover-Effekt */
+.shop-item:hover {
+    transform: translateY(-10px); /* Leichtes Anheben der Box */
+}
+
+/* Produktbilder */
+.shop-item-img {
+    width: 100%; /* Bild nimmt volle Breite ein */
+    height: auto;
+    border-radius: 10px 10px 0 0; /* Abrunden nur oben */
+}
+
+/* Titel der Shop-Boxen */
+.shop-item-title {
+    font-size: 1.5rem;
+    margin: 15px 0;
+    color: #ff00ff; /* Magentafarbener Titel */
+}
+
+/* Beschreibung der Produkte */
+.shop-item-description {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+/* Button für Aktionen */
+.shop-item-btn {
+    background-color: #ff00ff; /* Magenta Hintergrund */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.shop-item-btn:hover {
+    background-color: #cc00cc; /* Etwas dunkleres Magenta beim Hover */
+}

@@ -52,7 +52,9 @@ a {
     font-size: 5vh;
     text-align: center;
     color: white;
-    font-family: Futura, Serif;
+    font-family: "Lato", sans-serif;
+    -webkit-text-stroke:1.7px white;
+    letter-spacing: 4px;
     /* Notfalls die Schriftart anpassen */
 }
 
@@ -121,6 +123,8 @@ a {
     /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
     border-radius: 5px;
     /* Ecken abrunden */
+    font-family: "Lato", sans-serif ;
+
 }
 
 /* Components */

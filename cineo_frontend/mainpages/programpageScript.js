@@ -1,4 +1,3 @@
-// script.js
 
 // Fetch movies from the backend and render them in the grid
 async function fetchMovies() {
@@ -20,11 +19,14 @@ async function fetchMovies() {
       const card = document.createElement('div');
       card.classList.add('movie-card');
 
-    // click event to navigate to the movie details page
-    card.addEventListener('click', () => {
-        window.location.href = `/movie/${movie.filme_id}`; // Navigiert zur Film-Detail-Seite
+   
+      console.log("movie.movie_id", movie.movie_id);
+
+      card.addEventListener('click', () => {
+        console.log("Navigating to:", `/movie/${movie.movie_id}`); // Sollte die korrekte ID ausgeben
+        window.location.href = `/movie/${movie.movie_id}`;
       });
-  
+      
       const cover = document.createElement('img');
       cover.src = movie.image;
       cover.alt = movie.title;

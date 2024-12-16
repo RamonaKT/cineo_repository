@@ -8,20 +8,21 @@
 
 
     <link rel="stylesheet" href="/mainStyle.css" />
-    <link rel="stylesheet" href="ticketsStyle.css" />
+    <link rel="stylesheet" href="showsStyle.css" />
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
+
+
 </head>
-
 <body>
-
-    <!-- mainStyle: Logo - Überschrift - Login -->
+<!-- mainStyle: Logo - Überschrift - Login -->
 <a href="/homepageStructure.html">
     <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
 </a>
 
 <h1 id="movie-title" class="h1_mainStyle_headingTopMiddle">
+
 </h1>
 
 <a href="loginpageStructure.html">
@@ -38,20 +39,12 @@
     <a href="../specialpages/shoppageStructure.html">Shop</a>
 </div>
 
-<div class="ticket-container">
-    <h2 id="show-details"></h2>
 
-    <!-- Ticket-Auswahl -->
-    <div id="ticket-options">
-        <!-- Dynamischer Ticket-Inhalt -->
+    <h1 class="heading">Bitte wähle eine Vorstellung</h1>
+    <div id="showtimes-grid" class="showtimes-grid">
+        <!-- Vorstellungen werden hier dynamisch eingefügt -->
     </div>
 
-    <p id="total-price">Gesamtpreis: 0,00€</p>
-
-
-    <!-- Buchungsbutton -->
-    <button id="book-tickets-button">TICKETS RESERVIEREN</button>
-</div>
 
     <!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
     <div class="div_mainStyle_navigationBeamBottom"> </div>
@@ -67,6 +60,9 @@
 
 
 
-    <script src="/ticketsScript.js"></script>
+    <script src="/showsScript.js"></script>
+
+
 </body>
+
 </html>

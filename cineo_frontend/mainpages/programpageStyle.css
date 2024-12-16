@@ -73,32 +73,70 @@
 
 }
     */
+
+
+
+
+
+
+
+
+
+
+    
+
+   
 .body {
     display: flex;
     flex-direction: column;
-    /* Vertikale Anordnung */
-    justify-content: flex-start;
-    /* Inhalt am oberen Rand ausrichten */
     align-items: center;
-    /* Horizontale Zentrierung */
-    height: 100vh;
-    /* Volle Höhe des Viewports */
-    margin: 0;
-    /* Standardmargin entfernen */
-    /*font-family: "Lato", sans-serif;*/
-    overflow-y: auto;
-    /* Vertikale Scrollbar bei Bedarf anzeigen */
-    overflow-x: hidden;
-    padding: 0;
+    min-height: 100vh; /* Dynamische Anpassung an den Inhalt */
+    width: 100%;
+    margin: 0; /* Kein Abstand am Rand */
+    overflow-y: auto; /* Scrollen, falls notwendig */
+    font-family: "Lato", sans-serif;
+    box-sizing: border-box; /* Verhindert, dass Padding und Border in der Höhe zählen */
 }
 
+
+
+::-webkit-scrollbar {
+    width: 10px;
+    /* Breite der Scrollbar */
+}
+
+/* Hintergrund der Scrollbar */
+::-webkit-scrollbar-track {
+    background: #b089f2;
+    border-radius: 10px;
+}
+
+/* Scroll-Leiste */
+::-webkit-scrollbar-thumb {
+    background: white;
+    /* Farbe der Scroll-Leiste */
+    border-radius: 10px;
+}
+
+/* Scroll-Leiste beim Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #5afff5;
+    /* Farbe der Scroll-Leiste beim Hover */
+}
+
+
 .movie-grid {
-    width: 80%;
+    margin: 18vh 0 12vh 0; /* Horizontales Zentrieren */
+    padding: 0 250px; /* Kein unnötiger Innenabstand */
+    width: 100%; /* An die Breite des Viewports angepasst */
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-    padding: 20px;
-  }
+
+    grid-template-columns: repeat(auto-fill, minmax(14vw, 1fr)); /* Dynamische Spalten */
+    gap: 16px; /* Abstand zwischen den Karten */
+    overflow-y: auto;
+    
+}
+  
 
   /* Hover-Effekt */
 .movie-card:hover {
@@ -106,6 +144,7 @@
   }
   
   .movie-card {
+    height: 50vh;
     background-color: #560192;
     border: 1px solid #560192;
     border-radius: 8px;
@@ -126,7 +165,8 @@
   }
   
   .movie-title {
-    font-size: 16px;
+    font-family: "Lato", sans-serif ;
+    font-size: 1.5em;
     font-weight: bold;
     color:  #5afff5;
     margin-bottom: 5px;

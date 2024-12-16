@@ -17,12 +17,19 @@ body {
     overflow-y: auto;
     /* Vertikale Scrollbar bei Bedarf anzeigen */
     overflow-x: hidden;
+
+    transition: all 0.4s ease-out;
+    /* Animation für alle Layout-Änderungen */
+
+
     padding: 0;
 }
 
+
+
 #movie-title {
     font-family: "Lato", sans-serif;
-    -webkit-text-stroke:1.7px white;
+    -webkit-text-stroke: 1.7px white;
     letter-spacing: 3px;
 }
 
@@ -50,12 +57,10 @@ body {
     /* Farbe der Scroll-Leiste beim Hover */
 }
 
-.arrow{
+.arrow {
     width: 1.3em;
     margin-left: -10vw;
     margin-top: 0.5vh;
-
-
 }
 
 
@@ -70,14 +75,14 @@ body {
     /* Nimmt die volle Breite ein */
     height: 73vh;
     flex-direction: column;
-   
+
 }
 
 
 
 #movie-image {
     width: 21vw;
-    height: 55vh ;
+    height: 55vh;
     border-radius: 1em;
     border: 0.025vh solid #5afff5;
     margin: 5vh 0 0 6vw;
@@ -103,67 +108,125 @@ body {
     border-top: 0.1px solid #5afff5;
     width: 50vw;
     text-align: left;
-    margin-top: 5vh;
+    margin-top: 8vh;
 }
 
 .movie-content {
+    transition: max-height 0.4s ease-out;
+    /* Animation für sanfte Anpassung */
+    overflow: hidden;
+    /* Verhindert, dass unsichtbarer Text angezeigt wird */
+    /* max-height: 30vh;  Standardhöhe im gekürzten Zustand */
+
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     margin: 6vh 0 0 31vw;
-    width: 50%;
+    width: 45%;
     color: white;
     font-family: "Lato", sans-serif;
     line-height: 1.5;
 }
 
-.movie-content p{
-    font-size: 1.5em;
+.movie-content p {
+    font-size: 1.4em;
     line-height: 1.5;
     -webkit-text-stroke: 0.3px white;
 }
 
-.movie-content .title{
+.movie-content .title {
     font-size: 3em;
     -webkit-text-stroke: 1.5px white;
 }
 
+.movie-content.expanded {
+    max-height: none;
+    /*Ein großer Wert, der den gesamten Inhalt abdeckt */
+    overflow: visible;
+    height: auto;
+}
+
+
+.mehr-weniger-button {
+    margin: 2vh 0 0 0;
+    width: 10vw;
+    padding: 5px 40px;
+    background-color: #560192;
+    border-radius: 90px;
+    border: none;
+    color: #5afff5;
+    -webkit-text-stroke: 0.5px #5afff5;
+    font-size: 1.2em;
+    font-family: "Lato", sans-serif;
+    cursor: pointer;
+    box-shadow: 1px 1px 10px #000000;
+}
+
 /* CSS für die Showtimes Grid */
 .showtimes-grid {
+    position: relative;
+    margin: -22vh 0 0 31vw;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(13.5vw, 1fr));
+    gap: 0.2vw;
+    transition: margin-top 0.4s ease-out;
 }
+
+
+.showtimes-grid.expanded {
+    margin-top: -5vh;
+    /* Erhöhter Abstand, wenn der Text erweitert ist */
+    margin-bottom: 5vh;
+}
+
 
 .showtime-grid-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 17vh;
     margin: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+
 }
 
 .showtime-datetime {
     text-align: center;
+    width: 100%;
+    background-color: rgb(90, 255, 245, 0.6);
+    font-family: "Lato", sans-serif;
+    padding: 20px;
+    line-height: 1.5;
+    color: white;
+    border-radius: 5px 5px 0 0;
 }
 
 .showtime-date {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 1em;
+    font-weight: bolder;
+
 }
 
 .showtime-time {
-    font-size: 14px;
-    color: #555;
+    font-size: 2em;
+    font-weight: 500;
+    -webkit-text-stroke: 0.2px white;
+
 }
 
-.showtime-screen {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #333;
+.showtime-room {
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 255));
+    font-size: 1em;
+    font-weight: bold;
+    font-family: "Lato", sans-serif;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    margin-top: 3px;
+    height: 100%;
+    border-radius: 0 0 5px 5px;
+
 }
 
 
@@ -176,22 +239,22 @@ body {
     justify-content: center;
     align-items: center;
     margin: 2vh 1.5vw 0 80vw;
-    right: 0;  
+    right: 0;
     width: fit-content;
     font-weight: 100;
     gap: 5vh;
-    
-  
+
+
 }
 
 .movie-info p {
     color: #5afff5;
-    -webkit-text-stroke: 0.5px  #5afff5;
+    -webkit-text-stroke: 0.5px #5afff5;
     font-family: "Lato", sans-serif;
     font-size: 0.6em;
 }
 
-.movie-info .vertical-line{
+.movie-info .vertical-line {
     border: none;
     border-left: 0.01vw solid #5afff5;
     margin: 5vh 0 0 20vw;

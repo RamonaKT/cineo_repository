@@ -1,0 +1,69 @@
+/* Angebote Container */
+.offers-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Einzelne Angebote */
+.offer {
+    background-color: #40004e;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    padding: 15px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.offer:hover {
+    transform: translateY(-5px);
+}
+
+/* Bilder */
+.offer img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Titel */
+.offer h3 {
+    font-size: 1.4em;
+    color: #ffa1ff;
+    margin-bottom: 10px;
+}
+
+/* Beschreibung */
+.offer p {
+    font-size: 1em;
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+/* Besonderheiten hervorheben */
+.offer strong {
+    color: #5afff5;
+    font-weight: bold;
+}
+
+/* Hinweis zu Angeboten */
+.offers-note {
+    text-align: center;
+    background-color: #2a002e; /* Dunkles Lila für einen dezenten Hintergrund */
+    color: #ffffff; /* Weißer Text */
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 0.9em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.offers-note strong {
+    color: #5afff5; /* Türkisfarbene Hervorhebung für wichtige Wörter */
+    font-weight: bold;
+}

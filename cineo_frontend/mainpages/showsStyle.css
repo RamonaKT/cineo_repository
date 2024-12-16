@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* Vertikale Anordnung */
+    justify-content: flex-start;
+    /* Inhalt am oberen Rand ausrichten */
+    align-items: center;
+    /* Horizontale Zentrierung */
+    height: 100vh;
+    /* Volle Höhe des Viewports */
+    margin: 0;
+    /* Standardmargin entfernen */
+    /*font-family: "Lato", sans-serif;*/
+    overflow-y: auto;
+    /* Vertikale Scrollbar bei Bedarf anzeigen */
+    overflow-x: hidden;
+    padding: 0;
+    font-family: "Lato", sans-serif;
+    
+}
+
+.heading {
+    margin: 25vh 0 0 0;
+    font-family: "Lato", sans-serif;
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.arrow{
+    width: 1.3em;
+    margin-left: -10vw;
+    margin-top: 0.5vh;
+}
+
+.showtimes-grid {
+    width: 85%;
+    margin-top: 5vh;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
+    gap: 2vw;
+    padding: 15px;
+}
+
+.showtime-grid-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 255));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    height: 40vh;
+}
+
+.showtime-grid-item:hover {
+    transform: scale(1.05);
+}
+
+.showtime-details {
+    margin-top: 1.5vh;
+    margin-bottom: 16px;
+    color: white;
+    line-height: 2;
+    font-size: 2em;
+}
+
+.select-ticket-button {
+    margin-top: 5vh;
+    background-color: rgb(90, 255, 245, 0.6);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    width: 100%;
+    font-size: 2em;
+}
+
+.select-ticket-button:hover {
+    background-color: rgb(90, 255, 245);
+}

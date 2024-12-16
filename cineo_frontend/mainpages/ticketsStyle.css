@@ -1,22 +1,232 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 10px;
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
+
+/*
+.arrow{
+    width: 1.3em;
+    margin-left: -10vw;
+    margin-top: 0.5vh;
 }
 
-h1 {
+
+.ticket-container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.ticket-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;  
+}
+
+
+.ticket-option span {
+    font-size: 1rem;
     color: #333;
+    flex-grow: 1; 
+    text-align: left; 
 }
 
-#filme {
-    margin-bottom: 20px;
+
+.ticket-option .decrease, .ticket-option .increase {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+    text-align: center;
+    line-height: 20px; 
 }
 
-form {
-    margin-top: 20px;
+.ticket-option .decrease:hover, .ticket-option .increase:hover {
+    background-color: #0056b3;
 }
 
-input, select, button {
+
+.ticket-option span[id^="quantity-"] {
+    font-weight: bold;
+    margin: 0 10px; 
+}
+
+#quantity-VIP, #quantity-Erwachsener, #quantity-Kind, #quantity-Student {
+    font-weight: bold;
+}
+
+
+#show-details {
+    font-family: "Lato", sans-serif;
+    color: white;
+}
+
+#ticket-options{
+    font-family: "Lato", sans-serif;
+    color: white;
+}
+
+#total-price {
+    font-family: "Lato", sans-serif;
+    color: white;
+}
+
+
+#book-tickets-button {
+    background-color: #28a745;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#book-tickets-button:hover {
+    background-color: #218838;
+}
+*/
+
+.body{
+    font-family: "Lato", sans-serif;
+}
+
+.arrow{
+    width: 1.3em;
+    margin-left: -10vw;
+    margin-top: 0.5vh;
+}
+
+/* Container für den gesamten Inhalt */
+.ticket-container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Jede Ticket-Option */
+.ticket-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
-    margin: 5px 0;
+    height: 8vh;
+    background: linear-gradient(to right, rgb(86, 1, 146, 0.8), rgb(86, 1, 146, 0.1));
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 1vh;
+    margin-bottom: 10px; /* Abstand zwischen den einzelnen Optionen */
+}
+
+/* Sicherstellen, dass die Ticket-Informationen und Buttons gleichmäßig verteilt sind */
+.ticket-option span {
+    font-size: 1.2em;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    color: white;
+    text-align: left; /* Text links ausrichten */
+    flex-grow: 1; /* Textbereich kann wachsen, während Buttons fix bleiben */
+}
+
+/* Die Anzahl zwischen den Buttons */
+.ticket-option span[id^="quantity-"] {
+    font-weight: bold;
+    margin: 0 10px; /* Gleicher Abstand zwischen den Buttons */
+}
+
+/* Buttons für Plus und Minus */
+.ticket-option .decrease, .ticket-option .increase {
+    background-color: #560192;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-block;
+    width: 3vw; /* Feste Breite für die Buttons */
+    height: 5vh; /* Feste Höhe für die Buttons */
+    text-align: center;
+    line-height: 20px; /* Vertikale Zentrierung des Textes im Button */
+    margin: 0 5px; /* Abstand zwischen Buttons */
+    font-size: 1em;
+}
+
+/* Buttons Hover-Effekte */
+.ticket-option .decrease:hover, .ticket-option .increase:hover {
+    background-color:  rgb(124, 59, 218);
+}
+
+/* Zusätzliche Stile für die Anzahl (0, 1, etc.) */
+.ticket-option span[id^="quantity-"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Feste Breite für die Anzahl */
+    height: 30px; /* Gleiche Höhe wie die Buttons */
+    text-align: center;
+}
+
+/* Gesamtpreis-Anzeige */
+#total-price {
+    font-family: "Lato", sans-serif;
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+/* Buchungsbutton */
+#book-tickets-button {
+    background-color: rgb(90, 255, 245, 0.6);
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#book-tickets-button:hover {
+    background-color: rgb(90, 255, 245);
+    color:#560192;
+    font-weight: bold;
+}
+
+
+/* Show-Details */
+#show-details {
+    font-family: "Lato", sans-serif;
+    color: white;
+    font-size: 2em;
+    margin-top: 10vh;
 }

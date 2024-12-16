@@ -1,93 +1,157 @@
-/* Hauptlayout: Content-Wrapper */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+/* Hauptlayout: Content-Wrapper
 .content-wrapper {
-    display: flex; /* Horizontale Anordnung */
-    justify-content: flex-start; /* Inhalt am oberen Rand ausrichten */
-    align-items: center; /* Startet Inhalte oben */
-    padding: 20px;
-    gap: 60px; /* Abstand zwischen Filter und Filmen */
-    margin-top: 100px; /* Abstand nach oben */
+width: 100%;
+display: flex;
+justify-content: flex-start;
+align-items: center;
+gap: 5%;
+margin-top: 100px;
 }
-
-/* Filterkasten */
-.filter-box {
-    width: 220px;
-    background-color: #560192;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    display: flex;
-    /* Flex für die enthaltenen Elemente */
-    justify-content: flex-start;
-    /* Elemente nach links ausrichten */
-}
-
-.filter-box h2 {
-    font-size: 1.2em;
-    color: #88e4ff;
-    margin-bottom: 20px;
-}
-
 .filter-container {
+margin-left: 5%;
+flex: 1;
+min-width: 10%;
+display: flex;
+flex-direction: column;
+gap: 10px; //Abstand zwischen den Dropdowns
+width:fit-content;
+padding: 10px;
+background-color: #560192;
+border-radius: 10px;
+color: white;
+}
+// Filterkasten
+.filter-box {
+width: 220px;
+background-color: #560192;
+padding: 20px;
+border-radius: 10px;
+text-align: center;
+display: flex;
+// Flex für die enthaltenen Elemente
+justify-content: flex-start;
+Elemente nach links ausrichten
+}
+.filter-box h2 {
+font-size: 1.2em;
+color: #5afff5;
+margin-bottom: 20px;
+}
+.filter-container label {
+font-size: 1.2rem;
+margin-bottom: 5px;
+}
+.filter-container select {
+width: 100%;
+padding: 10px;
+font-size: 1rem;
+border: 1px solid black;
+border-radius: 5px;
+background-color: #5afff5;
+color: Black;
+}
+.left-aligned {
+display: flex;
+// Flex für die enthaltenen Elemente
+justify-content: flex-start;
+// Elemente nach links ausrichten
+width: 100%;
+// Nimmt die volle Breite ein
+}
+*/
+.body {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Abstand zwischen den Dropdowns */
-    padding: 20px;
-    background-color: #560192;
-    border-radius: 10px;
-    color: white;
+    align-items: center;
+    min-height: 100vh; /* Dynamische Anpassung an den Inhalt */
+    width: 100%;
+    margin: 0; /* Kein Abstand am Rand */
+    overflow-y: auto; /* Scrollen, falls notwendig */
+    font-family: "Lato" , sans-serif;
+    box-sizing: border-box; /* Verhindert, dass Padding und Border in der Höhe zählen */
 }
-
-.filter-container label {
-    font-size: 1.2rem;
+::-webkit-scrollbar {
+    width: 10px;
+    /* Breite der Scrollbar */
+}
+/* Hintergrund der Scrollbar */
+::-webkit-scrollbar-track {
+    background: #b089f2;
+    border-radius: 10px;
+}
+/* Scroll-Leiste */
+::-webkit-scrollbar-thumb {
+    background: white;
+    /* Farbe der Scroll-Leiste */
+    border-radius: 10px;
+}
+/* Scroll-Leiste beim Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #5afff5;
+    /* Farbe der Scroll-Leiste beim Hover */
+}
+.movie-grid {
+    margin: 18vh 0 12vh 0; /* Horizontales Zentrieren */
+    padding: 0 250px; /* Kein unnötiger Innenabstand */
+    width: 100%; /* An die Breite des Viewports angepasst */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14vw, 1fr)); /* Dynamische Spalten */
+    gap: 16px; /* Abstand zwischen den Karten */
+    overflow-y: auto;
+}
+/* Hover-Effekt */
+.movie-card:hover {
+    transform: scale(1.05); /* Vergrößert die Kachel um 5% */
+}
+.movie-card {
+    height: 50vh;
+    background-color: #560192;
+    border: 1px solid #560192;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out; /* Sanfte Übergangsanimation für den Hover-Effekt */
+}
+.movie-card img {
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+}
+.movie-details {
+    padding: 10px;
+}
+.movie-title {
+    font-family: "Lato" , sans-serif ;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #5afff5;
     margin-bottom: 5px;
 }
-
-.filter-container select {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: #88e4ff;
-    color: Black;
-}
-
-.left-aligned {
-    display: flex;
-    /* Flex für die enthaltenen Elemente */
-    justify-content: flex-start;
-    /* Elemente nach links ausrichten */
-    width: 100%;
-    /* Nimmt die volle Breite ein */
-
-}
-
-/* Filme-Container */
+/*
+Filme-Container
 .film-container {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 Filme pro Reihe */
-    gap: 20px;
-    max-width: 800px; /* Begrenzte Breite für Filme */
+display: grid;
+grid-template-columns: repeat(6, 1fr); 6 Filme pro Reihe
+gap: 20px;
+max-width: 800px; Begrenzte Breite für Filme
 }
-
 .movie-card {
-    background-color: #560192;
-    padding: 10px;
-    text-align: center;
-    border-radius: 10px;
+background-color: #560192;
+padding: 10px;
+text-align: center;
+border-radius: 10px;
 }
-
 .movie-card img {
-    width: 150px;
-    height: 225px;
-    border-radius: 5px;
+width: 150px;
+height: 225px;
+border-radius: 5px;
 }
-
 .movie-card a {
-    text-decoration: none;
-    color: #88e4ff;
-    display: block;
-    margin-top: 10px;
-    font-size: 0.9em;
-    font-weight: bold;
-}
+text-decoration: none;
+color: #88e4ff;
+display: block;
+margin-top: 10px;
+font-size: 0.9em;
+font-weight: bold;

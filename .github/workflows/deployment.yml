@@ -1,4 +1,4 @@
-name: Deploy Backend and Frontend to DigitalOcean
+name: Deployment to DigitalOcean
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         run: doctl auth init --access-token ${{ secrets.CINEO_SECRET }}
 
       # Backend Deployment starten mit Deploy ID
-      - name: Trigger Backend Deployment
+      - name: Trigger Deployment
         run: |
           doctl apps create-deployment ${{ secrets.CINEO_SECRET_DEPLOYMENT_ID }}
 

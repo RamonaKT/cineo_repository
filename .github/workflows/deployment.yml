@@ -31,7 +31,7 @@ jobs:
       - name: Authenticate with DigitalOcean
         run: doctl auth init --access-token ${{ secrets.CINEO_SECRET }}
 
-      # Backend Deployment starten mit Deploy ID
+      # Deployment starten mit Deploy ID
       - name: Trigger Deployment
         run: |
           doctl apps create-deployment ${{ secrets.CINEO_SECRET_DEPLOYMENT_ID }}

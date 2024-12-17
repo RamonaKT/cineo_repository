@@ -31,7 +31,7 @@ jobs:
       - name: Authenticate with DigitalOcean
         env:
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.CINEO_SECRET }}
-        run: doctl auth init --access-token ${{ secrets.CINEO_SECRET }}
+        run: doctl auth init
 
       # Deployment starten mit Deploy ID 
       - name: Trigger Deployment

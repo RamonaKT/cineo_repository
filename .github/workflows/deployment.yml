@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-backend:
-    name: Deploy Backend to DigitalOcean
+    name: Deploy to DigitalOcean
     runs-on: ubuntu-latest
 
     steps:
@@ -23,35 +23,11 @@ jobs:
 
       # Bei DigitalOcean authentifizieren
       - name: Authenticate with DigitalOcean
-        run: doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        run: doctl auth init --access-token ${{ secrets.CINEO_SECRET }}
 
-      # Backend Deployment starten
-      - name: Deploy Backend
-        working-directory: ./backend
+      # Backend Deployment starten mit Deploy ID
+      - name: Trigger Backend Deployment
         run: |
-          doctl apps create-deployment ${{ secrets.DIGITALOCEAN_BACKEND_APP_ID }}
+          doctl apps create-deployment ${{ secrets.CINEO_SECRET_DEPLOYMENT_ID }}
 
-  deploy-frontend:
-    name: Deploy Frontend to DigitalOcean
-    runs-on: ubuntu-latest
-
-    steps:
-      # Repository auschecken
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      # DigitalOcean CLI installieren
-      - name: Install DigitalOcean CLI
-        run: |
-          curl -sL https://github.com/digitalocean/doctl/releases/latest/download/doctl-linux-amd64.tar.gz | tar -xzv
-          sudo mv doctl /usr/local/bin
-
-      # Bei DigitalOcean authentifizieren
-      - name: Authenticate with DigitalOcean
-        run: doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      # Frontend Deployment starten
-      - name: Deploy Frontend
-        working-directory: ./frontend
-        run: |
-          doctl apps create-deployment ${{ secrets.DIGITALOCEAN_FRONTEND_APP_ID }}
+ 

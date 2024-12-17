@@ -25,7 +25,7 @@ jobs:
       - name: Add SSH Key
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.CINEO_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.CINEO_PRIVATE_SHH_KEY }}
 
       # Bei DigitalOcean authentifizieren
       - name: Authenticate with DigitalOcean

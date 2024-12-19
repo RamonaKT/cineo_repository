@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
     
                 alert("Tickets erfolgreich gebucht!");
-                window.location.href = `/confirmationpageStructure.html?movie_id=${movieId}`;
+                window.location.href = `/mainpages/confirmationpageStructure.html?movie_id=${movieId}`;
             } catch (error) {
                 alert(error.message === "Kapazität überschritten" 
                     ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht." 

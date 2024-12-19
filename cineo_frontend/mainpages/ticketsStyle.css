@@ -1,111 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 
 
-/*
-.arrow{
-    width: 1.3em;
-    margin-left: -10vw;
-    margin-top: 0.5vh;
-}
-
-
-.ticket-container {
-    width: 80%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-
-.ticket-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 10px;  
-}
-
-
-.ticket-option span {
-    font-size: 1rem;
-    color: #333;
-    flex-grow: 1; 
-    text-align: left; 
-}
-
-
-.ticket-option .decrease, .ticket-option .increase {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    display: inline-block;
-    width: 30px; 
-    height: 30px; 
-    text-align: center;
-    line-height: 20px; 
-}
-
-.ticket-option .decrease:hover, .ticket-option .increase:hover {
-    background-color: #0056b3;
-}
-
-
-.ticket-option span[id^="quantity-"] {
-    font-weight: bold;
-    margin: 0 10px; 
-}
-
-#quantity-VIP, #quantity-Erwachsener, #quantity-Kind, #quantity-Student {
-    font-weight: bold;
-}
-
-
-#show-details {
-    font-family: "Lato", sans-serif;
-    color: white;
-}
-
-#ticket-options{
-    font-family: "Lato", sans-serif;
-    color: white;
-}
-
-#total-price {
-    font-family: "Lato", sans-serif;
-    color: white;
-}
-
-
-#book-tickets-button {
-    background-color: #28a745;
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    margin-top: 30px;
-    display: block;
-    width: 100%;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#book-tickets-button:hover {
-    background-color: #218838;
-}
-*/
-
 .body{
     font-family: "Lato", sans-serif;
 }
@@ -118,6 +13,7 @@
 
 /* Container für den gesamten Inhalt */
 .ticket-container {
+   
     width: 80%;
     max-width: 1200px;
     margin: 20px auto;
@@ -225,8 +121,11 @@
 
 /* Show-Details */
 #show-details {
+    display: flex;
+    align-self: center;
+
     font-family: "Lato", sans-serif;
     color: white;
     font-size: 2em;
-    margin-top: 10vh;
+    margin-top: 20vh;
 }

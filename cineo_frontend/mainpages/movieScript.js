@@ -251,7 +251,7 @@ function toggleDescription(summaryElement, toggleButton) {
 
 if (movieId) {
   const ticketButton = document.getElementById("ticket-button");
-  ticketButton.href = `/showsStructure.html?movie_id=${movieId}`;
+  ticketButton.href = `/mainpages/showsStructure.html?movie_id=${movieId}`;
 }
 
 });

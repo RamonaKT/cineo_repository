@@ -193,8 +193,16 @@ app.post('/api/tickets', async (req, res) => {
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
 
 // 1. Static Files aus dem Frontend-Ordner bereitstellen
-app.use(express.static(path.join(__dirname, '../cineo_frontend/mainpages')));
+app.use(express.static(path.join(__dirname, '../cineo_frontend')));
 
+
+/*
+// 1. Static Files aus dem Frontend-Ordner bereitstellen
+app.use(express.static(path.join(__dirname, '../cineo_frontend/specialpages')));
+
+// 1. Static Files aus dem Frontend-Ordner bereitstellen
+app.use(express.static(path.join(__dirname, '../cineo_frontend/infopages')));
+*/
 
 // 2. HTML-Seiten ausliefern
 app.get('/', (req, res) => {

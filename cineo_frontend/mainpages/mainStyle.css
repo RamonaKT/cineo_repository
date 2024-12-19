@@ -1,3 +1,4 @@
+
 /* Reset */
 * {
     margin: 0;
@@ -10,13 +11,28 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     background-color: #220537;
-    position: relative;
-    overflow: hidden;
-    /* Falls die Inhalte größer als der Bildschirm sind */
+    color: white;
+    overflow-x: hidden; /* Keine horizontale Scrollbar */
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #b089f2;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5afff5;
 }
 
 a {
@@ -24,15 +40,13 @@ a {
     text-decoration: none;
 }
 
-/* Layout */
+/* Logo und Header */
 .img_mainStyle_cineoLogo {
     position: absolute;
     top: 1vh;
     left: 1vw;
     height: 10vh;
-    /* Variable Höhe */
     object-fit: contain;
-    /* Passt das Bild an ohne es zu verzerren */
 }
 
 .img_mainStyle_accountLogin {
@@ -40,7 +54,6 @@ a {
     top: 1vh;
     right: 1vw;
     height: 10vh;
-    /* Variable Höhe */
     object-fit: contain;
 }
 
@@ -52,50 +65,29 @@ a {
     font-size: 5vh;
     text-align: center;
     color: white;
-    font-family: "Lato", sans-serif;
-    -webkit-text-stroke:1.7px white;
-    letter-spacing: 4px;
-    /* Notfalls die Schriftart anpassen */
+    font-family: Futura, Serif;
 }
 
+/* Navigation oben */
 .div_mainStyle_navigationTop {
-    position: absolute;
+    position: fixed;
     top: 12vh;
     width: 100vw;
-    /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
     height: 5vh;
-    /* Höhe des Balkens */
     background-color: rgba(86, 1, 146, 0.7);
-    /* Farbe des Balkens mit 70% Deckkraft */
-    margin: 0;
-    /* Entfernt Abstände um den Balken herum */
-    padding: 0;
-    /* Entfernt Füllungen im Balken */
-    box-sizing: border-box;
-    /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
     display: flex;
-    /* Flexbox zur Anordnung der Links */
     justify-content: right;
-    /* Zentriert die Links horizontal */
     align-items: center;
-    /* Zentriert die Links vertikal */
+    z-index: 10;
     border: 1px solid slateblue;
-    /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
     border-radius: 5px;
-    /* Ecken abrunden */
 }
 
 .div_mainStyle_navigationTop a {
     color: #ffffff;
-    /* Textfarbe der Links */
-    text-decoration: none;
-    /* Entfernt die Unterstreichung der Links */
     margin: 0 5vw;
-    /* Abstand zwischen den Links */
     font-size: 3vh;
-    /* Schriftgröße der Links */
     font-family: "Lato", sans-serif;
-    /*Schriftart*/
     font-weight: lighter;
 }
 
@@ -103,72 +95,36 @@ a {
     color: #5afff5;
 }
 
+/* Navigations-Balken unten */
 .div_mainStyle_navigationBeamBottom {
     background-color: #560192;
     width: 100vw;
-    /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
     height: 2vh;
-    /* Höhe des Balkens */
-    margin: 0;
-    /* Entfernt Abstände um den Balken herum */
-    padding: 0;
-    /* Entfernt Füllungen im Balken */
-    box-sizing: border-box;
-    /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
-    bottom: 9vh;
     position: fixed;
+    bottom: 9vh;
     z-index: 10;
     opacity: 70%;
     border: 1px solid slateblue;
-    /* Breite: 4px, Stil: gestrichelt, Farbe: blau */
     border-radius: 5px;
-    /* Ecken abrunden */
-    font-family: "Lato", sans-serif ;
-
-}
-
-/* Components */
-.div_mainStyle_navigationTop .a_mainStyle_highlightLink {
-    font-size: 3vh;
-    font-weight: bold;
-    text-decoration: underline;
-    color: #5afff5;
 }
 
 .div_mainStyle_navigationBottom {
     background-color: #220537;
     width: 100%;
-    /* Die Breite des Balkens nimmt 100% der Breite der Webseite ein */
     height: 9vh;
-    /* Höhe des Balkens */
-    margin: 0;
-    /* Entfernt Abstände um den Balken herum */
-    padding: 0;
-    /* Entfernt Füllungen im Balken */
-    box-sizing: border-box;
-    /* Stellt sicher, dass Padding und Border in der Breite enthalten sind */
-    bottom: 0px;
     position: fixed;
+    bottom: 0px;
     display: flex;
-    /* Flexbox zur Anordnung der Links */
     justify-content: center;
-    /* Zentriert die Links horizontal */
     align-items: center;
-    /* Zentriert die Links vertikal */
     z-index: 10;
 }
 
 .div_mainStyle_navigationBottom a {
     color: #ffffff;
-    /* Textfarbe der Links */
-    text-decoration: none;
-    /* Entfernt die Unterstreichung der Links */
     margin: 0 5vw;
-    /* Abstand zwischen den Links */
     font-size: 2vh;
-    /* Schriftgröße der Links */
     font-family: "Lato", sans-serif;
-    /*Schriftart*/
     font-weight: normal;
 }
 
@@ -180,4 +136,16 @@ a {
     font-weight: bold;
 }
 
-/* Utilities */
+/* Hauptinhalt */
+.main-content {
+    flex-grow: 1; /* Nutzt den verfügbaren Platz zwischen Header und Footer */
+    margin-top: calc(12vh + 5vh); /* Platz für Header und Navigation oben */
+    margin-bottom: calc(9vh + 2vh); /* Platz für unteren Balken und Footer */
+    width: 100%; /* Breite auf die gesamte Seite anpassen */
+    padding: 20px; /* Innenabstand für Inhalte */
+    overflow-y: auto; /* Inhalt scrollbar, falls zu groß */
+    color: white; /* Textfarbe */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Inhalte oben ausrichten */
+}

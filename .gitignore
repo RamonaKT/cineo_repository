@@ -1,4 +1,4 @@
-# Lokale IDE-Konfigurationsdateien
+# IDE-Dateien
 .idea/
 
 # Umgebungsvariablen
@@ -7,4 +7,4 @@ cineo_backend/.env
 # Abhängigkeiten
 cineo_backend/node_modules/
 
-/node_modules/
+node_modules/

@@ -1,0 +1,43 @@
+name: Deployment to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main  # Deployment wird bei einem Push auf den main-Branch ausgelöst
+
+jobs:
+  deploy-backend:
+    name: Deploy to DigitalOcean
+    runs-on: ubuntu-latest
+
+    steps:
+      # Repository auschecken
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # DigitalOcean CLI installieren
+      - name: Install DigitalOcean CLI
+        run: |
+          curl -sL https://github.com/digitalocean/doctl/releases/download/v1.100.0/doctl-1.100.0-linux-amd64.tar.gz | tar -xzv
+          sudo mv doctl /usr/local/bin
+
+    # Debugging Secrets
+      - name: Debug Secrets
+        run: echo "CINEO_SECRET is set"
+        env:
+          CINEO_SECRET: ${{ secrets.CINEO_SECRET }}
+
+        # Bei DigitalOcean authentifizieren (mit Umgebungsvariable)
+      - name: Authenticate with DigitalOcean
+        env:
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.CINEO_SECRET }}
+        run: doctl auth init --access-token ${{ secrets.CINEO_SECRET }}
+
+      # Deployment starten mit Deploy ID 
+      - name: Trigger Deployment
+        env:
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.CINEO_SECRET }}
+        run: |
+          doctl apps create-deployment ${{ secrets.CINEO_SECRET_DEPLOYMENT_ID }}
+
+ 

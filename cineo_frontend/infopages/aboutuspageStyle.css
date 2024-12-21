@@ -1,19 +1,19 @@
 /* Hauptcontainer für "Über uns"-Seite */
 .about-us-container {
     max-width: 800px;
-    margin: 40px auto;
+    margin: 40px auto; /* Zentriert den Container */
     padding: 20px;
-    background-color: #ffffff;
-    color: #333;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2a002e; /* Dunkles Lila als Hintergrund */
+    color: #ffffff; /* Weißer Text */
+    border-radius: 10px; /* Abgerundete Ecken */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Tieferer Schatten */
     text-align: left;
 }
 
 /* Titel */
 .about-us-container h2 {
     font-size: 1.8rem;
-    color: #6f00b0;
+    color: #ff00ff; /* Magentafarbener Titel */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -21,7 +21,7 @@
 /* Text */
 .about-us-container p {
     font-size: 1rem;
-    color: #555;
+    color: #e0d7e5; /* Helles Grau-Lila für Text */
     line-height: 1.6;
     margin-bottom: 15px;
 }
@@ -31,14 +31,14 @@
     display: flex;
     align-items: center;
     margin: 20px 0;
-    gap: 20px;
+    gap: 20px; /* Abstand zwischen Bild und Text */
 }
 
 .team-image {
     width: 200px;
     height: auto;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Dunklerer Schatten */
 }
 
 /* Features-Sektion */
@@ -48,14 +48,14 @@
 
 .features-section h3 {
     font-size: 1.4rem;
-    color: #6f00b0;
+    color: #ff00ff; /* Magenta für Unterüberschriften */
     margin-bottom: 10px;
 }
 
 .features-section ul {
-    list-style-type: disc;
+    list-style-type: disc; /* Standard-Aufzählungszeichen */
     padding-left: 20px;
-    color: #555;
+    color: #e0d7e5; /* Helles Grau-Lila für die Aufzählung */
 }
 
 .features-section li {

@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './cineo_backend/.env' });  
+require('dotenv').config({ path: '../cineo_backend/.env' });
 
 const cors = require('cors');
 const express = require('express');

@@ -1,0 +1,1 @@
+(Geschäfts-)Logik der Anwendung

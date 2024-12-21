@@ -3,17 +3,17 @@
     max-width: 800px;
     margin: 40px auto;
     padding: 20px;
-    background-color: #ffffff;
-    color: #333;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2a002e; /* Dunkles Lila */
+    color: #ffffff; /* Weißer Text */
+    border-radius: 10px; /* Abgerundete Ecken */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Tieferer Schatten */
     text-align: center;
 }
 
 /* Überschrift */
 .career-container h2 {
     font-size: 1.8rem;
-    color: #6f00b0;
+    color: #ff00ff; /* Magenta-Highlight für die Überschrift */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -21,7 +21,7 @@
 /* Beschreibungstext */
 .career-container p {
     font-size: 1rem;
-    color: #555;
+    color: #e0d7e5; /* Helles Grau-Lila für Text */
     margin-bottom: 15px;
 }
 
@@ -30,7 +30,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 20px; /* Abstand zwischen Bild und Text */
     margin-top: 20px;
 }
 
@@ -38,8 +38,9 @@
 .manager-image {
     width: 150px;
     height: 150px;
-    border-radius: 50%;
-    border: 3px solid #6f00b0;
+    border-radius: 50%; /* Rundes Bild */
+    border: 3px solid #ff00ff; /* Magenta Rahmen */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Leichter Schatten */
 }
 
 /* Manager-Details */
@@ -49,19 +50,21 @@
 
 .manager-details h3 {
     font-size: 1.2rem;
-    color: #6f00b0;
+    color: #ff00ff; /* Magenta-Farbe für den Titel */
     margin-bottom: 10px;
 }
 
 .manager-details p {
     font-size: 1rem;
-    color: #555;
+    color: #e0d7e5; /* Helles Grau-Lila */
     margin: 5px 0;
 }
 
+/* Links */
 .manager-details a {
-    color: #6f00b0;
+    color: #ff00ff; /* Magenta für Links */
     text-decoration: none;
+    font-weight: bold;
 }
 
 .manager-details a:hover {

@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
+
+.arrow {
+    width: 1.3em;
+    margin-left: -10vw;
+    margin-top: 0.5vh;
+}
+
+.confirmation-text {
+    margin-top: 30vh;
+    display: flex;
+    align-self: center;
+    font-family: "Lato", sans-serif;
+    font-size: 3em;
+    font-weight: bold;
+    -webkit-text-stroke: 2px white;
+    color: white;
+    margin-bottom: 5vh;
+    word-spacing: 0.2em;
+}
+
+.ticket-img {
+    display: flex;
+    align-self: center;
+    width: 15vw;
+    height: auto;
+    margin-bottom: 5vh;
+}
+
+
+.go-back {
+    display: flex;
+    align-self: center;
+    font-family: "Lato", sans-serif;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #5afff5;
+    margin-bottom: 5vh;
+    word-spacing: 0.2em;
+}

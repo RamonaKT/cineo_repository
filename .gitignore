@@ -8,3 +8,5 @@ cineo_backend/.env
 cineo_backend/node_modules/
 
 node_modules/
+
+.github\workflows/

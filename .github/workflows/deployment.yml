@@ -27,10 +27,8 @@ jobs:
         env:
           CINEO_SECRET: ${{ secrets.CINEO_SECRET }}
 
-        # Bei DigitalOcean authentifizieren (mit Umgebungsvariable)
+        # Bei DigitalOcean authentifizieren 
       - name: Authenticate with DigitalOcean
-        env:
-          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.CINEO_SECRET }}
         run: doctl auth init --access-token ${{ secrets.CINEO_SECRET }}
 
       # Deployment starten mit Deploy ID 

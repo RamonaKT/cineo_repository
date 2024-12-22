@@ -7,7 +7,6 @@ let ticketpreise = [
 // Preise und Übersicht laden
 window.onload = function () {
     renderPriceList();
-    updateOverview();
 };
 
 // Preisliste rendern
@@ -19,13 +18,13 @@ function renderPriceList() {
         const rabattText = item.rabattTyp === "prozent" ? `${item.rabattWert}% Rabatt` : 
                            item.rabattTyp === "euro" ? `${item.rabattWert.toFixed(2)} € Rabatt` : "Kein Rabatt";
 
+        const endpreis = calculateFinalPrice(item).toFixed(2);
+
         const li = document.createElement('li');
-        li.innerHTML = `<div>${item.kategorie}: <strong>${item.preis.toFixed(2)} €</strong> - ${rabattText}</div> 
+        li.innerHTML = `<div>${item.kategorie}: <strong>${item.preis.toFixed(2)} €</strong> - ${rabattText} | Endpreis: <strong>${endpreis} €</strong></div> 
         <button onclick="deletePrice(${index})">Löschen</button>`;
         liste.appendChild(li);
     });
-
-    updateOverview();
 }
 
 // Formular-Verarbeitung
@@ -51,23 +50,6 @@ document.getElementById('preisForm').onsubmit = function (e) {
     document.getElementById('preisForm').reset();
 };
 
-// Übersicht aktualisieren
-function updateOverview() {
-    const tbody = document.getElementById('preisUebersicht');
-    tbody.innerHTML = '';
-
-    ticketpreise.forEach(item => {
-        const endpreis = calculateFinalPrice(item);
-        tbody.innerHTML += `
-            <tr>
-                <td>${item.kategorie}</td>
-                <td>${item.preis.toFixed(2)}</td>
-                <td>${item.rabattTyp === 'kein' ? '—' : item.rabattWert}</td>
-                <td>${endpreis.toFixed(2)}</td>
-            </tr>`;
-    });
-}
-
 function calculateFinalPrice(item) {
     if (item.rabattTyp === 'prozent') {
         return item.preis * (1 - item.rabattWert / 100);
@@ -75,4 +57,10 @@ function calculateFinalPrice(item) {
         return item.preis - item.rabattWert;
     }
     return item.preis;
+}
+
+// Preis löschen
+function deletePrice(index) {
+    ticketpreise.splice(index, 1);
+    renderPriceList();
 }

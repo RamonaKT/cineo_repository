@@ -78,24 +78,3 @@ li button {
 li button:hover {
     background-color: #c23d3d;
 }
-
-/* Tabellen-Design */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 15px;
-    text-align: center;
-    border: 1px solid #ffa1ff;
-}
-
-th {
-    background-color: #550060;
-}
-
-tr:nth-child(even) {
-    background-color: #660070;
-}

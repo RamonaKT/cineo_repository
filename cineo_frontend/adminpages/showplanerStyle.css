@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* Vertikale Anordnung */
+    justify-content: flex-start;
+    /* Inhalt am oberen Rand ausrichten */
+    align-items: center;
+    /* Horizontale Zentrierung */
+    height: 100vh;
+    /* Volle Höhe des Viewports */
+    margin: 0;
+    /* Standardmargin entfernen */
+    /*font-family: "Lato", sans-serif;*/
+    overflow-y: auto;
+    /* Vertikale Scrollbar bei Bedarf anzeigen */
+    overflow-x: hidden;
+    padding: 0;
+    font-family: "Lato", sans-serif;
+}
+
+.h1_internesHeading {
+    margin: 25vh 0 0 0;
+    font-family: "Lato", sans-serif;
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.arrow {
+    width: 1.3em;
+    margin-left: -10vw;
+    margin-top: 0.5vh;
+}
+
+/* Container für alle Filme */
+.movies-grid {
+    width: 85%; /* Größe des Containers anpassen */
+    margin-top: 5vh;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 Spalten */
+    gap: 2vw;
+    padding: 10px;
+}
+
+/* Einzelnes Film-Element */
+.movie-grid-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 255));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    height: 30vh;
+    /* Die Breite der Elemente wird automatisch angepasst */
+    width: 100%;
+}
+
+.movie-grid-item:hover {
+    transform: scale(1.05);
+}
+
+/* Details der Vorstellung */
+.movie-details {
+    margin-top: 1.5vh;
+    margin-bottom: 16px;
+    color: white;
+    line-height: 2;
+    font-size: 2vh;
+}
+
+/* Button für Ticket-Auswahl */
+.select-movie-button {
+    margin-top: 2vh;
+    background-color: rgb(90, 255, 245, 0.6);
+    color: #fff;
+    border: solid white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    width: 100%;
+    font-size: 2vh;
+}
+
+.select-movie-button:hover {
+    background-color: rgb(90, 255, 245);
+}

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cineo_Mannheim</title>
 
-    <link rel="stylesheet" href="/mainpages/accountOverviewpageStyle.css" />
-    <link rel="stylesheet" href="/mainpages/mainStyle.css" />
+    <link rel="stylesheet" href="../adminpages/adminPricechangingStyle.css" />
+    <link rel="stylesheet" href="../mainpages/mainStyle.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-   
+    <script src="../adminpages/adminPricechangingScript.js" defer></script>
 
 
 </head>
@@ -21,7 +21,7 @@
 </a>
 
 <h1 class="h1_mainStyle_headingTopMiddle">
-    MEIN KONTO
+    Admin - Ticketpreise
 </h1>
 
 <a href="loginpageStructure.html">
@@ -39,32 +39,68 @@
 
 
 <div class="main-content">
-<!-- Hauptinhalt: Übersicht der Tickets -->
-<div class="account-overview-container">
-    <h2 class="overview-title">Ihre gebuchten Tickets</h2>
     
-    <div class="ticket-list">
-        <div class="ticket-item">
-            <h3>Kino: Avatar: The Way of Water</h3>
-            <p><strong>Datum:</strong> 20. Dezember 2024</p>
-            <p><strong>Zeit:</strong> 19:30 Uhr</p>
-            <p><strong>Saal:</strong> 5 (3D)</p>
-            <p><strong>Platz:</strong> Reihe 3, Sitz 12</p>
+    <div class="container">
+        <h1>Ticketpreis Verwaltung</h1>
+        
+        <div class="price-list">
+            <h2>Aktuelle Ticketpreise</h2>
+            <ul id="preisListe">
+                <!-- Ticketpreise werden hier dynamisch eingefügt -->
+            </ul>
         </div>
-        <div class="ticket-item">
-            <h3>Kino: The Batman</h3>
-            <p><strong>Datum:</strong> 18. Dezember 2024</p>
-            <p><strong>Zeit:</strong> 20:00 Uhr</p>
-            <p><strong>Saal:</strong> 2</p>
-            <p><strong>Platz:</strong> Reihe 7, Sitz 15</p>
+
+        <div class="form-container">
+            <h2>Preis hinzufügen oder anpassen</h2>
+            <form id="preisForm">
+                
+                <label for="kategorie">Kategorie:</label>
+                <select id="kategorie" required>
+                    <option value="Parkett">Parkett</option>
+                    <option value="Loge">Loge</option>
+                    <option value="VIP">VIP</option>
+                </select>
+
+                <label for="preis">Grundpreis (€):</label>
+                <input type="number" id="preis" step="0.01" required>
+
+                <fieldset>
+                    <legend>Rabatt</legend>
+
+                    <label for="rabattTyp">Rabatt-Typ:</label>
+                    <select id="rabattTyp">
+                        <option value="prozent">Prozentual</option>
+                        <option value="euro">Fester Betrag</option>
+                        <option value="kein">Kein Rabatt</option>
+                    </select>
+
+                    <label for="rabattWert">Rabattwert:</label>
+                    <input type="number" id="rabattWert" step="0.01" min="0">
+                </fieldset>
+
+                <button type="submit">Speichern</button>
+            </form>
+        </div>
+
+        <!-- Übersicht der aktuellen Preise -->
+        <div class="overview-container">
+            <h2>Preisübersicht</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kategorie</th>
+                        <th>Grundpreis (€)</th>
+                        <th>Rabatt</th>
+                        <th>Endpreis (€)</th>
+                    </tr>
+                </thead>
+                <tbody id="preisUebersicht">
+                    <!-- Übersicht wird hier dynamisch geladen -->
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="actions">
-        <button class="action-button">Weitere Tickets buchen</button>
-        <button class="action-button logout-button">Logout</button>
-    </div>
-</div>
 </div>
 
 

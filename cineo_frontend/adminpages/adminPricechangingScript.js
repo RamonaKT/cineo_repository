@@ -1,64 +1,78 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Testdaten: Beispiel für Benutzer und Tickets (später durch Backend-Daten ersetzen)
-    const username = "testuser"; // Platzhalter für eingeloggten Benutzer
-    const tickets = [
-        {
-            title: "Avatar: The Way of Water",
-            date: "20. Dezember 2024",
-            time: "19:30 Uhr",
-            room: "Saal 5 (3D)",
-            seat: "Reihe 3, Sitz 12",
-        },
-        {
-            title: "The Batman",
-            date: "18. Dezember 2024",
-            time: "20:00 Uhr",
-            room: "Saal 2",
-            seat: "Reihe 7, Sitz 15",
-        },
-    ];
+let ticketpreise = [
+    { kategorie: "Parkett", preis: 10.00, rabattTyp: "kein", rabattWert: 0 },
+    { kategorie: "Loge", preis: 15.00, rabattTyp: "kein", rabattWert: 0 },
+    { kategorie: "VIP", preis: 20.00, rabattTyp: "kein", rabattWert: 0 }
+];
 
-    // Zeige Benutzername an (optional, falls benötigt)
-    const userGreeting = document.querySelector(".overview-title");
-    if (userGreeting) {
-        userGreeting.innerHTML = `Willkommen, ${username}!<br>${userGreeting.innerHTML}`;
+// Preise und Übersicht laden
+window.onload = function () {
+    renderPriceList();
+    updateOverview();
+};
+
+// Preisliste rendern
+function renderPriceList() {
+    const liste = document.getElementById('preisListe');
+    liste.innerHTML = '';
+
+    ticketpreise.forEach((item, index) => {
+        const rabattText = item.rabattTyp === "prozent" ? `${item.rabattWert}% Rabatt` : 
+                           item.rabattTyp === "euro" ? `${item.rabattWert.toFixed(2)} € Rabatt` : "Kein Rabatt";
+
+        const li = document.createElement('li');
+        li.innerHTML = `<div>${item.kategorie}: <strong>${item.preis.toFixed(2)} €</strong> - ${rabattText}</div> 
+        <button onclick="deletePrice(${index})">Löschen</button>`;
+        liste.appendChild(li);
+    });
+
+    updateOverview();
+}
+
+// Formular-Verarbeitung
+document.getElementById('preisForm').onsubmit = function (e) {
+    e.preventDefault();
+
+    const kategorie = document.getElementById('kategorie').value;
+    const preis = parseFloat(document.getElementById('preis').value);
+    const rabattTyp = document.getElementById('rabattTyp').value;
+    const rabattWert = parseFloat(document.getElementById('rabattWert').value) || 0;
+
+    const existing = ticketpreise.find(item => item.kategorie === kategorie);
+    
+    if (existing) {
+        existing.preis = preis;
+        existing.rabattTyp = rabattTyp;
+        existing.rabattWert = rabattWert;
+    } else {
+        ticketpreise.push({ kategorie, preis, rabattTyp, rabattWert });
     }
 
-    // Render Tickets in der Ticketliste
-    const ticketList = document.querySelector(".ticket-list");
-    if (ticketList) {
-        ticketList.innerHTML = tickets
-            .map(
-                (ticket) => `
-                <div class="ticket-item">
-                    <h3>Kino: ${ticket.title}</h3>
-                    <p><strong>Datum:</strong> ${ticket.date}</p>
-                    <p><strong>Zeit:</strong> ${ticket.time}</p>
-                    <p><strong>Saal:</strong> ${ticket.room}</p>
-                    <p><strong>Platz:</strong> ${ticket.seat}</p>
-                </div>
-            `
-            )
-            .join("");
-    }
+    renderPriceList();
+    document.getElementById('preisForm').reset();
+};
 
-    // Button: "Weitere Tickets buchen"
-    const bookTicketsButton = document.querySelector(".action-button:not(.logout-button)");
-    if (bookTicketsButton) {
-        bookTicketsButton.addEventListener("click", () => {
-            alert("Leite zur Buchungsseite weiter...");
-            window.location.href = "programpageStructur.html"; // URL anpassen
-        });
-    }
+// Übersicht aktualisieren
+function updateOverview() {
+    const tbody = document.getElementById('preisUebersicht');
+    tbody.innerHTML = '';
 
-    // Button: "Logout"
-    const logoutButton = document.querySelector(".logout-button");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
-            if (confirm("Möchten Sie sich wirklich abmelden?")) {
-                alert("Sie wurden erfolgreich abgemeldet.");
-                window.location.href = "loginpageStructure.html"; // Zur Login-Seite leiten
-            }
-        });
+    ticketpreise.forEach(item => {
+        const endpreis = calculateFinalPrice(item);
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.kategorie}</td>
+                <td>${item.preis.toFixed(2)}</td>
+                <td>${item.rabattTyp === 'kein' ? '—' : item.rabattWert}</td>
+                <td>${endpreis.toFixed(2)}</td>
+            </tr>`;
+    });
+}
+
+function calculateFinalPrice(item) {
+    if (item.rabattTyp === 'prozent') {
+        return item.preis * (1 - item.rabattWert / 100);
+    } else if (item.rabattTyp === 'euro') {
+        return item.preis - item.rabattWert;
     }
-});
+    return item.preis;
+}

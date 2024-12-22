@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '../cineo_backend/.env' });
 
+
 const cors = require('cors');
 const express = require('express');
 const app = express();
@@ -15,16 +16,18 @@ app.use(express.json());
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
+
 // Überprüfe, ob die Umgebungsvariablen korrekt geladen wurden
 if (!supabaseUrl || !supabaseKey) {
+    console.log('Supabase URL:', supabaseUrl);  // Gibt die URL aus
+    console.log('Supabase Key:', supabaseKey);  // Gibt den Key aus
     console.error('Supabase URL oder Schlüssel fehlen!');
-    process.exit(1); 
+    process.exit(1);
 }
 
-/*
-console.log('Supabase URL:', supabaseUrl);  // Gibt die URL aus
-console.log('Supabase Key:', supabaseKey);  // Gibt den Key aus
-*/
+
+
+
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -79,7 +82,7 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
 // API-Endpunkt, um alle Filme abzurufen
 app.get('/api/filme', async (req, res) => {
     const { data, error } = await supabase
-        .from('movies') 
+        .from('movies')
         .select('movie_id, title, image'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
 
     if (error) {

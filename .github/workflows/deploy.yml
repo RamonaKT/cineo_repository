@@ -17,4 +17,4 @@ jobs:
      - name: Deploy the app
        uses: digitalocean/app_action/deploy@v2
        with:
-         token: ${{ dop_v1_52dfa05ed1718c6651a4392659fe9b09401ded05f64e75124826255c54ebe7f7 }} 
+         token: dop_v1_52dfa05ed1718c6651a4392659fe9b09401ded05f64e75124826255c54ebe7f7

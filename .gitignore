@@ -1,11 +1,11 @@
-# Ignoriere die .env-Datei im Backend-Ordner
-cineo_backend/.env
-
-# Ignoriere den node_modules-Ordner im Backend-Ordner
-cineo_backend/node_modules/
-
-# Ignoriere den globalen node_modules-Ordner
+# Ignoriere Node Modules (global)
 node_modules/
 
-# Ignoriere IDEA
+# Ignoriere Node Modules im backend 
+cineo_backend/node_modules/
+
+# Ignoriere die IDEA Dateien
 .idea/
+
+#Ignoriere die .env Datei
+cineo_backend/.env

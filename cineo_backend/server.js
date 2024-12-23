@@ -170,7 +170,7 @@ async function insertMoviesIntoDatabase(movies) {
 async function main() {
     try {
         const movies = await fetchMovies();
-        console.log('Filme mit Details:', movies);
+       // console.log('Filme mit Details:', movies);
         await insertMoviesIntoDatabase(movies);
     } catch (error) {
         console.error('Fehler im Hauptablauf:', error);

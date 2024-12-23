@@ -34,7 +34,7 @@ jobs:
       # Deployment starten mit Deploy ID 
       - name: Trigger Deployment
         env:
-          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.CINEO_SECRET }}
+          DIGITALOCEAN_ACCESS_TOKEN: dop_v1_52dfa05ed1718c6651a4392659fe9b09401ded05f64e75124826255c54ebe7f7
         run: |
           doctl apps create-deployment ${{ secrets.CINEO_SECRET_DEPLOYMENT_ID }}
 

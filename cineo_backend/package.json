@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.47.10",
+    "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mysql2": "^3.11.5"

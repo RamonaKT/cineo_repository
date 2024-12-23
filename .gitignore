@@ -1,12 +1,11 @@
-# IDE-Dateien
-.idea/
-
-# Umgebungsvariablen
+# Ignoriere die .env-Datei im Backend-Ordner
 cineo_backend/.env
 
-# Abhängigkeiten
+# Ignoriere den node_modules-Ordner im Backend-Ordner
 cineo_backend/node_modules/
 
+# Ignoriere den globalen node_modules-Ordner
 node_modules/
 
-.github/
+# Ignoriere IDEA
+.idea/

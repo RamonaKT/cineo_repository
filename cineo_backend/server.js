@@ -226,11 +226,267 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
 
 
 
+/*
+// API-Endpunkt zum Abrufen der verfügbaren Uhrzeiten
+app.get('/api/available-times', async (req, res) => {
+    const { date, room_id } = req.query;
+
+    if (!date || !room_id) {
+        return res.status(400).json({ message: 'Fehlende Parameter' });
+    }
+
+    console.log(`Abrufen der verfügbaren Zeiten für Raum ${room_id} am ${date}`);
+
+    try {
+        // Abrufen aller Vorstellungen für den angegebenen Raum an diesem Datum
+        const { data: shows, error } = await supabase
+            .from('shows')
+            .select('time, end_time')
+            .eq('room_id', room_id)
+            .eq('date', date);
+
+        if (error) {
+            console.error('Fehler beim Abrufen der Shows:', error);
+            return res.status(500).json({ message: 'Fehler beim Abrufen der Shows', error });
+        }
+
+        console.log('Belegte Zeiten:', shows);
+
+        // Berechne die belegten Zeiten und filtere sie aus
+        const unavailableTimes = shows.map(show => {
+            const startTime = new Date(`${date}T${show.time}:00`);
+            const endTime = new Date(`${date}T${show.end_time}:00`);
+            return { startTime, endTime };
+        });
+
+        // Generiere alle möglichen Zeiten für das Datum
+        const availableTimes = generateAvailableTimes(date, unavailableTimes);
+
+        console.log('Verfügbare Zeiten:', availableTimes);
+        res.json(availableTimes);
+    } catch (error) {
+        console.error('Fehler beim Abrufen der verfügbaren Zeiten:', error);
+        res.status(500).json({ message: 'Fehler beim Abrufen der verfügbaren Zeiten' });
+    }
+});
+
+*/
+
+// API-Endpunkt zum Hinzufügen einer Vorstellung
+app.post('/api/vorstellungen', async (req, res) => {
+    const { movie_id, date, time, room_id, movie_duration, end_time } = req.body;
+
+    if (!movie_id || !date || !time || !room_id || !movie_duration || !end_time) {
+        return res.status(400).json({ message: 'Bitte alle Felder ausfüllen!' });
+    }
+
+    try {
+        // Überprüfen, ob der Raum existiert
+        const { data: roomData, error: roomError } = await supabase
+            .from('rooms')
+            .select('*')
+            .eq('room_id', room_id)
+            .single();
+
+        if (roomError || !roomData) {
+            return res.status(404).json({ message: 'Raum nicht gefunden!' });
+        }
+
+        // Vorstellung hinzufügen
+        const { data, error } = await supabase
+            .from('shows')
+            .insert([{ movie_id, date, time, room_id, movie_duration, end_time }]);
+
+        if (error) throw error;
+
+        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt!', data });
+    } catch (error) {
+        console.error('Fehler beim Hinzufügen der Vorstellung:', error);
+        res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error });
+    }
+});
+
+/*
+
+// Hilfsfunktion zur Generierung verfügbarer Zeiten
+function generateAvailableTimes(date, unavailableTimes) {
+    const availableTimes = [];
+    const allowedTimes = generateTimes(date);
+
+    allowedTimes.forEach(time => {
+        const startTime = new Date(`${date}T${time}:00`);
+        let isAvailable = true;
+
+        for (const { startTime: busyStart, endTime: busyEnd } of unavailableTimes) {
+            if (startTime >= busyStart && startTime < busyEnd) {
+                isAvailable = false;
+                break;
+            }
+        }
+
+        if (isAvailable) {
+            availableTimes.push(time);
+        }
+    });
+
+    return availableTimes;
+}
+
+// Generierung der erlaubten Zeiten für den Tag
+function generateTimes(date) {
+    const startHour = 10; // Beispiel: Startzeit um 10:00 Uhr
+    const endHour = 23;   // Beispiel: Endzeit um 23:00 Uhr
+
+    const times = [];
+    for (let hour = startHour; hour <= endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+            times.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
+        }
+    }
+    return times;
+}
+
+
+
+// API-Endpunkt zum Abrufen der verfügbaren Uhrzeiten
+app.get('/api/available-times', async (req, res) => {
+    const { date, movie_id } = req.query;
+
+    if (!date || !movie_id) {
+        return res.status(400).json({ message: 'Fehlende Parameter' });
+    }
+
+    try {
+        const { data: shows, error } = await supabase
+            .from('shows')
+            .select('time, end_time')
+            .eq('date', date);
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Abrufen der Shows', error });
+        }
+
+        const unavailableTimes = shows.map(show => {
+            const startTime = new Date(`${date}T${show.time}:00`);
+            const endTime = new Date(`${date}T${show.end_time}:00`);
+            return { startTime, endTime };
+        });
+
+        const availableTimes = generateAvailableTimes(date, unavailableTimes);
+
+        res.json(availableTimes);
+    } catch (error) {
+        res.status(500).json({ message: 'Fehler beim Abrufen der verfügbaren Zeiten' });
+    }
+});
+
+// API-Endpunkt, um alle verfügbaren Räume für ein Datum und eine Uhrzeit zu erhalten
+app.get('/api/available-rooms', async (req, res) => {
+    const { date, time } = req.query;
+
+    if (!date || !time) {
+        return res.status(400).json({ message: 'Datum und Uhrzeit erforderlich!' });
+    }
+
+    try {
+        const { data: bookedRooms, error } = await supabase
+            .from('shows')
+            .select('room_id')
+            .eq('date', date)
+            .eq('time', time);
+
+        if (error) throw error;
+
+        const bookedRoomIds = bookedRooms.map(room => room.room_id);
+
+        const { data: availableRooms, error: availableError } = await supabase
+            .from('rooms')
+            .select('*')
+            .not('room_id', 'in', `(${bookedRoomIds.join(',')})`);
+
+        if (availableError) throw availableError;
+
+        res.json(availableRooms);
+    } catch (error) {
+        res.status(500).json({ message: 'Fehler beim Abrufen der Räume' });
+    }
+});
+
+*/
+
+/*
+// API-Endpunkt zum Hinzufügen einer Vorstellung
+app.post('/api/vorstellungen', async (req, res) => {
+    const { movie_id, date, time, room_id } = req.body;
+
+    // Validierung der Eingabedaten
+    if (!movie_id || !date || !time || !room_id) {
+        return res.status(400).json({ message: 'Bitte alle Felder ausfüllen!' });
+    }
+
+    try {
+        // Überprüfen, ob der Raum existiert
+        const { data: roomData, error: roomError } = await supabase
+            .from('rooms')
+            .select('*')
+            .eq('room_id', room_id)
+            .single();
+
+        if (roomError || !roomData) {
+            return res.status(404).json({ message: 'Raum nicht gefunden!' });
+        }
+
+        // Abrufen der Filmdauer aus der movies-Tabelle
+        const { data: movieData, error: movieError } = await supabase
+            .from('movies')
+            .select('duration')
+            .eq('movie_id', movie_id)
+            .single();
+
+        if (movieError || !movieData) {
+            return res.status(404).json({ message: 'Film nicht gefunden!' });
+        }
+
+        const movie_duration = movieData.duration;  // Filmdauer in Minuten
+
+        // Berechnung der Endzeit basierend auf der Startzeit und der Filmdauer
+        const [hours, minutes] = time.split(':').map(Number);
+        const startTime = new Date(date);
+        startTime.setHours(hours, minutes, 0, 0); // Startzeit als Date-Objekt setzen
+
+        // Endzeit berechnen
+        const endTime = new Date(startTime.getTime() + movie_duration * 60000); // Dauer in Millisekunden
+
+        // Runde die Endzeit auf das nächste Viertelstunde
+        const roundedMinutes = Math.ceil(endTime.getMinutes() / 15) * 15;
+        endTime.setMinutes(roundedMinutes);
+        endTime.setSeconds(0);
+
+        const end_time = `${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}`;
+
+        // Vorstellung hinzufügen
+        const { data, error } = await supabase
+            .from('shows')
+            .insert([{ movie_id, date, time, room_id, movie_duration, end_time }]);
+
+        if (error) throw error;
+
+        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt!', data });
+    } catch (error) {
+        console.error('Fehler beim Hinzufügen der Vorstellung:', error);
+        res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error });
+    }
+});
+*/
+
+
+
+
 // API-Endpunkt, um alle Filme abzurufen
 app.get('/api/filme', async (req, res) => {
     const { data, error } = await supabase
         .from('movies')
-        .select('movie_id, title, image'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
+        .select('movie_id, title, image, duration'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
 
     if (error) {
         return res.status(500).json({ error: error.message });
@@ -242,6 +498,119 @@ app.get('/api/filme', async (req, res) => {
 
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
+
+
+app.get('/api/rooms', async (req, res) => {
+    const { date, time, movie_id } = req.query;
+
+    if (!date || !time || !movie_id) {
+        return res.status(400).json({ message: 'Datum, Uhrzeit und Film erforderlich!' });
+    }
+
+    try {
+        // Holen der Filmdauer aus der movies-Tabelle
+        const { data: movieData, error: movieError } = await supabase
+            .from('movies')
+            .select('duration')
+            .eq('movie_id', movie_id)
+            .single();
+
+        if (movieError || !movieData) {
+            return res.status(404).json({ message: 'Film nicht gefunden!' });
+        }
+
+        const movieDuration = movieData.duration;
+
+        // Berechnung der Endzeit des Films basierend auf der Startzeit und Filmdauer
+        const endTime = calculateEndTime(time, movieDuration);
+
+        console.log(`Überprüfe Räume für: ${date} ${time} - Endzeit: ${endTime}`);
+
+        // Überprüfen, ob der Raum bereits für das angegebene Datum und die Zeitspanne gebucht ist
+        const { data: bookedRooms, error: bookedError } = await supabase
+            .from('shows')
+            .select('room_id, time, end_time')
+            .eq('date', date)
+            .filter('time', 'lt', endTime) // Startzeit der bestehenden Vorstellung muss vor der Endzeit des neuen Films liegen
+            .filter('end_time', 'gt', time); // Endzeit der bestehenden Vorstellung muss nach der Startzeit des neuen Films liegen
+
+        if (bookedError) {
+            console.error('Fehler beim Abrufen der gebuchten Räume:', bookedError);
+            throw bookedError;
+        }
+
+        const bookedRoomIds = bookedRooms.map(room => room.room_id);
+
+        // Räume abrufen, die noch verfügbar sind
+        const { data: availableRooms, error: availableError } = await supabase
+            .from('rooms')
+            .select('*')
+            .not('room_id', 'in', `(${bookedRoomIds.join(',')})`);
+
+        if (availableError) {
+            console.error('Fehler beim Abrufen der verfügbaren Räume:', availableError);
+            throw availableError;
+        }
+
+        res.json(availableRooms);
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Räume:', error);
+        res.status(500).json({ message: 'Fehler beim Abrufen der Räume', error: error.message });
+    }
+});
+
+
+
+// Funktion zum Berechnen der Endzeit basierend auf Filmdauer und Startzeit
+function calculateEndTime(startTime, duration) {
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const totalMinutes = startHour * 60 + startMinute + duration;
+
+    // Runden auf die nächste Viertelstunde
+    const roundedMinutes = Math.ceil(totalMinutes / 15) * 15;
+    const endHour = Math.floor(roundedMinutes / 60);
+    const endMinute = roundedMinutes % 60;
+
+    return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+}
+
+
+/*
+app.get('/api/rooms', async (req, res) => {
+    const { date, time } = req.query;
+  
+    if (!date || !time) {
+      return res.status(400).json({ message: 'Datum und Uhrzeit erforderlich!' });
+    }
+  
+    try {
+      // Räume abrufen, die bereits für diese Zeit gebucht sind
+      const { data: bookedRooms, error: bookedError } = await supabase
+        .from('shows')
+        .select('room_id')
+        .eq('date', date)
+        .eq('time', time);
+  
+      if (bookedError) throw bookedError;
+  
+      const bookedRoomIds = bookedRooms.map(room => room.room_id);
+  
+      // Räume abrufen, die noch verfügbar sind
+      const { data: availableRooms, error: availableError } = await supabase
+        .from('rooms')
+        .select('*')
+        .not('room_id', 'in', `(${bookedRoomIds.join(',')})`);
+  
+      if (availableError) throw availableError;
+  
+      res.json(availableRooms);
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Räume:', error);
+      res.status(500).json({ message: 'Fehler beim Abrufen der Räume' });
+    }
+  });
+  
+*/
 
 
 app.post('/api/tickets', async (req, res) => {

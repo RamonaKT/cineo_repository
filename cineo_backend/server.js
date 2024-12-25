@@ -226,51 +226,6 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
 
 
 
-/*
-// API-Endpunkt zum Abrufen der verfügbaren Uhrzeiten
-app.get('/api/available-times', async (req, res) => {
-    const { date, room_id } = req.query;
-
-    if (!date || !room_id) {
-        return res.status(400).json({ message: 'Fehlende Parameter' });
-    }
-
-    console.log(`Abrufen der verfügbaren Zeiten für Raum ${room_id} am ${date}`);
-
-    try {
-        // Abrufen aller Vorstellungen für den angegebenen Raum an diesem Datum
-        const { data: shows, error } = await supabase
-            .from('shows')
-            .select('time, end_time')
-            .eq('room_id', room_id)
-            .eq('date', date);
-
-        if (error) {
-            console.error('Fehler beim Abrufen der Shows:', error);
-            return res.status(500).json({ message: 'Fehler beim Abrufen der Shows', error });
-        }
-
-        console.log('Belegte Zeiten:', shows);
-
-        // Berechne die belegten Zeiten und filtere sie aus
-        const unavailableTimes = shows.map(show => {
-            const startTime = new Date(`${date}T${show.time}:00`);
-            const endTime = new Date(`${date}T${show.end_time}:00`);
-            return { startTime, endTime };
-        });
-
-        // Generiere alle möglichen Zeiten für das Datum
-        const availableTimes = generateAvailableTimes(date, unavailableTimes);
-
-        console.log('Verfügbare Zeiten:', availableTimes);
-        res.json(availableTimes);
-    } catch (error) {
-        console.error('Fehler beim Abrufen der verfügbaren Zeiten:', error);
-        res.status(500).json({ message: 'Fehler beim Abrufen der verfügbaren Zeiten' });
-    }
-});
-
-*/
 
 // API-Endpunkt zum Hinzufügen einer Vorstellung
 app.post('/api/vorstellungen', async (req, res) => {
@@ -306,182 +261,11 @@ app.post('/api/vorstellungen', async (req, res) => {
     }
 });
 
-/*
-
-// Hilfsfunktion zur Generierung verfügbarer Zeiten
-function generateAvailableTimes(date, unavailableTimes) {
-    const availableTimes = [];
-    const allowedTimes = generateTimes(date);
-
-    allowedTimes.forEach(time => {
-        const startTime = new Date(`${date}T${time}:00`);
-        let isAvailable = true;
-
-        for (const { startTime: busyStart, endTime: busyEnd } of unavailableTimes) {
-            if (startTime >= busyStart && startTime < busyEnd) {
-                isAvailable = false;
-                break;
-            }
-        }
-
-        if (isAvailable) {
-            availableTimes.push(time);
-        }
-    });
-
-    return availableTimes;
-}
-
-// Generierung der erlaubten Zeiten für den Tag
-function generateTimes(date) {
-    const startHour = 10; // Beispiel: Startzeit um 10:00 Uhr
-    const endHour = 23;   // Beispiel: Endzeit um 23:00 Uhr
-
-    const times = [];
-    for (let hour = startHour; hour <= endHour; hour++) {
-        for (let minute = 0; minute < 60; minute += 30) {
-            times.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
-        }
-    }
-    return times;
-}
 
 
 
-// API-Endpunkt zum Abrufen der verfügbaren Uhrzeiten
-app.get('/api/available-times', async (req, res) => {
-    const { date, movie_id } = req.query;
-
-    if (!date || !movie_id) {
-        return res.status(400).json({ message: 'Fehlende Parameter' });
-    }
-
-    try {
-        const { data: shows, error } = await supabase
-            .from('shows')
-            .select('time, end_time')
-            .eq('date', date);
-
-        if (error) {
-            return res.status(500).json({ message: 'Fehler beim Abrufen der Shows', error });
-        }
-
-        const unavailableTimes = shows.map(show => {
-            const startTime = new Date(`${date}T${show.time}:00`);
-            const endTime = new Date(`${date}T${show.end_time}:00`);
-            return { startTime, endTime };
-        });
-
-        const availableTimes = generateAvailableTimes(date, unavailableTimes);
-
-        res.json(availableTimes);
-    } catch (error) {
-        res.status(500).json({ message: 'Fehler beim Abrufen der verfügbaren Zeiten' });
-    }
-});
-
-// API-Endpunkt, um alle verfügbaren Räume für ein Datum und eine Uhrzeit zu erhalten
-app.get('/api/available-rooms', async (req, res) => {
-    const { date, time } = req.query;
-
-    if (!date || !time) {
-        return res.status(400).json({ message: 'Datum und Uhrzeit erforderlich!' });
-    }
-
-    try {
-        const { data: bookedRooms, error } = await supabase
-            .from('shows')
-            .select('room_id')
-            .eq('date', date)
-            .eq('time', time);
-
-        if (error) throw error;
-
-        const bookedRoomIds = bookedRooms.map(room => room.room_id);
-
-        const { data: availableRooms, error: availableError } = await supabase
-            .from('rooms')
-            .select('*')
-            .not('room_id', 'in', `(${bookedRoomIds.join(',')})`);
-
-        if (availableError) throw availableError;
-
-        res.json(availableRooms);
-    } catch (error) {
-        res.status(500).json({ message: 'Fehler beim Abrufen der Räume' });
-    }
-});
-
-*/
 
 /*
-// API-Endpunkt zum Hinzufügen einer Vorstellung
-app.post('/api/vorstellungen', async (req, res) => {
-    const { movie_id, date, time, room_id } = req.body;
-
-    // Validierung der Eingabedaten
-    if (!movie_id || !date || !time || !room_id) {
-        return res.status(400).json({ message: 'Bitte alle Felder ausfüllen!' });
-    }
-
-    try {
-        // Überprüfen, ob der Raum existiert
-        const { data: roomData, error: roomError } = await supabase
-            .from('rooms')
-            .select('*')
-            .eq('room_id', room_id)
-            .single();
-
-        if (roomError || !roomData) {
-            return res.status(404).json({ message: 'Raum nicht gefunden!' });
-        }
-
-        // Abrufen der Filmdauer aus der movies-Tabelle
-        const { data: movieData, error: movieError } = await supabase
-            .from('movies')
-            .select('duration')
-            .eq('movie_id', movie_id)
-            .single();
-
-        if (movieError || !movieData) {
-            return res.status(404).json({ message: 'Film nicht gefunden!' });
-        }
-
-        const movie_duration = movieData.duration;  // Filmdauer in Minuten
-
-        // Berechnung der Endzeit basierend auf der Startzeit und der Filmdauer
-        const [hours, minutes] = time.split(':').map(Number);
-        const startTime = new Date(date);
-        startTime.setHours(hours, minutes, 0, 0); // Startzeit als Date-Objekt setzen
-
-        // Endzeit berechnen
-        const endTime = new Date(startTime.getTime() + movie_duration * 60000); // Dauer in Millisekunden
-
-        // Runde die Endzeit auf das nächste Viertelstunde
-        const roundedMinutes = Math.ceil(endTime.getMinutes() / 15) * 15;
-        endTime.setMinutes(roundedMinutes);
-        endTime.setSeconds(0);
-
-        const end_time = `${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}`;
-
-        // Vorstellung hinzufügen
-        const { data, error } = await supabase
-            .from('shows')
-            .insert([{ movie_id, date, time, room_id, movie_duration, end_time }]);
-
-        if (error) throw error;
-
-        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt!', data });
-    } catch (error) {
-        console.error('Fehler beim Hinzufügen der Vorstellung:', error);
-        res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error });
-    }
-});
-*/
-
-
-
-
 // API-Endpunkt, um alle Filme abzurufen
 app.get('/api/filme', async (req, res) => {
     const { data, error } = await supabase
@@ -498,6 +282,68 @@ app.get('/api/filme', async (req, res) => {
 
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
+*/
+
+
+/*
+app.get('/api/filme', async (req, res) => {
+    const { data, error } = await supabase
+        .from('movies')
+        .select('movie_id, title, image, duration')
+        .filter('movie_id', 'in', supabase.from('shows').select('movie_id')); // Stelle sicher, dass es mindestens einen Film in 'shows' gibt
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    if (!data || data.length === 0) {
+        return res.status(404).json({ error: 'Keine Filme mit Vorstellungen gefunden' });
+    }
+
+    res.json(data);
+});
+
+*/
+
+
+
+app.get('/api/filme', async (req, res) => {
+    // Abrufen der movie_id's aus der shows-Tabelle
+    const { data: showsData, error: showsError } = await supabase
+        .from('shows')
+        .select('movie_id')
+      //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
+
+    if (showsError) {
+        return res.status(500).json({ error: showsError.message });
+    }
+
+    if (!showsData || showsData.length === 0) {
+        return res.status(404).json({ error: 'Keine Shows gefunden' });
+    }
+
+    // Holen der movie_ids aus der shows-Tabelle
+    const movieIds = showsData.map(show => show.movie_id);
+
+    // Abrufen der Filme aus der movies-Tabelle, deren movie_id in der shows-Tabelle vorhanden ist
+    const { data, error } = await supabase
+        .from('movies')
+        .select('movie_id, title, image, duration')
+        .in('movie_id', movieIds); // Filtern der Filme, die in der shows-Tabelle existieren
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    if (!data || data.length === 0) {
+        return res.status(404).json({ error: 'Keine Filme mit Vorstellungen gefunden' });
+    }
+
+    res.json(data);
+});
+
+
+
 
 
 app.get('/api/rooms', async (req, res) => {
@@ -574,43 +420,6 @@ function calculateEndTime(startTime, duration) {
     return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
 }
 
-
-/*
-app.get('/api/rooms', async (req, res) => {
-    const { date, time } = req.query;
-  
-    if (!date || !time) {
-      return res.status(400).json({ message: 'Datum und Uhrzeit erforderlich!' });
-    }
-  
-    try {
-      // Räume abrufen, die bereits für diese Zeit gebucht sind
-      const { data: bookedRooms, error: bookedError } = await supabase
-        .from('shows')
-        .select('room_id')
-        .eq('date', date)
-        .eq('time', time);
-  
-      if (bookedError) throw bookedError;
-  
-      const bookedRoomIds = bookedRooms.map(room => room.room_id);
-  
-      // Räume abrufen, die noch verfügbar sind
-      const { data: availableRooms, error: availableError } = await supabase
-        .from('rooms')
-        .select('*')
-        .not('room_id', 'in', `(${bookedRoomIds.join(',')})`);
-  
-      if (availableError) throw availableError;
-  
-      res.json(availableRooms);
-    } catch (error) {
-      console.error('Fehler beim Abrufen der Räume:', error);
-      res.status(500).json({ message: 'Fehler beim Abrufen der Räume' });
-    }
-  });
-  
-*/
 
 
 app.post('/api/tickets', async (req, res) => {

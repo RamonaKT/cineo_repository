@@ -265,9 +265,9 @@ app.post('/api/vorstellungen', async (req, res) => {
 
 
 
-/*
+
 // API-Endpunkt, um alle Filme abzurufen
-app.get('/api/filme', async (req, res) => {
+app.get('/api/alleFilme', async (req, res) => {
     const { data, error } = await supabase
         .from('movies')
         .select('movie_id, title, image, duration'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
@@ -282,36 +282,22 @@ app.get('/api/filme', async (req, res) => {
 
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
-*/
 
 
-/*
-app.get('/api/filme', async (req, res) => {
-    const { data, error } = await supabase
-        .from('movies')
-        .select('movie_id, title, image, duration')
-        .filter('movie_id', 'in', supabase.from('shows').select('movie_id')); // Stelle sicher, dass es mindestens einen Film in 'shows' gibt
-
-    if (error) {
-        return res.status(500).json({ error: error.message });
-    }
-
-    if (!data || data.length === 0) {
-        return res.status(404).json({ error: 'Keine Filme mit Vorstellungen gefunden' });
-    }
-
-    res.json(data);
-});
-
-*/
 
 
 
 app.get('/api/filme', async (req, res) => {
+
+    const now = new Date().toISOString(); // Aktuelles Datum und Uhrzeit
+
+
+
     // Abrufen der movie_id's aus der shows-Tabelle
     const { data: showsData, error: showsError } = await supabase
         .from('shows')
         .select('movie_id')
+        .gte('date', now);
       //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
 
     if (showsError) {

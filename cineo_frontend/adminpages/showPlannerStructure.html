@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cineo_Mannheim</title>
+
+    <link rel="stylesheet" href="/adminpages/showPlannerStyle.css" />
+    <link rel="stylesheet" href="/mainpages/mainStyle.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+   
+
+
+</head>
+
+<body>
+
+    <!-- mainStyle: Logo - Überschrift - Login -->
+    <a href="/mainpages/homepageStructure.html">
+        <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
+    </a>
+
+    <h1 class="h1_mainStyle_headingTopMiddle">
+        SHOW-PLANNER
+    </h1>
+
+    <a href="/mainpages/loginpageStructure.html">
+        <img src="../images/IconAccountMainstyle.png" alt="Account" class="img_mainStyle_accountLogin" />
+    </a>
+
+
+    <div class="div_mainStyle_navigationTop">
+        <a href="/mainpages/homepageStructure.html" class="a_mainStyle_highlightLink">Startseite</a>
+        <a href="/mainpages/programpageStructure.html">Programm</a>
+        <a href="/specialpages/specialpageStructure.html">Specials</a>
+        <a href="/specialpages/offerpageStructure.html">Angebote</a>
+        <a href="/specialpages/gastropageStructure.html">Gastro</a>
+        <a href="/specialpages/shoppageStructure.html">Shop</a>
+    </div>
+    
+
+    <div class="container">
+        <h2>Planen Sie Vorstellungen</h2>
+        <form id="show-form">
+          <!-- Dropdown für Filme -->
+          <label for="movieId">Film:</label>
+          <input type="text" id="movieSearch" placeholder="Film suchen">
+          <select id="movieId" name="movieId" required>
+            <option value="">Film auswählen</option>
+            <!-- Optionen werden dynamisch durch JavaScript geladen -->
+          </select>
+          
+          <!-- Datum -->
+          <label for="date">Datum:</label>
+          <input type="date" id="date" name="date" required>
+          
+          <!-- Uhrzeit -->
+          <label for="time">Uhrzeit:</label>
+          <select id="time" name="time" required>
+            <!-- Optionen werden dynamisch mit JavaScript eingefügt -->
+          </select>
+          
+          
+          <!-- Dropdown für Räume -->
+          <label for="room_id">Raum:</label>
+          <select id="room_id" name="room_id" required>
+            <option value="">Raum auswählen</option>
+            <!-- Optionen werden dynamisch durch JavaScript basierend auf Datum und Uhrzeit geladen -->
+          </select>
+          
+          <button type="submit">Vorstellung hinzufügen</button>
+        </form>
+        <div id="response-message"></div>
+      </div>
+
+ <div class="div_mainStyle_navigationBeamBottom"> </div>
+
+ <div class="div_mainStyle_navigationBottom">
+    <a href="/infopages/aboutcinemapageStructure.html">Unser Kino</a>
+    <a href="/infopages/contactpageStructure.html">Kontakt</a>
+    <a href="/infopages/aboutuspageStructure.html">Über Uns</a>
+    <a href="/infopages/careerpageStructure.html">Karriere</a>
+    <a href="/infopages/informationpageStructure.html">Information</a>
+    <a href="/infopages/legalpageStructure.html">Impressum</a>
+</div>
+
+
+<script src="/adminpages/showPlannerScript.js" defer></script>
+
+</body>
+
+</html>

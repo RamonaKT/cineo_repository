@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
+
+body {
+    font-family: "Lato", sans-serif;
+    margin: 0;
+    padding: 0;
+    color: white;
+  }
+  
+  .container {
+    display: block;
+    margin-top: 25vh;
+    align-self: center;
+    width: 35vw;
+    height: auto;
+    padding: 20px;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 0.8));
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    -webkit-text-stroke: 1px;
+    letter-spacing: 2px;
+  }
+  
+  label {
+    margin-top: 2vh;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 1px;
+    -webkit-text-stroke: 0.5px white;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #b089f2;
+    border: 1px solid  #5afff5;
+    border-radius: 4px;
+    color:black;
+  }
+
+
+  #movieSearch::placeholder {
+    color: rgba(0, 0, 0, 0.603);
+   
+  }
+
+  #movieId {
+    background-color: #b089f2;
+    border-radius: 4px;
+    padding: 5px;
+    max-height: 10vh;
+  }
+
+  #movieId option {
+    padding: 2px;
+   
+}
+
+.small-dropdown {
+  border-radius: 4px;
+}
+
+
+.small-dropdown option:hover{
+  background-color:  rgba(108, 108, 108, 0.819);
+  color: white;
+}
+
+#time {
+  background: #b089f2;
+  width: 10vw;
+  height: 3vh;
+}
+
+#room_id {
+  background: #b089f2;
+  width: 15vw;
+  height: 3vh;
+}
+
+  button {
+    margin-left: 17vw;
+    background-color:  rgb(90, 255, 245, 0.6);
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color:  rgba(6, 255, 238, 0.8);
+  }
+  
+  #response-message {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  option {
+    color: black;
+    background-color: #b089f2;
+  }
+
+  

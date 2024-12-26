@@ -1,0 +1,298 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    const movieDropdown = document.getElementById('movieId');
+    const roomDropdown = document.getElementById('room_id');
+    const dateInput = document.getElementById('date');
+    const timeDropdown = document.getElementById('time');
+    const form = document.getElementById('show-form');
+    const responseMessage = document.getElementById('response-message');
+
+    /*
+    // Funktion, um Filme aus der Datenbank zu laden
+    async function loadMovies() {
+        try {
+            const response = await fetch('/api/alleFilme'); // API-Endpunkt für Filme
+            const movies = await response.json();
+
+
+            if (response.ok) {
+                movieDropdown.innerHTML = '<option value="">Film auswählen</option>'; // Reset der Dropdown-Optionen
+
+                // Filme nach Titel alphabetisch sortieren
+                movies.sort((a, b) => a.title.localeCompare(b.title, 'de', { sensitivity: 'base' }));
+
+                movies.forEach(movie => {
+                    const option = document.createElement('option');
+                    option.value = movie.movie_id; // Speichert die movie_id
+                    option.textContent = movie.title; // Zeigt den Titel an
+                    option.dataset.duration = movie.duration; // Speichert die Dauer im data-Attribut
+                    movieDropdown.appendChild(option);
+                });
+            } else {
+                console.error('Fehler beim Abrufen der Filme:', movies.message);
+            }
+        } catch (error) {
+            console.error('Fehler beim Laden der Filme:', error);
+        }
+    }
+*/
+
+
+
+async function loadMovies() {
+    try {
+        const response = await fetch('/api/alleFilme'); // API-Endpunkt für Filme
+        const movies = await response.json();
+
+        if (response.ok) {
+            // Filme nach Titel alphabetisch sortieren
+            movies.sort((a, b) => a.title.localeCompare(b.title, 'de', { sensitivity: 'base' }));
+
+            // Speichert alle Filme für die Suche
+            const movieSearchInput = document.getElementById('movieSearch');
+            const movieDropdown = document.getElementById('movieId');
+            movieDropdown.innerHTML = '<option value="">Film auswählen</option>'; // Reset Dropdown
+
+            // Funktion zum Hinzufügen von Filmen zum Dropdown
+            const addMoviesToDropdown = (filteredMovies) => {
+                movieDropdown.innerHTML = '<option value="">Film auswählen</option>';
+                filteredMovies.forEach(movie => {
+                    const option = document.createElement('option');
+                    option.value = movie.movie_id;
+                    option.textContent = movie.title;
+                    option.dataset.duration = movie.duration;
+                    movieDropdown.appendChild(option);
+                });
+            };
+
+            // Initiales Dropdown befüllen
+            addMoviesToDropdown(movies);
+
+            // Filter-Funktion basierend auf Eingabe
+            movieSearchInput.addEventListener('input', () => {
+                const searchTerm = movieSearchInput.value.toLowerCase();
+                const filteredMovies = movies.filter(movie =>
+                    movie.title.toLowerCase().includes(searchTerm)
+                );
+                addMoviesToDropdown(filteredMovies);
+            });
+
+            // Klick auf Suchfeld zeigt alle Optionen
+            movieSearchInput.addEventListener('focus', () => {
+                movieDropdown.size = movies.length > 4 ? 4 : movies.length; // Zeige maximal 5 Optionen
+                movieDropdown.classList.add("small-dropdown");
+            });
+
+            // Dropdown schließen bei Blur
+            movieSearchInput.addEventListener('blur', () => {
+                setTimeout(() => movieDropdown.size = 1, 200); // Kleiner Delay für UX
+            });
+
+        } else {
+            console.error('Fehler beim Abrufen der Filme:', movies.message);
+        }
+    } catch (error) {
+        console.error('Fehler beim Laden der Filme:', error);
+    }
+}
+
+
+
+    // Funktion, um Räume basierend auf Datum, Uhrzeit und ausgewähltem Film zu laden
+    async function loadRooms() {
+        const date = dateInput.value;
+        const time = timeDropdown.value;
+        const movieId = movieDropdown.value;
+
+        if (!date || !time || !movieId) {
+            roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/rooms?date=${date}&time=${time}&movie_id=${movieId}`); // API-Endpunkt für verfügbare Räume
+            const rooms = await response.json();
+
+            if (!response.ok) {
+                console.error('Fehler beim Abrufen der Räume:', rooms.message);
+                responseMessage.textContent = `Fehler: ${rooms.message}`;
+                responseMessage.style.color = 'red';
+                return;
+            }
+
+            if (rooms.length === 0) {
+                roomDropdown.innerHTML = '<option value="">Keine verfügbaren Räume gefunden</option>';
+            } else {
+                roomDropdown.innerHTML = '<option value="">Raum auswählen</option>'; // Reset der Dropdown-Optionen
+                rooms.sort((a, b) => a.room_id - b.room_id); // Räume nach Nummer sortieren
+                rooms.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room.room_id; // Speichert die room_id
+                    option.textContent = `Raum ${room.room_id}`; // Zeigt die Raum-Nummer an
+                    roomDropdown.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Fehler beim Laden der Räume:', error);
+            responseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+            responseMessage.style.color = 'red';
+        }
+    }
+
+
+
+    // Event-Listener für Änderungen bei Datum und Uhrzeit
+    dateInput.addEventListener('change', loadRooms);
+    timeDropdown.addEventListener('change', loadRooms);
+
+    // Funktion zum Berechnen der Endzeit basierend auf Filmdauer
+    function calculateEndTime(startTime, duration) {
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        const totalMinutes = startHour * 60 + startMinute + duration;
+
+        // Runden auf die nächste Viertelstunde
+        const roundedMinutes = Math.ceil(totalMinutes / 15) * 15;
+        const endHour = Math.floor(roundedMinutes / 60);
+        const endMinute = roundedMinutes % 60;
+
+        return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+    }
+
+    // Formular absenden und Vorstellung erstellen
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const movieId = movieDropdown.value;
+        const date = dateInput.value;
+        const time = timeDropdown.value;
+        const roomId = roomDropdown.value;
+
+        if (!movieId || !date || !time || !roomId) {
+            responseMessage.textContent = 'Bitte fülle alle Felder aus!';
+            responseMessage.style.color = 'red';
+            return;
+        }
+
+        // Holen der Filmdauer aus dem Dropdown (data-Attribut)
+        const movieDuration = parseInt(movieDropdown.selectedOptions[0]?.dataset.duration || 0);
+        if (!movieDuration) {
+            responseMessage.textContent = 'Fehler: Dauer des Films nicht gefunden!';
+            responseMessage.style.color = 'red';
+            return;
+        }
+
+        // Berechnung der Endzeit basierend auf Startzeit und Dauer
+        const endTime = calculateEndTime(time, movieDuration);
+
+        const showData = {
+            movie_id: movieId,
+            date,
+            time,
+            end_time: endTime,  // Die berechnete Endzeit wird übergeben
+            room_id: roomId,
+            movie_duration: movieDuration // Die Filmdauer wird auch übergeben
+        };
+
+        try {
+            const response = await fetch('/api/vorstellungen', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(showData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                responseMessage.textContent = 'Vorstellung erfolgreich hinzugefügt!';
+                responseMessage.style.color = 'green';
+                form.reset();
+                roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
+            } else {
+                responseMessage.textContent = `Fehler: ${result.message}`;
+                responseMessage.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Fehler beim Erstellen der Vorstellung:', error);
+            responseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+            responseMessage.style.color = 'red';
+        }
+    });
+
+    // Setze das Mindestdatum auf heute
+    function setMinDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.min = `${year}-${month}-${day}`;
+    }
+
+    // Füge erlaubte Uhrzeiten zum Dropdown hinzu basierend auf den Öffnungszeiten
+    function populateTimeDropdown() {
+        const timeDropdown = document.getElementById('time');
+        const dateInput = document.getElementById('date');
+
+        // Funktion, um erlaubte Zeiten für einen Wochentag zu generieren
+        function getAllowedTimes(day) {
+            let startHour, endHour;
+            if (day >= 1 && day <= 5) { // Montag bis Freitag
+                startHour = 10;
+                endHour = 23;
+            } else if (day === 6) { // Samstag
+                startHour = 12;
+                endHour = 24;
+            } else if (day === 0) { // Sonntag
+                startHour = 12;
+                endHour = 22;
+            }
+            return { startHour, endHour };
+        }
+
+        // Funktion, um die Uhrzeiten zu generieren
+        function generateTimes(startHour, endHour) {
+            const times = [];
+            for (let hour = startHour; hour <= endHour; hour++) {
+                if (hour < endHour) {
+                    times.push(`${String(hour).padStart(2, '0')}:00`);
+                    times.push(`${String(hour).padStart(2, '0')}:15`);
+                    times.push(`${String(hour).padStart(2, '0')}:30`);
+                    times.push(`${String(hour).padStart(2, '0')}:45`);
+                } else if (hour === endHour && endHour !== 24) {
+                    times.push(`${String(hour).padStart(2, '0')}:00`);
+                }
+            }
+            return times;
+        }
+
+        // Event-Listener für Änderungen am Datum
+        dateInput.addEventListener('change', () => {
+            const selectedDate = new Date(dateInput.value);
+            if (isNaN(selectedDate.getTime())) {
+                timeDropdown.innerHTML = '<option value="">Bitte Datum auswählen</option>';
+                return;
+            }
+            const day = selectedDate.getDay(); // Wochentag (0=Sonntag, 1=Montag, ..., 6=Samstag)
+            const { startHour, endHour } = getAllowedTimes(day);
+
+            // Generiere die erlaubten Zeiten für den ausgewählten Tag
+            const times = generateTimes(startHour, endHour);
+
+            // Dropdown befüllen
+            timeDropdown.innerHTML = '<option value="">Uhrzeit auswählen</option>';
+            times.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                timeDropdown.appendChild(option);
+            });
+        });
+    }
+
+    // Initiale Setups
+    setMinDate();
+    populateTimeDropdown();
+    loadMovies();
+});
+
+

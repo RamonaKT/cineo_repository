@@ -225,7 +225,7 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
 });
 
 
-
+/*
 
 // API-Endpunkt zum Hinzufügen einer Vorstellung
 app.post('/api/vorstellungen', async (req, res) => {
@@ -260,9 +260,56 @@ app.post('/api/vorstellungen', async (req, res) => {
         res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error });
     }
 });
+*/
 
 
+app.post('/api/vorstellungen', async (req, res) => {
+    const { movie_id, date, time, end_time, room_id, movie_duration } = req.body;
 
+    // Überprüfen, ob alle erforderlichen Daten vorhanden sind
+    if (!movie_id || !date || !time || !room_id || !movie_duration) {
+        return res.status(400).json({ message: 'Fehlende Daten: movie_id, date, time, room_id und movie_duration sind erforderlich' });
+    }
+
+    try {
+        // Holen des Filmtitels aus der 'movies'-Tabelle basierend auf movie_id
+        const { data: movieData, error: movieError } = await supabase
+            .from('movies')
+            .select('title')
+            .eq('movie_id', movie_id)
+            .single();
+
+        if (movieError || !movieData) {
+            return res.status(404).json({ message: 'Film nicht gefunden' });
+        }
+
+        const movieTitle = movieData.title; // Titel des Films
+
+        // Erstellen eines neuen Eintrags in der 'shows'-Tabelle
+        const { data, error } = await supabase
+            .from('shows')
+            .insert([
+                {
+                    movie_id,
+                    movie_title: movieTitle,  // Den Filmtitel speichern
+                    date: date,
+                    time: time,
+                    end_time,
+                    room_id,
+                    movie_duration
+                }
+            ]);
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error: error.message });
+        }
+
+        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt', data });
+    } catch (error) {
+        console.error('Fehler beim Erstellen der Vorstellung:', error);
+        res.status(500).json({ message: 'Serverfehler', error: error.message });
+    }
+});
 
 
 

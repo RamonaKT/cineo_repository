@@ -311,6 +311,48 @@ app.post('/api/vorstellungen', async (req, res) => {
     }
 });
 
+app.get('/api/alleVorstellungen', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('shows')
+            .select('show_id, date, time, movie_title, room_id');
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Abrufen der Vorstellungen', error: error.message });
+        }
+
+        if (!data || data.length === 0) {
+            return res.status(404).json({ message: 'Keine Vorstellungen gefunden' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Vorstellungen:', error);
+        res.status(500).json({ message: 'Serverfehler', error: error.message });
+    }
+});
+
+
+
+app.delete('/api/vorstellungen/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const { error } = await supabase
+            .from('shows')
+            .delete()
+            .eq('show_id', id);
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Löschen der Vorstellung', error: error.message });
+        }
+
+        res.status(200).json({ message: 'Vorstellung erfolgreich gelöscht' });
+    } catch (error) {
+        console.error('Fehler beim Löschen der Vorstellung:', error);
+        res.status(500).json({ message: 'Serverfehler', error: error.message });
+    }
+});
 
 
 // API-Endpunkt, um alle Filme abzurufen
@@ -434,7 +476,7 @@ app.get('/api/rooms', async (req, res) => {
         res.json(availableRooms);
     } catch (error) {
         console.error('Fehler beim Abrufen der Räume:', error);
-        res.status(500).json({ message: 'Fehler beim Abrufen der Räume', error: error.message });
+        res.status(500).json({ message: 'Öffnungszeiten werden überschritten', error: error.message });
     }
 });
 

@@ -44,13 +44,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       summaryElement.textContent = shortenedDescription;
       summaryElement.setAttribute("data-full-text", descriptionText);
 
+      const secondLine = document.getElementById("second-line");
+
+
       // Füge Event Listener für den Button hinzu
       const toggleButton = document.getElementById("mehr-weniger-button");
       /*toggleButton.addEventListener("click", () => toggleDescription(summaryElement, toggleButton));*/
 
       const showtimesGrid = document.getElementById("showtimes-grid");
 
-      toggleButton.addEventListener("click", () => toggleDescription(summaryElement, toggleButton, showtimesGrid));
+      toggleButton.addEventListener("click", () => toggleDescription(summaryElement, toggleButton, showtimesGrid, secondLine));
 
    } catch (error) {
       console.error("Fehler beim Abrufen der Filmdetails:", error);
@@ -86,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 */
 
-function toggleDescription(summaryElement, toggleButton, showtimesGrid) {
+function toggleDescription(summaryElement, toggleButton, showtimesGrid, secondLine) {
   const isExpanded = toggleButton.textContent === "Weniger";
   const fullText = summaryElement.getAttribute("data-full-text");
 
@@ -106,6 +109,7 @@ function toggleDescription(summaryElement, toggleButton, showtimesGrid) {
       // Entferne die expanded-Klasse
       summaryElement.classList.remove("expanded");
       showtimesGrid.classList.remove("expanded");
+      secondLine.classList.remove("expanded");
   } else {
       summaryElement.textContent = fullText;
       toggleButton.textContent = "Weniger";
@@ -113,6 +117,7 @@ function toggleDescription(summaryElement, toggleButton, showtimesGrid) {
       // Füge die expanded-Klasse hinzu
       summaryElement.classList.add("expanded");
       showtimesGrid.classList.add("expanded");
+      secondLine.classList.add("expanded");
 
       // Dynamische Höhe basierend auf dem Inhalt setzen
       summaryElement.style.maxHeight = `${summaryElement.scrollHeight}px`;

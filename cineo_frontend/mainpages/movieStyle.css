@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 
 
+html {
+    font-size: 100%; /* Stellt sicher, dass 1rem = 16px ist */
+  }
+
+
 body {
     display: flex;
     flex-direction: column;
@@ -83,7 +88,7 @@ body {
 #movie-image {
     width: 21vw;
     height: 55vh;
-    border-radius: 1em;
+    border-radius: 15px;
     border: 0.025vh solid #5afff5;
     margin: 5vh 0 0 6vw;
 }
@@ -103,42 +108,54 @@ body {
 
 }
 
-.second-line {
+#second-line {
+    position: relative;
     border: none;
     border-top: 0.1px solid #5afff5;
     width: 50vw;
     text-align: left;
-    margin-top: 8vh;
+    margin-top: 5vh;
+    transition: margin-top 0.4s ease-out;
 }
 
+#second-line.expanded{
+    margin-top: 10vh;
+    /* Erhöhter Abstand, wenn der Text erweitert ist */
+    margin-bottom: 5vh;
+}
+
+
 .movie-content {
-    transition: max-height 0.4s ease-out;
+    transition: max-height 1s ease-out;
     /* Animation für sanfte Anpassung */
     overflow: hidden;
     /* Verhindert, dass unsichtbarer Text angezeigt wird */
     /* max-height: 30vh;  Standardhöhe im gekürzten Zustand */
-
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     margin: 6vh 0 0 31vw;
     width: 45%;
+    height: auto;
     color: white;
     font-family: "Lato", sans-serif;
     line-height: 1.5;
+    
 }
 
 .movie-content p {
-    font-size: 1.4em;
+    font-size: 1.3rem;
     line-height: 1.5;
     -webkit-text-stroke: 0.3px white;
 }
 
 .movie-content .title {
-    font-size: 3em;
+    font-size: 2.5rem;
     -webkit-text-stroke: 1.5px white;
 }
+
+
 
 .movie-content.expanded {
     max-height: none;
@@ -147,10 +164,23 @@ body {
     height: auto;
 }
 
+/*
+#summary {
+    transition: max-height 0.4s ease-out;
+    height: auto;
+}
+
+#summary.expanded {
+    max-height: none;
+    /*Ein großer Wert, der den gesamten Inhalt abdeckt 
+    overflow: visible;
+    height: auto;
+}
+*/
 
 .mehr-weniger-button {
     margin: 2vh 0 0 0;
-    width: 10vw;
+    width: fit-content;
     padding: 5px 40px;
     background-color: #560192;
     border-radius: 90px;
@@ -166,16 +196,19 @@ body {
 /* CSS für die Showtimes Grid */
 .showtimes-grid {
     position: relative;
-    margin: -22vh 0 0 31vw;
+    /*margin: -22vh 0 0 31vw;*/
+    margin-top: 3vh;
+    margin-bottom: 5vh;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13.5vw, 1fr));
     gap: 0.2vw;
     transition: margin-top 0.4s ease-out;
+    height:max-content;
 }
 
 
 .showtimes-grid.expanded {
-    margin-top: -5vh;
+    margin-top: 10vh;
     /* Erhöhter Abstand, wenn der Text erweitert ist */
     margin-bottom: 5vh;
 }
@@ -185,7 +218,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 17vh;
+    /*height: 17vh;*/
+    height: fit-content;
     margin: 10px;
 
 }
@@ -234,10 +268,11 @@ body {
 .movie-info {
     position: absolute;
     display: flex;
-    font-size: 3em;
+    font-size: 2.5rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     margin: 2vh 1.5vw 0 80vw;
     right: 0;
     width: fit-content;
@@ -276,7 +311,7 @@ body {
     -webkit-text-stroke: 1px white;
     letter-spacing: 0.15em;
     border-radius: 100px;
-    margin: 10vh 0 0 0;
+    margin: 5vh 0 0 0;
 
 }
 

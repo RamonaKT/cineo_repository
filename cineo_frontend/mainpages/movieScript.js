@@ -161,7 +161,7 @@ function toggleDescription(summaryElement, toggleButton, showtimesGrid) {
                 <div class="showtime-date">${datetime.toLocaleDateString("de-DE")}</div>
                 <div class="showtime-time">${datetime.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div>
             </div>
-            <div class="showtime-room">${showtime.room}</div>
+            <div class="showtime-room">Kino ${showtime.room_id}</div>
         `;
         showtimesGrid.appendChild(gridItem);
     });

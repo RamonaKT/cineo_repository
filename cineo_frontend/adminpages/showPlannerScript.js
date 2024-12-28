@@ -6,27 +6,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('show-form');
     const responseMessage = document.getElementById('response-message');
 
-    /*
-    // Funktion, um Filme aus der Datenbank zu laden
+    const showList = document.getElementById('show-list');
+    const deleteButton = document.getElementById('delete-show-button');
+    const deleteResponseMessage = document.getElementById('delete-response-message');
+    let selectedShowId = null;
+
+    let allShows = []; // Enthält alle Vorstellungen
+    let filteredShows = []; // Enthält gefilterte Vorstellungen
+
+
     async function loadMovies() {
         try {
             const response = await fetch('/api/alleFilme'); // API-Endpunkt für Filme
             const movies = await response.json();
 
-
             if (response.ok) {
-                movieDropdown.innerHTML = '<option value="">Film auswählen</option>'; // Reset der Dropdown-Optionen
-
                 // Filme nach Titel alphabetisch sortieren
                 movies.sort((a, b) => a.title.localeCompare(b.title, 'de', { sensitivity: 'base' }));
 
-                movies.forEach(movie => {
-                    const option = document.createElement('option');
-                    option.value = movie.movie_id; // Speichert die movie_id
-                    option.textContent = movie.title; // Zeigt den Titel an
-                    option.dataset.duration = movie.duration; // Speichert die Dauer im data-Attribut
-                    movieDropdown.appendChild(option);
+                // Speichert alle Filme für die Suche
+                const movieSearchInput = document.getElementById('movieSearch');
+                const movieDropdown = document.getElementById('movieId');
+                movieDropdown.innerHTML = '<option value="">Film auswählen</option>'; // Reset Dropdown
+
+                // Funktion zum Hinzufügen von Filmen zum Dropdown
+                const addMoviesToDropdown = (filteredMovies) => {
+                    movieDropdown.innerHTML = '<option value="">Film auswählen</option>';
+                    filteredMovies.forEach(movie => {
+                        const option = document.createElement('option');
+                        option.value = movie.movie_id;
+                        option.textContent = movie.title;
+                        option.dataset.duration = movie.duration;
+                        movieDropdown.appendChild(option);
+                    });
+                };
+
+                // Initiales Dropdown befüllen
+                addMoviesToDropdown(movies);
+
+                // Filter-Funktion basierend auf Eingabe
+                movieSearchInput.addEventListener('input', () => {
+                    const searchTerm = movieSearchInput.value.toLowerCase();
+                    const filteredMovies = movies.filter(movie =>
+                        movie.title.toLowerCase().includes(searchTerm)
+                    );
+                    addMoviesToDropdown(filteredMovies);
                 });
+
+                // Klick auf Suchfeld zeigt alle Optionen
+                movieSearchInput.addEventListener('focus', () => {
+                    movieDropdown.size = movies.length > 4 ? 4 : movies.length; // Zeige maximal 5 Optionen
+                    movieDropdown.classList.add("small-dropdown");
+                });
+
+                // Dropdown schließen bei Blur
+                movieSearchInput.addEventListener('blur', () => {
+                    setTimeout(() => movieDropdown.size = 1, 200); // Kleiner Delay für UX
+                });
+
             } else {
                 console.error('Fehler beim Abrufen der Filme:', movies.message);
             }
@@ -34,66 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Fehler beim Laden der Filme:', error);
         }
     }
-*/
-
-
-
-async function loadMovies() {
-    try {
-        const response = await fetch('/api/alleFilme'); // API-Endpunkt für Filme
-        const movies = await response.json();
-
-        if (response.ok) {
-            // Filme nach Titel alphabetisch sortieren
-            movies.sort((a, b) => a.title.localeCompare(b.title, 'de', { sensitivity: 'base' }));
-
-            // Speichert alle Filme für die Suche
-            const movieSearchInput = document.getElementById('movieSearch');
-            const movieDropdown = document.getElementById('movieId');
-            movieDropdown.innerHTML = '<option value="">Film auswählen</option>'; // Reset Dropdown
-
-            // Funktion zum Hinzufügen von Filmen zum Dropdown
-            const addMoviesToDropdown = (filteredMovies) => {
-                movieDropdown.innerHTML = '<option value="">Film auswählen</option>';
-                filteredMovies.forEach(movie => {
-                    const option = document.createElement('option');
-                    option.value = movie.movie_id;
-                    option.textContent = movie.title;
-                    option.dataset.duration = movie.duration;
-                    movieDropdown.appendChild(option);
-                });
-            };
-
-            // Initiales Dropdown befüllen
-            addMoviesToDropdown(movies);
-
-            // Filter-Funktion basierend auf Eingabe
-            movieSearchInput.addEventListener('input', () => {
-                const searchTerm = movieSearchInput.value.toLowerCase();
-                const filteredMovies = movies.filter(movie =>
-                    movie.title.toLowerCase().includes(searchTerm)
-                );
-                addMoviesToDropdown(filteredMovies);
-            });
-
-            // Klick auf Suchfeld zeigt alle Optionen
-            movieSearchInput.addEventListener('focus', () => {
-                movieDropdown.size = movies.length > 4 ? 4 : movies.length; // Zeige maximal 5 Optionen
-                movieDropdown.classList.add("small-dropdown");
-            });
-
-            // Dropdown schließen bei Blur
-            movieSearchInput.addEventListener('blur', () => {
-                setTimeout(() => movieDropdown.size = 1, 200); // Kleiner Delay für UX
-            });
-
-        } else {
-            console.error('Fehler beim Abrufen der Filme:', movies.message);
-        }
-    } catch (error) {
-        console.error('Fehler beim Laden der Filme:', error);
-    }
-}
 
 
 
@@ -113,7 +90,7 @@ async function loadMovies() {
             const rooms = await response.json();
 
             if (!response.ok) {
-                console.error('Fehler beim Abrufen der Räume:', rooms.message);
+                console.error('Öffnungszeiten werden überschritten:', rooms.message);
                 responseMessage.textContent = `Fehler: ${rooms.message}`;
                 responseMessage.style.color = 'red';
                 return;
@@ -205,7 +182,7 @@ async function loadMovies() {
 
             if (response.ok) {
                 responseMessage.textContent = 'Vorstellung erfolgreich hinzugefügt!';
-                responseMessage.style.color = 'green';
+                responseMessage.style.color = '#5afff5';
                 form.reset();
                 roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
             } else {
@@ -288,6 +265,211 @@ async function loadMovies() {
             });
         });
     }
+
+
+
+    /*
+// Funktion, um Vorstellungen zu laden
+async function loadShows() {
+    try {
+        const response = await fetch('/api/alleVorstellungen'); // Endpunkt für alle Vorstellungen
+        const shows = await response.json();
+
+        if (response.ok) {
+            const now = new Date(); // Aktuelles Datum und Uhrzeit
+            const germanDateTimeFormat = new Intl.DateTimeFormat('de-DE', {
+                dateStyle: 'short',
+                timeStyle: 'short',
+            });
+
+            // Filtere Vorstellungen ab heute und sortiere sie
+            const filteredAndSortedShows = shows
+                .filter(show => {
+                    const showDateTime = new Date(`${show.date}T${show.time}`);
+                    return showDateTime >= now;
+                })
+                .sort((a, b) => {
+                    const dateA = new Date(`${a.date}T${a.time}`);
+                    const dateB = new Date(`${b.date}T${b.time}`);
+                    return dateA - dateB;
+                });
+
+            showList.innerHTML = '';
+            filteredAndSortedShows.forEach(show => {
+                const listItem = document.createElement('li');
+
+                // Formatieren von Datum und Uhrzeit im deutschen Format
+                const showDateTime = new Date(`${show.date}T${show.time}`);
+                listItem.textContent = `${germanDateTimeFormat.format(showDateTime)} - ${show.movie_title} (Raum ${show.room_id})`;
+
+                listItem.dataset.showId = show.show_id;
+                listItem.addEventListener('click', () => {
+                    // Markiere die ausgewählte Vorstellung
+                    document.querySelectorAll('#show-list li').forEach(item => item.classList.remove('selected'));
+                    listItem.classList.add('selected');
+                    selectedShowId = listItem.dataset.showId;
+                    deleteButton.disabled = false;
+                });
+                showList.appendChild(listItem);
+            });
+        } else {
+            deleteResponseMessage.textContent = `Fehler: ${shows.message}`;
+            deleteResponseMessage.style.color = 'red';
+        }
+    } catch (error) {
+        console.error('Fehler beim Laden der Vorstellungen:', error);
+        deleteResponseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+        deleteResponseMessage.style.color = 'red';
+    }
+}
+
+// Funktion, um eine Vorstellung zu löschen
+async function deleteShow() {
+    if (!selectedShowId) return;
+
+    try {
+        const response = await fetch(`/api/vorstellungen/${selectedShowId}`, {
+            method: 'DELETE',
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            deleteResponseMessage.textContent = 'Vorstellung erfolgreich gelöscht!';
+            deleteResponseMessage.style.color = '#5afff5';
+            loadShows(); // Aktualisiere die Liste
+            deleteButton.disabled = true;
+            selectedShowId = null;
+        } else {
+            deleteResponseMessage.textContent = `Fehler: ${result.message}`;
+            deleteResponseMessage.style.color = 'red';
+        }
+    } catch (error) {
+        console.error('Fehler beim Löschen der Vorstellung:', error);
+        deleteResponseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+        deleteResponseMessage.style.color = 'red';
+    }
+}
+
+*/
+
+
+    // Funktion, um Vorstellungen zu laden
+    async function loadShows() {
+        try {
+            const response = await fetch('/api/alleVorstellungen'); // Endpunkt für alle Vorstellungen
+            const shows = await response.json();
+
+            if (response.ok) {
+                const now = new Date(); // Aktuelles Datum und Uhrzeit
+                const germanDateTimeFormat = new Intl.DateTimeFormat('de-DE', {
+                    dateStyle: 'short',
+                    timeStyle: 'short',
+                });
+
+                // Filtere Vorstellungen ab heute und sortiere sie
+                allShows = shows
+                    .filter(show => {
+                        const showDateTime = new Date(`${show.date}T${show.time}`);
+                        return showDateTime >= now;
+                    })
+                    .sort((a, b) => {
+                        const dateA = new Date(`${a.date}T${a.time}`);
+                        const dateB = new Date(`${b.date}T${b.time}`);
+                        return dateA - dateB;
+                    });
+
+                filteredShows = [...allShows]; // Anfangs alle anzeigen
+                renderShowList(); // Initiale Darstellung
+            } else {
+                deleteResponseMessage.textContent = `Fehler: ${shows.message}`;
+                deleteResponseMessage.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Fehler beim Laden der Vorstellungen:', error);
+            deleteResponseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+            deleteResponseMessage.style.color = 'red';
+        }
+    }
+
+    // Funktion, um die Liste der Vorstellungen anzuzeigen
+    function renderShowList() {
+        const showList = document.getElementById('show-list');
+        showList.innerHTML = ''; // Vorherige Inhalte leeren
+
+        const germanDateTimeFormat = new Intl.DateTimeFormat('de-DE', {
+            dateStyle: 'short',
+            timeStyle: 'short',
+        });
+
+        filteredShows.forEach(show => {
+            const listItem = document.createElement('li');
+            const showDateTime = new Date(`${show.date}T${show.time}`);
+            listItem.textContent = `${germanDateTimeFormat.format(showDateTime)} - ${show.movie_title} (Raum ${show.room_id})`;
+
+            listItem.dataset.showId = show.show_id;
+            listItem.addEventListener('click', () => {
+                // Markiere die ausgewählte Vorstellung
+                document.querySelectorAll('#show-list li').forEach(item => item.classList.remove('selected'));
+                listItem.classList.add('selected');
+                selectedShowId = listItem.dataset.showId;
+                deleteButton.disabled = false;
+            });
+            showList.appendChild(listItem);
+        });
+    }
+
+    // Funktion für die Suche
+    function filterShows(searchTerm) {
+        filteredShows = allShows.filter(show => {
+            const lowerCaseSearch = searchTerm.toLowerCase();
+            return (
+                show.movie_title.toLowerCase().includes(lowerCaseSearch) || // Nach Filmtitel suchen
+                show.room_id.toString().includes(lowerCaseSearch) // Nach Raum suchen
+            );
+        });
+        renderShowList(); // Aktualisiere die Anzeige
+    }
+
+    // Event-Listener für die Suchleiste
+    document.getElementById('show-search').addEventListener('input', event => {
+        const searchTerm = event.target.value;
+        filterShows(searchTerm);
+    });
+
+    // Funktion, um eine Vorstellung zu löschen
+    async function deleteShow() {
+        if (!selectedShowId) return;
+
+        try {
+            const response = await fetch(`/api/vorstellungen/${selectedShowId}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                deleteResponseMessage.textContent = 'Vorstellung erfolgreich gelöscht!';
+                deleteResponseMessage.style.color = '#5afff5';
+                loadShows(); // Aktualisiere die Liste
+                deleteButton.disabled = true;
+                selectedShowId = null;
+            } else {
+                deleteResponseMessage.textContent = `Fehler: ${result.message}`;
+                deleteResponseMessage.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Fehler beim Löschen der Vorstellung:', error);
+            deleteResponseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+            deleteResponseMessage.style.color = 'red';
+        }
+    }
+
+
+
+    // Event Listener für den Löschbutton
+    deleteButton.addEventListener('click', deleteShow);
+
+    // Lade die Vorstellungen beim Start
+    loadShows();
 
     // Initiale Setups
     setMinDate();

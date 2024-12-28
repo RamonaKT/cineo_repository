@@ -40,13 +40,14 @@
         <a href="/specialpages/shoppageStructure.html">Shop</a>
     </div>
     
+<div class="outer-container">
 
-    <div class="container">
+    <div class="show-planner">
         <h2>Planen Sie Vorstellungen</h2>
         <form id="show-form">
           <!-- Dropdown für Filme -->
           <label for="movieId">Film:</label>
-          <input type="text" id="movieSearch" placeholder="Film suchen">
+          <input type="text" id="movieSearch" placeholder="Film suchen...">
           <select id="movieId" name="movieId" required>
             <option value="">Film auswählen</option>
             <!-- Optionen werden dynamisch durch JavaScript geladen -->
@@ -59,6 +60,7 @@
           <!-- Uhrzeit -->
           <label for="time">Uhrzeit:</label>
           <select id="time" name="time" required>
+            <option value="">Uhrzeit wählen</option>
             <!-- Optionen werden dynamisch mit JavaScript eingefügt -->
           </select>
           
@@ -70,10 +72,25 @@
             <!-- Optionen werden dynamisch durch JavaScript basierend auf Datum und Uhrzeit geladen -->
           </select>
           
-          <button type="submit">Vorstellung hinzufügen</button>
+          <button class="add-button" type="submit">Vorstellung hinzufügen</button>
         </form>
         <div id="response-message"></div>
       </div>
+
+
+      <div class="show-deleter">
+        <h2>Geplante Vorstellungen</h2>
+        <input type="text" id="show-search" placeholder="Vorstellung suchen..." />
+        <div id="show-list-container">
+
+            <ul id="show-list">
+                <!-- Vorstellungen werden hier dynamisch geladen -->
+            </ul>
+        </div>
+        <button id="delete-show-button" disabled>Ausgewählte Vorstellung löschen</button>
+        <div id="delete-response-message"></div>
+      </div>
+    </div>
 
  <div class="div_mainStyle_navigationBeamBottom"> </div>
 

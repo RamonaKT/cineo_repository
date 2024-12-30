@@ -1,66 +1,86 @@
-let ticketpreise = [
-    { kategorie: "Parkett", preis: 10.00, rabattTyp: "kein", rabattWert: 0 },
-    { kategorie: "Loge", preis: 15.00, rabattTyp: "kein", rabattWert: 0 },
-    { kategorie: "VIP", preis: 20.00, rabattTyp: "kein", rabattWert: 0 }
-];
-
-// Preise und Übersicht laden
-window.onload = function () {
-    renderPriceList();
+let grundpreise = {
+    "Parkett": 12.00,
+    "Loge": 18.00,
+    "VIP": 25.00
 };
 
-// Preisliste rendern
-function renderPriceList() {
+let rabatte = [];
+
+// Seite laden
+window.onload = function () {
+    renderGrundpreise();
+    renderRabatte();
+};
+
+// Grundpreise rendern
+function renderGrundpreise() {
     const liste = document.getElementById('preisListe');
     liste.innerHTML = '';
 
-    ticketpreise.forEach((item, index) => {
-        const rabattText = item.rabattTyp === "prozent" ? `${item.rabattWert}% Rabatt` : 
-                           item.rabattTyp === "euro" ? `${item.rabattWert.toFixed(2)} € Rabatt` : "Kein Rabatt";
+    for (let [kategorie, preis] of Object.entries(grundpreise)) {
+        const li = document.createElement('li');
+        li.innerHTML = `<div>${kategorie}: <strong>${preis.toFixed(2)} €</strong></div> 
+        <button onclick="editGrundpreis('${kategorie}', ${preis})">Ändern</button>`;
+        liste.appendChild(li);
+    }
+}
 
-        const endpreis = calculateFinalPrice(item).toFixed(2);
+// Rabatte rendern
+function renderRabatte() {
+    const liste = document.getElementById('rabattListe');
+    liste.innerHTML = '';
+
+    rabatte.forEach((item, index) => {
+        const rabattText = item.typ === "prozent" ? `${item.wert}% Rabatt` : `${item.wert.toFixed(2)} € Rabatt`;
 
         const li = document.createElement('li');
-        li.innerHTML = `<div>${item.kategorie}: <strong>${item.preis.toFixed(2)} €</strong> - ${rabattText} | Endpreis: <strong>${endpreis} €</strong></div> 
-        <button onclick="deletePrice(${index})">Löschen</button>`;
+        li.innerHTML = `<div>${item.name} - ${rabattText}</div> 
+        <button onclick="deleteRabatt(${index})">Löschen</button>`;
         liste.appendChild(li);
     });
 }
 
-// Formular-Verarbeitung
-document.getElementById('preisForm').onsubmit = function (e) {
+// Grundpreis ändern oder hinzufügen
+document.getElementById('grundpreisForm').onsubmit = function (e) {
     e.preventDefault();
 
     const kategorie = document.getElementById('kategorie').value;
     const preis = parseFloat(document.getElementById('preis').value);
-    const rabattTyp = document.getElementById('rabattTyp').value;
-    const rabattWert = parseFloat(document.getElementById('rabattWert').value) || 0;
 
-    const existing = ticketpreise.find(item => item.kategorie === kategorie);
-    
-    if (existing) {
-        existing.preis = preis;
-        existing.rabattTyp = rabattTyp;
-        existing.rabattWert = rabattWert;
+    if (kategorie && !isNaN(preis)) {
+        grundpreise[kategorie] = preis;
+        renderGrundpreise();
+        document.getElementById('grundpreisForm').reset();
     } else {
-        ticketpreise.push({ kategorie, preis, rabattTyp, rabattWert });
+        alert('Bitte gültige Werte eingeben.');
     }
-
-    renderPriceList();
-    document.getElementById('preisForm').reset();
 };
 
-function calculateFinalPrice(item) {
-    if (item.rabattTyp === 'prozent') {
-        return item.preis * (1 - item.rabattWert / 100);
-    } else if (item.rabattTyp === 'euro') {
-        return item.preis - item.rabattWert;
+// Rabatt hinzufügen
+document.getElementById('rabattForm').onsubmit = function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('rabattName').value;
+    const typ = document.getElementById('rabattTyp').value;
+    const wert = parseFloat(document.getElementById('rabattWert').value);
+
+    if (name && !isNaN(wert) && wert > 0) {
+        rabatte.push({ name, typ, wert });
+        renderRabatte();
+        document.getElementById('rabattForm').reset();
+    } else {
+        alert('Bitte gültige Werte eingeben.');
     }
-    return item.preis;
+};
+
+// Rabatt löschen
+function deleteRabatt(index) {
+    rabatte.splice(index, 1);
+    renderRabatte();
 }
 
-// Preis löschen
-function deletePrice(index) {
-    ticketpreise.splice(index, 1);
-    renderPriceList();
+// Grundpreis bearbeiten
+function editGrundpreis(kategorie, preis) {
+    document.getElementById('kategorie').value = kategorie;
+    document.getElementById('preis').value = preis;
 }

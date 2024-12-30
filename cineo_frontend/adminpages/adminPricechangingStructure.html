@@ -39,52 +39,49 @@
 
 
 <div class="main-content">
-    
     <div class="container">
-        <h1>Ticketpreis Verwaltung</h1>
-        
-        <div class="price-list">
-            <h2>Aktuelle Ticketpreise</h2>
-            <ul id="preisListe">
-                <!-- Ticketpreise werden hier dynamisch eingefügt -->
-            </ul>
-        </div>
-
-        <div class="form-container">
-            <h2>Preis hinzufügen oder anpassen</h2>
-            <form id="preisForm">
-                
+        <h1>Admin - Ticketpreise & Rabatte</h1>
+    
+        <section class="prices">
+            <h2>Grundpreise verwalten</h2>
+            <ul id="preisListe"></ul>
+    
+            <form id="grundpreisForm">
                 <label for="kategorie">Kategorie:</label>
                 <select id="kategorie" required>
                     <option value="Parkett">Parkett</option>
                     <option value="Loge">Loge</option>
                     <option value="VIP">VIP</option>
                 </select>
-
+    
                 <label for="preis">Grundpreis (€):</label>
                 <input type="number" id="preis" step="0.01" required>
-
-                <fieldset>
-                    <legend>Rabatt</legend>
-
-                    <label for="rabattTyp">Rabatt-Typ:</label>
-                    <select id="rabattTyp">
-                        <option value="prozent">Prozentual</option>
-                        <option value="euro">Fester Betrag</option>
-                        <option value="kein">Kein Rabatt</option>
-                    </select>
-
-                    <label for="rabattWert">Rabattwert:</label>
-                    <input type="number" id="rabattWert" step="0.01" min="0">
-                </fieldset>
-
-                <button type="submit">Speichern</button>
+    
+                <button type="submit">Grundpreis speichern</button>
             </form>
-        </div>
-
+        </section>
+    
+        <section class="discounts">
+            <h2>Rabatte verwalten</h2>
+            <ul id="rabattListe"></ul>
+    
+            <form id="rabattForm">
+                <label for="rabattName">Rabattname:</label>
+                <input type="text" id="rabattName" required>
+    
+                <label for="rabattTyp">Rabatt-Typ:</label>
+                <select id="rabattTyp" required>
+                    <option value="prozent">Prozentual</option>
+                    <option value="euro">Fester Betrag</option>
+                </select>
+    
+                <label for="rabattWert">Rabattwert:</label>
+                <input type="number" id="rabattWert" step="0.01" required>
+    
+                <button type="submit">Rabatt hinzufügen</button>
+            </form>
+        </section>
     </div>
-
-
 </div>
 
 

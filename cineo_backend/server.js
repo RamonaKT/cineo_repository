@@ -192,6 +192,172 @@ app.post('/api/tickets', async (req, res) => {
 
 
 
+//ticket_categories put
+// Ändern eines Ticketpreises
+app.put('/api/ticket-prices', async (req, res) => {
+    const { ticket_id, ticket_price } = req.body;
+
+    if (!ticket_id || ticket_price == null) {
+        return res.status(400).json({ error: "Fehlende Ticketpreis-Daten" });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('ticket_categories')
+            .upsert([{ ticket_id, ticket_price }]);
+
+        if (error) {
+            throw error;
+        }
+
+        res.status(200).json({
+            message: "Ticketpreis erfolgreich aktualisiert",
+            ticket_price: data
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+//ticket_categories get 
+// Abrufen der Ticketpreise
+app.get('/api/ticket-prices', async (req, res) => {
+    try {
+        const { data: ticketPrices, error } = await supabase
+            .from('ticket_categories')
+            .select('ticket_id, ticket_price');
+
+        if (error) {
+            throw error;
+        }
+
+        res.status(200).json(ticketPrices);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+//ticket_discounts post
+// Hinzufügen eines Rabatts
+app.post('/api/ticket-discounts', async (req, res) => {
+    const { name, price, type } = req.body;
+
+    if (!name || price == null || !type) {
+        return res.status(400).json({ error: "Fehlende Rabatt-Daten" });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('ticket_discount')
+            .insert([{ name, price, type }]);
+
+        if (error) {
+            throw error;
+        }
+
+        res.status(201).json({
+            message: "Rabatt erfolgreich hinzugefügt",
+            discount: data
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+//ticket_discounts delite
+// Löschen eines Rabatts
+app.delete('/api/ticket-discounts', async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ error: "Fehlende Rabatt-ID zum Löschen" });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('ticket_discount')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            throw error;
+        }
+
+        res.status(200).json({
+            message: "Rabatt erfolgreich gelöscht",
+            discount: data
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+//ticket_discounts delite
+// Überschreiben eines Rabatts
+app.put('/api/ticket-discounts', async (req, res) => {
+    const { id, name, price, type } = req.body;
+
+    if (!id || !name || price == null || !type) {
+        return res.status(400).json({ error: "Fehlende Rabatt-Daten zum Überschreiben" });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('ticket_discount')
+            .upsert([{ id, name, price, type }]);
+
+        if (error) {
+            throw error;
+        }
+
+        res.status(200).json({
+            message: "Rabatt erfolgreich aktualisiert",
+            discount: data
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+//ticket_discounts get
+// Abrufen der Rabatte
+app.get('/api/ticket-discounts', async (req, res) => {
+    try {
+        const { data: discounts, error } = await supabase
+            .from('ticket_discount')
+            .select('*');
+
+        if (error) {
+            throw error;
+        }
+
+        res.status(200).json(discounts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+
 // Statische Dateien bereitstellen (für Bilder)
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
 

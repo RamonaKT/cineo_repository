@@ -194,7 +194,7 @@ app.post('/api/tickets', async (req, res) => {
 
 //ticket_categories put
 // Ändern eines Ticketpreises
-app.put('/api/ticket-prices', async (req, res) => {
+app.put('/api/ticket_prices', async (req, res) => {
     const { ticket_id, ticket_price } = req.body;
 
     if (!ticket_id || ticket_price == null) {
@@ -224,7 +224,7 @@ app.put('/api/ticket-prices', async (req, res) => {
 
 //ticket_categories get 
 // Abrufen der Ticketpreise
-app.get('/api/ticket-prices', async (req, res) => {
+app.get('/api/ticket_prices', async (req, res) => {
     try {
         const { data: ticketPrices, error } = await supabase
             .from('ticket_categories')
@@ -245,7 +245,7 @@ app.get('/api/ticket-prices', async (req, res) => {
 
 //ticket_discounts post
 // Hinzufügen eines Rabatts
-app.post('/api/ticket-discounts', async (req, res) => {
+app.post('/api/ticket_discounts', async (req, res) => {
     const { name, price, type } = req.body;
 
     if (!name || price == null || !type) {
@@ -275,7 +275,7 @@ app.post('/api/ticket-discounts', async (req, res) => {
 
 //ticket_discounts delite
 // Löschen eines Rabatts
-app.delete('/api/ticket-discounts', async (req, res) => {
+app.delete('/api/ticket_discounts', async (req, res) => {
     const { id } = req.body;
 
     if (!id) {
@@ -306,7 +306,7 @@ app.delete('/api/ticket-discounts', async (req, res) => {
 
 //ticket_discounts delite
 // Überschreiben eines Rabatts
-app.put('/api/ticket-discounts', async (req, res) => {
+app.put('/api/ticket_discounts', async (req, res) => {
     const { id, name, price, type } = req.body;
 
     if (!id || !name || price == null || !type) {
@@ -337,7 +337,7 @@ app.put('/api/ticket-discounts', async (req, res) => {
 
 //ticket_discounts get
 // Abrufen der Rabatte
-app.get('/api/ticket-discounts', async (req, res) => {
+app.get('/api/ticket_discounts', async (req, res) => {
     try {
         const { data: discounts, error } = await supabase
             .from('ticket_discount')

@@ -2,8 +2,9 @@
 
 
 html {
-    font-size: 100%; /* Stellt sicher, dass 1rem = 16px ist */
-  }
+    font-size: 100%;
+    /* Stellt sicher, dass 1rem = 16px ist */
+}
 
 
 body {
@@ -98,7 +99,11 @@ body {
     display: flex;
     justify-content: flex-start;
     border: none;
-    border-top: 0.5px solid #5afff5;
+    /* border-top: 0.5px solid #5afff5;*/
+
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, #5afff5, #5afff5, #220537) 1;
+
     width: 50vw;
     margin-left: 0;
     margin: 0;
@@ -108,17 +113,33 @@ body {
 
 }
 
+.content-wrapper {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+    align-self: left;
+
+    width: 76%;
+    border-right: 1px solid;
+    border-image: linear-gradient(to bottom, #220537, #5afff5, #220537) 1;
+
+}
+
 #second-line {
     position: relative;
     border: none;
-    border-top: 0.1px solid #5afff5;
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, #5afff5, #5afff5, #220537) 1;
+
     width: 50vw;
     text-align: left;
-    margin-top: 5vh;
-    transition: margin-top 0.4s ease-out;
+    margin-top: 9vh;
+
+
 }
 
-#second-line.expanded{
+#second-line.expanded {
     margin-top: 10vh;
     /* Erhöhter Abstand, wenn der Text erweitert ist */
     margin-bottom: 5vh;
@@ -130,18 +151,18 @@ body {
     /* Animation für sanfte Anpassung */
     overflow: hidden;
     /* Verhindert, dass unsichtbarer Text angezeigt wird */
-    /* max-height: 30vh;  Standardhöhe im gekürzten Zustand */
-    position: absolute;
+   /*  max-height: 30vh;  Standardhöhe im gekürzten Zustand */
+    align-self: left;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    margin: 6vh 0 0 31vw;
-    width: 45%;
-    height: auto;
+    margin: 5vh 0 0 30vw;
+    width: 58%;
+    height: fit-content;
     color: white;
     font-family: "Lato", sans-serif;
     line-height: 1.5;
-    
+
+
 }
 
 .movie-content p {
@@ -158,25 +179,13 @@ body {
 
 
 .movie-content.expanded {
-    max-height: none;
+ /*   max-height: none;
     /*Ein großer Wert, der den gesamten Inhalt abdeckt */
+ /*   max-height: 100vh;*/
     overflow: visible;
     height: auto;
 }
 
-/*
-#summary {
-    transition: max-height 0.4s ease-out;
-    height: auto;
-}
-
-#summary.expanded {
-    max-height: none;
-    /*Ein großer Wert, der den gesamten Inhalt abdeckt 
-    overflow: visible;
-    height: auto;
-}
-*/
 
 .mehr-weniger-button {
     margin: 2vh 0 0 0;
@@ -190,20 +199,28 @@ body {
     font-size: 1.2em;
     font-family: "Lato", sans-serif;
     cursor: pointer;
-    box-shadow: 1px 1px 10px #000000;
+    box-shadow: 1px 1px 10px  #000000;
+}
+
+
+.mehr-weniger-button:hover {
+    background-color: #7a02cf;
 }
 
 /* CSS für die Showtimes Grid */
 .showtimes-grid {
+    width: 60%;
     position: relative;
     /*margin: -22vh 0 0 31vw;*/
-    margin-top: 3vh;
-    margin-bottom: 5vh;
+    align-self: center;
+
+    margin: 0 0 0 30vw;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13.5vw, 1fr));
     gap: 0.2vw;
     transition: margin-top 0.4s ease-out;
-    height:max-content;
+    height: max-content;
+    /*  background-color: antiquewhite;*/
 }
 
 

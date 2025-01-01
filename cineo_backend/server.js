@@ -225,43 +225,6 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
 });
 
 
-/*
-
-// API-Endpunkt zum Hinzufügen einer Vorstellung
-app.post('/api/vorstellungen', async (req, res) => {
-    const { movie_id, date, time, room_id, movie_duration, end_time } = req.body;
-
-    if (!movie_id || !date || !time || !room_id || !movie_duration || !end_time) {
-        return res.status(400).json({ message: 'Bitte alle Felder ausfüllen!' });
-    }
-
-    try {
-        // Überprüfen, ob der Raum existiert
-        const { data: roomData, error: roomError } = await supabase
-            .from('rooms')
-            .select('*')
-            .eq('room_id', room_id)
-            .single();
-
-        if (roomError || !roomData) {
-            return res.status(404).json({ message: 'Raum nicht gefunden!' });
-        }
-
-        // Vorstellung hinzufügen
-        const { data, error } = await supabase
-            .from('shows')
-            .insert([{ movie_id, date, time, room_id, movie_duration, end_time }]);
-
-        if (error) throw error;
-
-        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt!', data });
-    } catch (error) {
-        console.error('Fehler beim Hinzufügen der Vorstellung:', error);
-        res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error });
-    }
-});
-*/
-
 
 app.post('/api/vorstellungen', async (req, res) => {
     const { movie_id, date, time, end_time, room_id, movie_duration } = req.body;

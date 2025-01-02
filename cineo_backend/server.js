@@ -555,6 +555,43 @@ app.post('/api/tickets', async (req, res) => {
 
 
 
+// server.js - API Endpunkte zur Verwaltung von Ticketpreisen und Rabatten
+
+// API-Endpunkt, um Ticketpreise und Rabatte abzurufen
+app.get('/api/ticketpreise', async (req, res) => {
+    try {
+        // Ticketpreise aus der Tabelle 'ticket_categories' abrufen
+        const { data: ticketpreise, error: ticketError } = await supabase
+            .from('ticket_categories')
+            .select('ticket_id, ticket_price');
+
+        if (ticketError) {
+            throw ticketError;
+        }
+
+        // Rabatte aus der Tabelle 'ticket_discount' abrufen
+        const { data: rabatte, error: rabattError } = await supabase
+            .from('ticket_discount')
+            .select('name, type, value');
+
+        if (rabattError) {
+            throw rabattError;
+        }
+
+        res.json({ ticketpreise, rabatte });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+
+
+
+
 // Statische Dateien bereitstellen (für Bilder)
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
 

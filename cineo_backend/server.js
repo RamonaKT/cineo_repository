@@ -226,11 +226,103 @@ app.get('/api/vorstellungen/:movieId', async (req, res) => {
 
 
 
+app.post('/api/vorstellungen', async (req, res) => {
+    const { movie_id, date, time, end_time, room_id, movie_duration } = req.body;
+
+    // Überprüfen, ob alle erforderlichen Daten vorhanden sind
+    if (!movie_id || !date || !time || !room_id || !movie_duration) {
+        return res.status(400).json({ message: 'Fehlende Daten: movie_id, date, time, room_id und movie_duration sind erforderlich' });
+    }
+
+    try {
+        // Holen des Filmtitels aus der 'movies'-Tabelle basierend auf movie_id
+        const { data: movieData, error: movieError } = await supabase
+            .from('movies')
+            .select('title')
+            .eq('movie_id', movie_id)
+            .single();
+
+        if (movieError || !movieData) {
+            return res.status(404).json({ message: 'Film nicht gefunden' });
+        }
+
+        const movieTitle = movieData.title; // Titel des Films
+
+        // Erstellen eines neuen Eintrags in der 'shows'-Tabelle
+        const { data, error } = await supabase
+            .from('shows')
+            .insert([
+                {
+                    movie_id,
+                    movie_title: movieTitle,  // Den Filmtitel speichern
+                    date: date,
+                    time: time,
+                    end_time,
+                    room_id,
+                    movie_duration
+                }
+            ]);
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error: error.message });
+        }
+
+        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt', data });
+    } catch (error) {
+        console.error('Fehler beim Erstellen der Vorstellung:', error);
+        res.status(500).json({ message: 'Serverfehler', error: error.message });
+    }
+});
+
+app.get('/api/alleVorstellungen', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('shows')
+            .select('show_id, date, time, movie_title, room_id');
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Abrufen der Vorstellungen', error: error.message });
+        }
+
+        if (!data || data.length === 0) {
+            return res.status(404).json({ message: 'Keine Vorstellungen gefunden' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Vorstellungen:', error);
+        res.status(500).json({ message: 'Serverfehler', error: error.message });
+    }
+});
+
+
+
+app.delete('/api/vorstellungen/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const { error } = await supabase
+            .from('shows')
+            .delete()
+            .eq('show_id', id);
+
+        if (error) {
+            return res.status(500).json({ message: 'Fehler beim Löschen der Vorstellung', error: error.message });
+        }
+
+        res.status(200).json({ message: 'Vorstellung erfolgreich gelöscht' });
+    } catch (error) {
+        console.error('Fehler beim Löschen der Vorstellung:', error);
+        res.status(500).json({ message: 'Serverfehler', error: error.message });
+    }
+});
+
+
 // API-Endpunkt, um alle Filme abzurufen
-app.get('/api/filme', async (req, res) => {
+app.get('/api/alleFilme', async (req, res) => {
     const { data, error } = await supabase
         .from('movies')
-        .select('movie_id, title, image'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
+        .select('movie_id, title, image, duration'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
 
     if (error) {
         return res.status(500).json({ error: error.message });
@@ -242,6 +334,130 @@ app.get('/api/filme', async (req, res) => {
 
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
+
+
+
+
+
+app.get('/api/filme', async (req, res) => {
+
+    const now = new Date().toISOString(); // Aktuelles Datum und Uhrzeit
+
+
+
+    // Abrufen der movie_id's aus der shows-Tabelle
+    const { data: showsData, error: showsError } = await supabase
+        .from('shows')
+        .select('movie_id')
+        .gte('date', now);
+      //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
+
+    if (showsError) {
+        return res.status(500).json({ error: showsError.message });
+    }
+
+    if (!showsData || showsData.length === 0) {
+        return res.status(404).json({ error: 'Keine Shows gefunden' });
+    }
+
+    // Holen der movie_ids aus der shows-Tabelle
+    const movieIds = showsData.map(show => show.movie_id);
+
+    // Abrufen der Filme aus der movies-Tabelle, deren movie_id in der shows-Tabelle vorhanden ist
+    const { data, error } = await supabase
+        .from('movies')
+        .select('movie_id, title, image, duration')
+        .in('movie_id', movieIds); // Filtern der Filme, die in der shows-Tabelle existieren
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    if (!data || data.length === 0) {
+        return res.status(404).json({ error: 'Keine Filme mit Vorstellungen gefunden' });
+    }
+
+    res.json(data);
+});
+
+
+
+
+
+app.get('/api/rooms', async (req, res) => {
+    const { date, time, movie_id } = req.query;
+
+    if (!date || !time || !movie_id) {
+        return res.status(400).json({ message: 'Datum, Uhrzeit und Film erforderlich!' });
+    }
+
+    try {
+        // Holen der Filmdauer aus der movies-Tabelle
+        const { data: movieData, error: movieError } = await supabase
+            .from('movies')
+            .select('duration')
+            .eq('movie_id', movie_id)
+            .single();
+
+        if (movieError || !movieData) {
+            return res.status(404).json({ message: 'Film nicht gefunden!' });
+        }
+
+        const movieDuration = movieData.duration;
+
+        // Berechnung der Endzeit des Films basierend auf der Startzeit und Filmdauer
+        const endTime = calculateEndTime(time, movieDuration);
+
+        console.log(`Überprüfe Räume für: ${date} ${time} - Endzeit: ${endTime}`);
+
+        // Überprüfen, ob der Raum bereits für das angegebene Datum und die Zeitspanne gebucht ist
+        const { data: bookedRooms, error: bookedError } = await supabase
+            .from('shows')
+            .select('room_id, time, end_time')
+            .eq('date', date)
+            .filter('time', 'lt', endTime) // Startzeit der bestehenden Vorstellung muss vor der Endzeit des neuen Films liegen
+            .filter('end_time', 'gt', time); // Endzeit der bestehenden Vorstellung muss nach der Startzeit des neuen Films liegen
+
+        if (bookedError) {
+            console.error('Fehler beim Abrufen der gebuchten Räume:', bookedError);
+            throw bookedError;
+        }
+
+        const bookedRoomIds = bookedRooms.map(room => room.room_id);
+
+        // Räume abrufen, die noch verfügbar sind
+        const { data: availableRooms, error: availableError } = await supabase
+            .from('rooms')
+            .select('*')
+            .not('room_id', 'in', `(${bookedRoomIds.join(',')})`);
+
+        if (availableError) {
+            console.error('Fehler beim Abrufen der verfügbaren Räume:', availableError);
+            throw availableError;
+        }
+
+        res.json(availableRooms);
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Räume:', error);
+        res.status(500).json({ message: 'Öffnungszeiten werden überschritten', error: error.message });
+    }
+});
+
+
+
+// Funktion zum Berechnen der Endzeit basierend auf Filmdauer und Startzeit
+function calculateEndTime(startTime, duration) {
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const totalMinutes = startHour * 60 + startMinute + duration;
+
+    // Runden auf die nächste Viertelstunde
+    const roundedMinutes = Math.ceil(totalMinutes / 15) * 15;
+    const endHour = Math.floor(roundedMinutes / 60);
+    const endMinute = roundedMinutes % 60;
+
+    return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+}
+
 
 
 app.post('/api/tickets', async (req, res) => {

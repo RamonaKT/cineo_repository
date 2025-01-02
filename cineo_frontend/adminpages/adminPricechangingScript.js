@@ -95,37 +95,22 @@ async function deleteRabatt(index) {
     }
 }
 
-
-/**
- * 
- * // Grundpreis aktualisieren
-async function updateGrundpreis(event) {
-    event.preventDefault();
-
-    const kategorie = document.getElementById('kategorie').value;
-    const preis = parseFloat(document.getElementById('preis').value);
-
-    let ticket_id;
-    if (kategorie === 'Parkett') ticket_id = 0;
-    if (kategorie === 'VIP') ticket_id = 1;
-    if (kategorie === 'Loge') ticket_id = 2;
-
-    const body = {};
-    body[kategorie.toLowerCase()] = preis;  // Die dynamische Zuweisung der Werte
+// Grundpreis aktualisieren
+async function updateGrundpreis(kategorie, preis) {
+    const ticket_id = kategorie === "Parkett" ? 0 : kategorie === "VIP" ? 1 : 2;
 
     try {
-        const response = await fetch('/api/ticketpreise', {
+        const response = await fetch(`/api/ticketpreise/${ticket_id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
+            body: JSON.stringify({ ticket_price: preis })
         });
 
         if (response.ok) {
             grundpreise[kategorie] = preis;
             renderGrundpreise();
-            document.getElementById('grundpreisForm').reset();
         } else {
-            console.error('Fehler beim Aktualisieren des Grundpreises');
+            console.error('Fehler beim Aktualisieren des Preises');
         }
     } catch (error) {
         console.error('Fehler beim Aktualisieren:', error);
@@ -133,31 +118,61 @@ async function updateGrundpreis(event) {
 }
 
 // Rabatt hinzufügen oder aktualisieren
-async function addRabatt(event) {
-    event.preventDefault();
-
-    const name = document.getElementById('rabattName').value;
-    const type = document.getElementById('rabattTyp').value;
-    const value = parseFloat(document.getElementById('rabattWert').value);
-
+async function addOrUpdateRabatt(name, typ, wert) {
     try {
         const response = await fetch('/api/ticketrabatt', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, type, value })
+            body: JSON.stringify({ name, type: typ, value: wert })
         });
 
         if (response.ok) {
-            const newRabatt = await response.json();
-            rabatte = rabatte.filter(r => r.name !== name); // Entfernen des alten Rabatts (falls existiert)
-            rabatte.push({ name, type, value });
+            const data = await response.json();
+            const index = rabatte.findIndex(r => r.name === name);
+
+            if (index > -1) {
+                rabatte[index] = data.rabatt[0];
+            } else {
+                rabatte.push(data.rabatt[0]);
+            }
+
             renderRabatte();
-            document.getElementById('rabattForm').reset();
         } else {
-            console.error('Fehler beim Hinzufügen des Rabatts');
+            console.error('Fehler beim Hinzufügen/Aktualisieren des Rabatts');
         }
     } catch (error) {
-        console.error('Fehler beim Hinzufügen:', error);
+        console.error('Fehler beim Hinzufügen/Aktualisieren:', error);
     }
 }
- */
+
+// Grundpreis bearbeiten und aktualisieren
+function editGrundpreis(kategorie, preis) {
+    document.getElementById('kategorie').value = kategorie;
+    document.getElementById('preis').value = preis;
+
+    document.getElementById('grundpreisForm').onsubmit = function (e) {
+        e.preventDefault();
+        const neuerPreis = parseFloat(document.getElementById('preis').value);
+        if (!isNaN(neuerPreis)) {
+            updateGrundpreis(kategorie, neuerPreis);
+        } else {
+            alert('Bitte gültige Werte eingeben.');
+        }
+    };
+}
+
+// Rabatt hinzufügen und aktualisieren
+document.getElementById('rabattForm').onsubmit = function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('rabattName').value;
+    const typ = document.getElementById('rabattTyp').value;
+    const wert = parseFloat(document.getElementById('rabattWert').value);
+
+    if (name && !isNaN(wert) && wert > 0) {
+        addOrUpdateRabatt(name, typ, wert);
+        document.getElementById('rabattForm').reset();
+    } else {
+        alert('Bitte gültige Werte eingeben.');
+    }
+};

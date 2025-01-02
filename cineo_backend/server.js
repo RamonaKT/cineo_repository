@@ -587,11 +587,6 @@ app.get('/api/ticketpreise', async (req, res) => {
 
 
 
-
-
-
-
-
 // Statische Dateien bereitstellen (für Bilder)
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
 

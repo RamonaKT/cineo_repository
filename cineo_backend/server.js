@@ -192,79 +192,30 @@ app.post('/api/tickets', async (req, res) => {
 
 
 
-//ticket_categories put
-// Ändern eines Ticketpreises
-app.put('/api/ticket_prices', async (req, res) => {
-    const { ticket_id, ticket_price } = req.body;
+// server.js - API Endpunkte zur Verwaltung von Ticketpreisen und Rabatten
 
-    if (!ticket_id || ticket_price == null) {
-        return res.status(400).json({ error: "Fehlende Ticketpreis-Daten" });
-    }
-
+// API-Endpunkt, um Ticketpreise und Rabatte abzurufen
+app.get('/api/ticketpreise', async (req, res) => {
     try {
-        const { data, error } = await supabase
-            .from('ticket_categories')
-            .upsert([{ ticket_id, ticket_price }]);
-
-        if (error) {
-            throw error;
-        }
-
-        res.status(200).json({
-            message: "Ticketpreis erfolgreich aktualisiert",
-            ticket_price: data
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
-
-//ticket_categories get 
-// Abrufen der Ticketpreise
-app.get('/api/ticket_prices', async (req, res) => {
-    try {
-        const { data: ticketPrices, error } = await supabase
+        // Ticketpreise aus der Tabelle 'ticket_categories' abrufen
+        const { data: ticketpreise, error: ticketError } = await supabase
             .from('ticket_categories')
             .select('ticket_id, ticket_price');
 
-        if (error) {
-            throw error;
+        if (ticketError) {
+            throw ticketError;
         }
 
-        res.status(200).json(ticketPrices);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
-
-//ticket_discounts post
-// Hinzufügen eines Rabatts
-app.post('/api/ticket_discounts', async (req, res) => {
-    const { name, price, type } = req.body;
-
-    if (!name || price == null || !type) {
-        return res.status(400).json({ error: "Fehlende Rabatt-Daten" });
-    }
-
-    try {
-        const { data, error } = await supabase
+        // Rabatte aus der Tabelle 'ticket_discount' abrufen
+        const { data: rabatte, error: rabattError } = await supabase
             .from('ticket_discount')
-            .insert([{ name, price, type }]);
+            .select('name, type, value');
 
-        if (error) {
-            throw error;
+        if (rabattError) {
+            throw rabattError;
         }
 
-        res.status(201).json({
-            message: "Rabatt erfolgreich hinzugefügt",
-            discount: data
-        });
+        res.json({ ticketpreise, rabatte });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
@@ -273,86 +224,6 @@ app.post('/api/ticket_discounts', async (req, res) => {
 
 
 
-//ticket_discounts delite
-// Löschen eines Rabatts
-app.delete('/api/ticket_discounts', async (req, res) => {
-    const { id } = req.body;
-
-    if (!id) {
-        return res.status(400).json({ error: "Fehlende Rabatt-ID zum Löschen" });
-    }
-
-    try {
-        const { data, error } = await supabase
-            .from('ticket_discount')
-            .delete()
-            .eq('id', id);
-
-        if (error) {
-            throw error;
-        }
-
-        res.status(200).json({
-            message: "Rabatt erfolgreich gelöscht",
-            discount: data
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
-
-//ticket_discounts delite
-// Überschreiben eines Rabatts
-app.put('/api/ticket_discounts', async (req, res) => {
-    const { id, name, price, type } = req.body;
-
-    if (!id || !name || price == null || !type) {
-        return res.status(400).json({ error: "Fehlende Rabatt-Daten zum Überschreiben" });
-    }
-
-    try {
-        const { data, error } = await supabase
-            .from('ticket_discount')
-            .upsert([{ id, name, price, type }]);
-
-        if (error) {
-            throw error;
-        }
-
-        res.status(200).json({
-            message: "Rabatt erfolgreich aktualisiert",
-            discount: data
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
-
-
-//ticket_discounts get
-// Abrufen der Rabatte
-app.get('/api/ticket_discounts', async (req, res) => {
-    try {
-        const { data: discounts, error } = await supabase
-            .from('ticket_discount')
-            .select('*');
-
-        if (error) {
-            throw error;
-        }
-
-        res.status(200).json(discounts);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
 
 
 

@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+
+
 // Funktion, um die Vorstellungen abzurufen
 async function fetchShowtimes(movieId) {
     try {
@@ -33,16 +35,35 @@ async function fetchShowtimes(movieId) {
             throw new Error("Fehler beim Abrufen der Vorstellungen");
         }
         const showtimes = await response.json();
-        renderShowtimes(showtimes);
+
+        // Filtere die Vorstellungen ab dem heutigen Datum
+        const filteredShowtimes = filterFutureShowtimes(showtimes);
+
+        renderShowtimes(filteredShowtimes);
     } catch (error) {
         console.error("Fehler beim Abrufen der Vorstellungen:", error);
     }
 }
 
-// Funktion, um die Vorstellungen auf der Seite darzustellen
+
+// Funktion zum Filtern der Vorstellungen ab dem heutigen Datum
+function filterFutureShowtimes(showtimes) {
+    const now = new Date(); // Aktuelles Datum und Uhrzeit
+    return showtimes.filter(showtime => {
+        const showDateTime = new Date(`${showtime.date}T${showtime.time}`);
+        return showDateTime >= now; // Nur zukünftige Vorstellungen
+    });
+}
+
+    // Funktion, um die Vorstellungen auf der Seite darzustellen
 function renderShowtimes(showtimes) {
     const showtimesGrid = document.getElementById("showtimes-grid");
     showtimesGrid.innerHTML = ""; // Vorherige Inhalte entfernen
+
+    if (showtimes.length === 0) {
+        showtimesGrid.innerHTML = "<p>Keine zukünftigen Vorstellungen verfügbar.</p>";
+        return;
+    }
 
     showtimes.forEach(showtime => {
         const formattedDate = formatDate(showtime.date); // Datum formatieren

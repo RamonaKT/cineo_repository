@@ -264,23 +264,29 @@ app.put('/api/ticketpreise/:ticket_id', async (req, res) => {
     }
 });
 
-// API-Endpunkt, um Rabatte hinzuzufügen oder zu aktualisieren
+// API-Endpunkt, um Rabatte hinzuzufügen (ohne Update-Prüfung)
 app.post('/api/ticketrabatt', async (req, res) => {
     const { name, type, value } = req.body;
 
     try {
-        const { data, error } = await supabase
+        // Einfach neuen Rabatt hinzufügen, ohne auf Duplikate zu prüfen
+        const { error: insertError } = await supabase
             .from('ticket_discount')
-            .upsert([{ name, type, value }], { onConflict: ['name'] });
+            .insert([{ name, type, value }]);
 
-        if (error) throw error;
+        if (insertError) {
+            throw insertError;
+        }
 
-        res.json({ message: 'Rabatt hinzugefügt oder aktualisiert', rabatt: data });
+        res.json({ message: 'Rabatt hinzugefügt' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
+
+
+
 
 
 

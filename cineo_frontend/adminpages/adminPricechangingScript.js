@@ -53,7 +53,7 @@ function renderRabatte() {
     liste.innerHTML = '';
 
     rabatte.forEach((item, index) => {
-        const rabattText = item.type === "Prozent" ? `${item.value}% Rabatt` : `${item.value.toFixed(2)} € Rabatt`;
+        const rabattText = item.type === "prozent" ? `${item.value}% Rabatt` : `${item.value.toFixed(2)} € Rabatt`;
 
         const li = document.createElement('li');
         li.innerHTML = `<div>${item.name} - ${rabattText}</div> 
@@ -117,31 +117,33 @@ async function updateGrundpreis(kategorie, preis) {
     }
 }
 
-// Rabatt hinzufügen oder aktualisieren
-async function addOrUpdateRabatt(name, typ, wert) {
+// Rabatt hinzufügen (ohne Aktualisieren, immer neu hinzufügen)
+async function addRabatt(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('rabattName').value;
+    const type = document.getElementById('rabattTyp').value;
+    const value = parseFloat(document.getElementById('rabattWert').value);
+
     try {
+        // API-Aufruf um Rabatt hinzuzufügen
         const response = await fetch('/api/ticketrabatt', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, type: typ, value: wert })
+            body: JSON.stringify({ name, type, value })
         });
 
         if (response.ok) {
             const data = await response.json();
-            const index = rabatte.findIndex(r => r.name === name);
-
-            if (index > -1) {
-                rabatte[index] = data.rabatt[0];
-            } else {
-                rabatte.push(data.rabatt[0]);
-            }
-
-            renderRabatte();
+            // Rabatt nach Hinzufügen der Daten zur Liste hinzufügen
+            rabatte.push({ name, type, value });
+            renderRabatte();  // Rabatte neu rendern
+            document.getElementById('rabattForm').reset(); // Formular zurücksetzen
         } else {
-            console.error('Fehler beim Hinzufügen/Aktualisieren des Rabatts');
+            console.error('Fehler beim Hinzufügen des Rabatts');
         }
     } catch (error) {
-        console.error('Fehler beim Hinzufügen/Aktualisieren:', error);
+        console.error('Fehler beim Hinzufügen:', error);
     }
 }
 
@@ -170,8 +172,7 @@ document.getElementById('rabattForm').onsubmit = function (e) {
     const wert = parseFloat(document.getElementById('rabattWert').value);
 
     if (name && !isNaN(wert) && wert > 0) {
-        addOrUpdateRabatt(name, typ, wert);
-        document.getElementById('rabattForm').reset();
+        addRabatt(e);
     } else {
         alert('Bitte gültige Werte eingeben.');
     }

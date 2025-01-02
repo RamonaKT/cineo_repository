@@ -10,7 +10,7 @@ body {
 
 .outer-container {
   display: flex;
-  flex-direction: row ;
+  flex-direction: row;
   align-self: center;
   width: 100%;
   gap: 5vw;
@@ -75,13 +75,13 @@ input {
 
 #movieId::-webkit-scrollbar-track {
   background-color: #8264be;
- 
+
 }
 
 #movieId option {
   padding: 3px;
   width: 100%;
- 
+
 
 }
 
@@ -124,15 +124,15 @@ button {
 }
 
 .add-button {
-  
+
   margin: 3vh 0 0 2vw;
   background-color: rgb(90, 255, 245, 0.5);
 }
 
 .add-button:hover {
   background-color: rgba(6, 255, 238, 0.8);
-  
- 
+
+
 }
 
 #response-message {
@@ -153,7 +153,7 @@ option {
   background: linear-gradient(to right, rgba(124, 59, 218, 0.5), rgba(76, 35, 138, 0.456));
   width: 30vw;
   height: 50vh;
-  padding:20px;
+  padding: 20px;
   border-radius: 8px;
 
 }
@@ -173,7 +173,7 @@ option {
 
 #show-list-container::-webkit-scrollbar-track {
   background-color: #8264be;
- 
+
 }
 
 #show-list {
@@ -183,13 +183,13 @@ option {
 
 #show-list li {
   padding: 10px;
-  border-bottom: 1px solid  white;
+  border-bottom: 1px solid white;
   cursor: pointer;
 
 }
 
 #show-list li:hover {
-  background:  #5601926b;
+  background: #5601926b;
 }
 
 #show-list li.selected {

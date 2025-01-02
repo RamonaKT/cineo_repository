@@ -587,6 +587,70 @@ app.get('/api/ticketpreise', async (req, res) => {
 
 
 
+// API-Endpunkt, um einen Rabatt zu löschen
+app.delete('/api/ticketrabatt/:name', async (req, res) => {
+    const { name } = req.params;
+
+    try {
+        const { error } = await supabase
+            .from('ticket_discount')
+            .delete()
+            .eq('name', name);
+
+        if (error) throw error;
+
+        res.json({ message: `Rabatt mit dem Namen "${name}" wurde gelöscht.` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// API-Endpunkt, um Grundpreise zu aktualisieren
+app.put('/api/ticketpreise/:ticket_id', async (req, res) => {
+    const { ticket_id } = req.params;
+    const { ticket_price } = req.body;
+
+    try {
+        const { error } = await supabase
+            .from('ticket_categories')
+            .update({ ticket_price })
+            .eq('ticket_id', ticket_id);
+
+        if (error) throw error;
+
+        res.json({ message: 'Ticketpreis aktualisiert' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API-Endpunkt, um Rabatte hinzuzufügen (ohne Update-Prüfung)
+app.post('/api/ticketrabatt', async (req, res) => {
+    const { name, type, value } = req.body;
+
+    try {
+        // Einfach neuen Rabatt hinzufügen, ohne auf Duplikate zu prüfen
+        const { error: insertError } = await supabase
+            .from('ticket_discount')
+            .insert([{ name, type, value }]);
+
+        if (insertError) {
+            throw insertError;
+        }
+
+        res.json({ message: 'Rabatt hinzugefügt' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
 // Statische Dateien bereitstellen (für Bilder)
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
 

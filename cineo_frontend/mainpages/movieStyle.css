@@ -209,12 +209,12 @@ body {
 
 /* CSS für die Showtimes Grid */
 .showtimes-grid {
-    width: 60%;
+    width: 55%;
     position: relative;
     /*margin: -22vh 0 0 31vw;*/
     align-self: center;
 
-    margin: 0 0 0 30vw;
+    margin: 0 0 0 25vw;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13.5vw, 1fr));
     gap: 0.2vw;

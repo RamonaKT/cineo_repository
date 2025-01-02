@@ -1,0 +1,82 @@
+/* Hall Selection */
+#hall-selection {
+    margin-bottom: 20px;
+}
+
+/* Saal Layout */
+#hall-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#screen {
+    width: 70%;
+    height: 30px;
+    background-color: #444;
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#seat-layout {
+    display: grid;
+    gap: 5px;
+    justify-content: center;
+}
+
+/* Sitzplatz-Arten */
+.seat {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.seat.standard {
+    background-color: #90caf9;
+}
+
+.seat.premium {
+    background-color: #f48fb1;
+}
+
+.seat.vip {
+    background-color: #ffe082;
+}
+
+/* Reservierte Plätze */
+.seat.reserved {
+    background-color: #b0bec5;
+    cursor: not-allowed;
+}
+
+.seat.selected {
+    background-color: #76ff03;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #555;
+}

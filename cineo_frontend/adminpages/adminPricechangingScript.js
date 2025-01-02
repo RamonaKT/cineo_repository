@@ -73,3 +73,91 @@ function editGrundpreis(kategorie, preis) {
     document.getElementById('kategorie').value = kategorie;
     document.getElementById('preis').value = preis;
 }
+
+
+// Rabatt löschen
+async function deleteRabatt(index) {
+    const name = rabatte[index].name;
+
+    try {
+        const response = await fetch(`/api/ticketrabatt/${name}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            rabatte.splice(index, 1); // Rabatt aus der Liste entfernen
+            renderRabatte();
+        } else {
+            console.error('Fehler beim Löschen des Rabatts');
+        }
+    } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+    }
+}
+
+
+/**
+ * 
+ * // Grundpreis aktualisieren
+async function updateGrundpreis(event) {
+    event.preventDefault();
+
+    const kategorie = document.getElementById('kategorie').value;
+    const preis = parseFloat(document.getElementById('preis').value);
+
+    let ticket_id;
+    if (kategorie === 'Parkett') ticket_id = 0;
+    if (kategorie === 'VIP') ticket_id = 1;
+    if (kategorie === 'Loge') ticket_id = 2;
+
+    const body = {};
+    body[kategorie.toLowerCase()] = preis;  // Die dynamische Zuweisung der Werte
+
+    try {
+        const response = await fetch('/api/ticketpreise', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+            grundpreise[kategorie] = preis;
+            renderGrundpreise();
+            document.getElementById('grundpreisForm').reset();
+        } else {
+            console.error('Fehler beim Aktualisieren des Grundpreises');
+        }
+    } catch (error) {
+        console.error('Fehler beim Aktualisieren:', error);
+    }
+}
+
+// Rabatt hinzufügen oder aktualisieren
+async function addRabatt(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('rabattName').value;
+    const type = document.getElementById('rabattTyp').value;
+    const value = parseFloat(document.getElementById('rabattWert').value);
+
+    try {
+        const response = await fetch('/api/ticketrabatt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, type, value })
+        });
+
+        if (response.ok) {
+            const newRabatt = await response.json();
+            rabatte = rabatte.filter(r => r.name !== name); // Entfernen des alten Rabatts (falls existiert)
+            rabatte.push({ name, type, value });
+            renderRabatte();
+            document.getElementById('rabattForm').reset();
+        } else {
+            console.error('Fehler beim Hinzufügen des Rabatts');
+        }
+    } catch (error) {
+        console.error('Fehler beim Hinzufügen:', error);
+    }
+}
+ */

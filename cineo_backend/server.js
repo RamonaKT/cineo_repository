@@ -224,6 +224,100 @@ app.get('/api/ticketpreise', async (req, res) => {
 
 
 
+// API-Endpunkt, um einen Rabatt zu löschen
+app.delete('/api/ticketrabatt/:name', async (req, res) => {
+    const { name } = req.params;
+
+    try {
+        const { error } = await supabase
+            .from('ticket_discount')
+            .delete()
+            .eq('name', name);
+
+        if (error) throw error;
+
+        res.json({ message: `Rabatt mit dem Namen "${name}" wurde gelöscht.` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+/**
+ * 
+ * app.put('/api/ticketpreise', async (req, res) => {
+    const { parkett, vip, loge } = req.body;
+    console.log('Empfangene Daten:', req.body); // Logging hinzufügen
+
+    try {
+        if (parkett !== undefined) {
+            console.log('Aktualisiere Parkett auf:', parkett); // Weitere Logs
+            await supabase
+                .from('ticket_categories')
+                .upsert({ ticket_id: 0, ticket_price: parkett });
+        }
+
+        if (vip !== undefined) {
+            console.log('Aktualisiere VIP auf:', vip); // Weitere Logs
+            await supabase
+                .from('ticket_categories')
+                .upsert({ ticket_id: 1, ticket_price: vip });
+        }
+
+        if (loge !== undefined) {
+            console.log('Aktualisiere Loge auf:', loge); // Weitere Logs
+            await supabase
+                .from('ticket_categories')
+                .upsert({ ticket_id: 2, ticket_price: loge });
+        }
+
+        res.json({ message: "Grundticketpreise wurden erfolgreich aktualisiert." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API-Endpunkt, um Rabatte zu verwalten (hinzufügen, aktualisieren, löschen)
+app.post('/api/ticketrabatt', async (req, res) => {
+    const { name, type, value } = req.body;
+
+    try {
+        // Prüfen, ob der Rabattname bereits existiert
+        const { data: existingRabatt } = await supabase
+            .from('ticket_discount')
+            .select('*')
+            .eq('name', name)
+            .single();
+
+        if (existingRabatt) {
+            // Rabatt aktualisieren, wenn der Name bereits existiert
+            const { error } = await supabase
+                .from('ticket_discount')
+                .update({ type, value })
+                .eq('name', name);
+
+            if (error) throw error;
+
+            res.json({ message: "Rabatt wurde erfolgreich aktualisiert." });
+        } else {
+            // Andernfalls neuen Rabatt hinzufügen
+            const { error } = await supabase
+                .from('ticket_discount')
+                .insert([{ name, type, value }]);
+
+            if (error) throw error;
+
+            res.json({ message: "Rabatt wurde erfolgreich hinzugefügt." });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+ */
+
 
 
 

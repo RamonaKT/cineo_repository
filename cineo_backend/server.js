@@ -461,7 +461,7 @@ function calculateEndTime(startTime, duration) {
 
 
 app.post('/api/tickets', async (req, res) => {
-    const { show_id, ticket_type, price } = req.body;
+    const { show_id, ticket_type, price, discount_name } = req.body;
     console.log(req.body);
 
     if (!show_id || !ticket_type || !price) {
@@ -534,7 +534,7 @@ app.post('/api/tickets', async (req, res) => {
         // Schritt 5: Füge das Ticket hinzu
         const { data: newTicket, error: insertError } = await supabase
             .from('tickets')
-            .insert([{ show_id, ticket_type, price }])
+            .insert([{ show_id, ticket_type, price, discount_name }])
             .single();
 
         if (insertError) {
@@ -563,7 +563,7 @@ app.get('/api/ticketpreise', async (req, res) => {
         // Ticketpreise aus der Tabelle 'ticket_categories' abrufen
         const { data: ticketpreise, error: ticketError } = await supabase
             .from('ticket_categories')
-            .select('ticket_id, ticket_price');
+            .select('ticket_id, ticket_price, ticket_name');
 
         if (ticketError) {
             throw ticketError;
@@ -584,7 +584,6 @@ app.get('/api/ticketpreise', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 
 
 // API-Endpunkt, um einen Rabatt zu löschen

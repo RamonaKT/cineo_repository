@@ -2,8 +2,8 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: #12001a;  /* Sehr dunkles Violett für Hintergrund */
+    color: #ffffff;  /* Weiß für Text */
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -15,7 +15,7 @@ body {
     max-width: 1000px;
     margin: 40px 0;
     padding: 40px;
-    background-color: #1e1e1e;
+    background: linear-gradient(145deg, #290033, #52005f);  /* Farbverlauf für Tiefe */
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
 }
@@ -23,15 +23,15 @@ body {
 h1, h2 {
     text-align: center;
     margin-bottom: 30px;
-    color: #ffffff;
+    color: #6ee7ff;  /* Helles Blau für Überschriften */
 }
 
 section {
     margin-bottom: 50px;
-    border: 1px solid #333333;
+    border: 1px solid #6ee7ff;
     padding: 30px;
     border-radius: 8px;
-    background-color: #252525;
+    background-color: #2b0036;  /* Dunkles, leicht aufgelockertes Violett */
 }
 
 ul {
@@ -45,7 +45,7 @@ li {
     align-items: center;
     padding: 18px;
     margin: 15px 0;
-    background-color: #333333;
+    background: linear-gradient(90deg, #7d1a87, #5c005d);  /* Verlauf für einzelne Elemente */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
@@ -59,25 +59,25 @@ form {
 
 label {
     font-weight: bold;
-    color: #b0b0b0;
+    color: #6ee7ff;  /* Helles Blau für Labels */
 }
 
 input, select, button {
     padding: 14px;
     font-size: 1em;
     border-radius: 6px;
-    border: 1px solid #444444;
-    background-color: #2e2e2e;
+    border: 1px solid #6ee7ff;
+    background-color: #4a0256;  /* Dunkleres Violett für Inputs */
     color: #ffffff;
 }
 
 input:focus, select:focus {
-    outline: 2px solid #5a9bff;
+    outline: 2px solid #1ac7d7;  /* Türkis für Fokus */
 }
 
 button {
-    background-color: #4caf50;
-    color: white;
+    background-color: #6ee7ff;  /* Helles Blau */
+    color: #1a0028;
     border: none;
     cursor: pointer;
     font-weight: bold;
@@ -85,7 +85,7 @@ button {
 }
 
 button:hover {
-    background-color: #388e3c;
+    background-color: #1ac7d7;  /* Türkis für Hover */
 }
 
 li button {
@@ -101,4 +101,13 @@ li button {
 
 li button:hover {
     background-color: #c82333;
+}
+
+/* Filterbereich – sanfter Verlauf für weiche Optik */
+.filter {
+    background: linear-gradient(90deg, #6ee7ff, #7d1a87); 
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }

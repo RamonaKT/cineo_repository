@@ -16,18 +16,18 @@ const showLayoutController = require('./controller/showlayoutController');  // D
 const { saveLayoutController } = require('./controller/showLayoutController');  // Importiere den Controller
 
 
+app.use(cors());
+
+app.use(express.json());
+
+
 // Routen
 app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
 
 
 // Routen
-//app.use('/api', roomController);
+app.use('/api', roomController);
 
-
-
-app.use(cors());
-
-app.use(express.json());
 
 
 const supabaseUrl = process.env.SUPABASE_URL;

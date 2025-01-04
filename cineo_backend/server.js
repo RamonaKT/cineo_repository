@@ -3,6 +3,7 @@ require('dotenv').config({ path: '../cineo_backend/.env' });
 
 const cors = require('cors');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
@@ -19,7 +20,7 @@ const { saveLayoutController } = require('./src/controller/showLayoutController'
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
 }));
-
+app.use(bodyParser.json());
 
 app.use(express.json());
 

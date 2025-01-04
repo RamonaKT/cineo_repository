@@ -12,8 +12,8 @@ const axios = require('axios');
 
 
 // Importiere den ShowLayoutController
-const showLayoutController = require('./controller/showlayoutController');  // Der Pfad hängt von der tatsächlichen Struktur ab
-const { saveLayoutController } = require('./controller/showLayoutController');  // Importiere den Controller
+const showLayoutController = require('./src/controller/showLayoutController');  // Der Pfad hängt von der tatsächlichen Struktur ab
+//const { saveLayoutController } = require('./src/controller/showLayoutController');  // Importiere den Controller
 
 
 app.use(cors());
@@ -23,7 +23,7 @@ app.use(express.json());
 
 // Routen
 app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
-
+app.use(showLayoutController);
 
 // Routen
 app.use('/api', roomController);

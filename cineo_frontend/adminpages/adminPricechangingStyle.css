@@ -23,12 +23,12 @@ body {
 h1, h2 {
     text-align: center;
     margin-bottom: 30px;
-    color: #6ee7ff;  /* Helles Blau für Überschriften */
+    color: #5afff5;  /* Helles Blau für Überschriften */
 }
 
 section {
     margin-bottom: 50px;
-    border: 1px solid #6ee7ff;
+    border: 1px solid #5afff5;
     padding: 30px;
     border-radius: 8px;
     background-color: #2b0036;  /* Dunkles, leicht aufgelockertes Violett */
@@ -59,24 +59,24 @@ form {
 
 label {
     font-weight: bold;
-    color: #6ee7ff;  /* Helles Blau für Labels */
+    color: #5afff5;  
 }
 
 input, select, button {
     padding: 14px;
     font-size: 1em;
     border-radius: 6px;
-    border: 1px solid #6ee7ff;
+    border: 1px solid #5afff5;
     background-color: #4a0256;  /* Dunkleres Violett für Inputs */
     color: #ffffff;
 }
 
 input:focus, select:focus {
-    outline: 2px solid #1ac7d7;  /* Türkis für Fokus */
+    outline: 2px solid #43b7af;
 }
 
 button {
-    background-color: #6ee7ff;  /* Helles Blau */
+    background-color: #5afff5;
     color: #1a0028;
     border: none;
     cursor: pointer;
@@ -85,7 +85,7 @@ button {
 }
 
 button:hover {
-    background-color: #1ac7d7;  /* Türkis für Hover */
+    background-color: #43b7af;
 }
 
 li button {
@@ -105,7 +105,7 @@ li button:hover {
 
 /* Filterbereich – sanfter Verlauf für weiche Optik */
 .filter {
-    background: linear-gradient(90deg, #6ee7ff, #7d1a87); 
+    background: linear-gradient(90deg, #5afff5, #7d1a87); 
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 30px;

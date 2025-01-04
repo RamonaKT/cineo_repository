@@ -2,10 +2,10 @@ const seatContainer = document.getElementById("seatLayout");
         const submitButton = document.getElementById("submitButton");
         const roomNumberInput = document.getElementById("roomNumber");
         const seatCountsInput = document.getElementById("seatCounts");
-        
+
         let seatData = [];
         let seatCounts = [];
-        
+
         // Event listener für den Bestätigungsbutton
         submitButton.addEventListener("click", async () => {
             const roomNumber = roomNumberInput.value;
@@ -51,7 +51,7 @@ const seatContainer = document.getElementById("seatLayout");
                 for (let i = 0; i < rowSeats; i++) {
                     const seatDiv = document.createElement("div");
                     seatDiv.classList.add("seat");
-                    seatDiv.classList.add("available");
+                    seatDiv.classList.add("available"); // Standard-Kategorie ist Parkett
                     seatDiv.dataset.rowIndex = rowIndex;
                     seatDiv.dataset.seatIndex = i;
 
@@ -62,7 +62,6 @@ const seatContainer = document.getElementById("seatLayout");
                     rowDiv.appendChild(seatDiv);
                     seatData.push({
                         category: 0, // Standard Kategorie: Parkett
-                        status: 'available',
                         reservedAt: null
                     });
                 }
@@ -77,21 +76,18 @@ const seatContainer = document.getElementById("seatLayout");
             const rowIndex = seatDiv.dataset.rowIndex;
             
             const seat = seatData[rowIndex * seatCounts[rowIndex] + parseInt(seatIndex)];
-            if (seat.status === 'available') {
-                seat.status = 'reserved';
+            if (seat.category === 0) {
                 seat.category = 1; // VIP
                 seatDiv.classList.remove('available');
-                seatDiv.classList.add('reserved');
-            } else if (seat.status === 'reserved') {
-                seat.status = 'available';
-                seat.category = 0; // Parkett
-                seatDiv.classList.remove('reserved');
-                seatDiv.classList.add('available');
-            } else if (seat.status === 'available') {
-                seat.status = 'reserved';
-                seat.category = 2; // Loge
-                seatDiv.classList.remove('available');
                 seatDiv.classList.add('vip');
+            } else if (seat.category === 1) {
+                seat.category = 2; // Loge
+                seatDiv.classList.remove('vip');
+                seatDiv.classList.add('logen');
+            } else {
+                seat.category = 0; // Parkett
+                seatDiv.classList.remove('logen');
+                seatDiv.classList.add('available');
             }
         }
 

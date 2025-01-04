@@ -42,31 +42,34 @@
 
 
 <div class="main-content">
+    <div class="contentbox">
+        <div class="above-container">
+            <!-- Raum Nummer Eingabe -->
+            <label for="roomNumber">Raum Nummer:</label>
+            <input type="number" id="roomNumber" placeholder="Raumnummer" required>
 
-    <!-- Raum Nummer Eingabe -->
-    <label for="roomNumber">Raum Nummer:</label>
-    <input type="number" id="roomNumber" placeholder="Raumnummer" required>
+            <!-- Anzahl der Reihen und Sitze Eingabe -->
+            <div id="rowInput">
+                <label for="seatCounts">Anzahl der Reihen und Sitze pro Reihe (z.B. 10,15,20):</label>
+                <input type="text" id="seatCounts" placeholder="Beispiel: 10,15,20" required>
+            </div>
 
-    <!-- Anzahl der Reihen und Sitze Eingabe -->
-    <div id="rowInput">
-        <label for="seatCounts">Anzahl der Reihen und Sitze pro Reihe (z.B. 10,15,20):</label>
-        <input type="text" id="seatCounts" placeholder="Beispiel: 10,15,20" required>
+            <!-- Kategorie Legende -->
+            <div class="category-label">
+                <div class="parkett-label">Parkett</div>
+                <div class="vip-label">VIP</div>
+                <div class="logen-label">Loge</div>
+            </div>
+
+            <!-- Bestätigungs Button -->
+            <div class="button-container">
+                <button id="submitButton">Layout Bestätigen</button>
+            </div>
+        </div>
+
+        <!-- Sitzplan -->
+        <div id="seatLayout" class="seat-container"></div>
     </div>
-
-    <!-- Kategorie Legende -->
-    <div class="category-label">
-        <div class="parkett-label">Parkett</div>
-        <div class="vip-label">VIP</div>
-        <div class="logen-label">Loge</div>
-    </div>
-
-    <!-- Bestätigungs Button -->
-    <div class="button-container">
-        <button id="submitButton">Layout Bestätigen</button>
-    </div>
-
-    <!-- Sitzplan -->
-    <div id="seatLayout" class="seat-container"></div>
       
 </div>
 

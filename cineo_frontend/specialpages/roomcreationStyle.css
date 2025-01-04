@@ -1,3 +1,9 @@
+
+.contentbox {
+    display: flex;
+    flex-direction: column;
+}
+
 .seat-container {
     display: flex;
     flex-direction: column;

@@ -1,56 +1,26 @@
-package com.cineo.controllers;
-
-import com.cineo.models.Room;
-import com.cineo.models.Seat;
-import com.cineo.repositories.RoomRepository;
-import com.cineo.repositories.SeatRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api")
 public class RoomController {
 
-    @Autowired
-    private RoomRepository roomRepository;
+    private final RoomService roomService;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    private SeatRepository seatRepository;
+    public RoomController(RoomService roomService, ObjectMapper objectMapper) {
+        this.roomService = roomService;
+        this.objectMapper = objectMapper;
+    }
 
-    @PostMapping
-    public ResponseEntity<?> createRoom(@RequestBody RoomRequest roomRequest) {
+    @PostMapping("/update-seat-status")
+    public ResponseEntity<String> updateSeatStatus(@RequestBody SeatUpdateRequest request) {
         try {
-            // Raum erstellen
-            Room room = new Room();
-            room.setCapacity(roomRequest.getCapacity());
-            roomRepository.save(room);
-
-            // Sitze generieren
-            List<Seat> seats = new ArrayList<>();
-            int rowCount = roomRequest.getRowCount();
-            int columnCount = roomRequest.getColumnCount();
-            String[] categories = roomRequest.getCategories(); // z. B. ["VIP", "Standard", "Economy"]
-
-            for (int row = 1; row <= rowCount; row++) {
-                for (int col = 1; col <= columnCount; col++) {
-                    Seat seat = new Seat();
-                    seat.setRoom(room);
-                    seat.setRowId(row);
-                    seat.setSeatNumber(col);
-                    seat.setCategory(categories[row % categories.length]); // zirkulär durch Kategorien
-                    seat.setStatus("available");
-                    seats.add(seat);
-                }
-            }
-
-            seatRepository.saveAll(seats);
-            return ResponseEntity.ok("Raum und Sitze erfolgreich erstellt!");
+            // Update Seat-Status in der Datenbank
+            roomService.updateSeatStatus(request.getRoomId(), request.getRow(), request.getSeat(), request.getStatus());
+            return ResponseEntity.ok("Sitzplatzstatus aktualisiert");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Fehler: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fehler beim Aktualisieren");
         }
     }
 }

@@ -43,20 +43,23 @@
 
 <div class="main-content">
 
-    <form id="createRoomForm">
-        <label for="roomName">Raumnummer: </label>
-        <input type="text" id="roomName" name="roomName" required />
-      
-        <label for="rowCount">Anzahl der Reihen: </label>
-        <input type="number" id="rowCount" name="rowCount" required />
-      
-        <label for="columnCount">Sitzplätze pro Reihe: </label>
-        <input type="number" id="columnCount" name="columnCount" required />
-      
-        <button type="submit">Raum erstellen</button>
-      </form>
-      
-      <div id="roomMessage"></div>
+    <div class="layouts-container">
+        <h1>Saal Layout erstellen</h1>
+        
+        <!-- Eingabefelder -->
+        <label for="roomNumber">Saalnummer:</label>
+        <input type="text" id="roomNumber" name="roomNumber">
+        
+        <label for="rowsCount">Anzahl der Reihen:</label>
+        <input type="number" id="rowsCount" name="rowsCount">
+        
+        <label for="seatsPerRow">Sitze pro Reihe (separate mit Komma):</label>
+        <input type="text" id="seatsPerRow" name="seatsPerRow">
+        
+        <button onclick="generateLayout()">Layout generieren</button>
+        
+        <div id="layout"></div>
+    </div>
       
 </div>
 

@@ -1,0 +1,81 @@
+/* Grundlegendes Layout */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+.layout-container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 20px;
+}
+
+#layout {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.seat {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #dcdcdc;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #000;
+    transition: background-color 0.3s ease;
+}
+
+/* Status-Designs */
+.seat.available {
+    background-color: #dcdcdc; /* Grau für verfügbare Sitze */
+}
+
+.seat.selected {
+    background-color: #ffeb3b; /* Gelb für selektierte Sitze */
+}
+
+.seat.reserved {
+    background-color: #ff5722; /* Rot für reservierte Sitze */
+}
+
+/* Hover-Effekte */
+.seat:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Eingabefelder und Buttons */
+input[type="number"], input[type="text"], button {
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}

@@ -21,7 +21,8 @@ app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das
 
 
 // Routen
-app.use('/api', roomController);
+//app.use('/api', roomController);
+
 
 
 app.use(cors());

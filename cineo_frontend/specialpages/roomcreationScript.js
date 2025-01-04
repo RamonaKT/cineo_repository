@@ -1,71 +1,106 @@
-document.getElementById('roomForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  
-  const roomNumber = document.getElementById('roomNumber').value;
-  const rows = parseInt(document.getElementById('rows').value);
-  const seatCounts = document.getElementById('seats').value.split(',').map(num => parseInt(num.trim()));
-  
-  generateLayout(roomNumber, rows, seatCounts);
-});
+const seatContainer = document.getElementById("seatLayout");
+        const submitButton = document.getElementById("submitButton");
+        const roomNumberInput = document.getElementById("roomNumber");
+        const seatCountsInput = document.getElementById("seatCounts");
+        
+        let seatData = [];
+        let seatCounts = [];
+        
+        // Event listener für den Bestätigungsbutton
+        submitButton.addEventListener("click", async () => {
+            const roomNumber = roomNumberInput.value;
+            if (!roomNumber || seatCounts.length === 0 || seatData.length === 0) {
+                alert("Bitte fülle alle Felder aus!");
+                return;
+            }
 
-function generateLayout(roomNumber, rows, seatCounts) {
-  const seatLayout = document.getElementById('seatLayout');
-  seatLayout.innerHTML = ''; // Clear any existing layout
+            // Sende Daten an den Server
+            try {
+                const response = await fetch('/api/saveLayout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        roomNumber: roomNumber,
+                        seatCounts: seatCounts,
+                        seatsData: seatData
+                    })
+                });
 
-  for (let i = 0; i < rows; i++) {
-      const rowDiv = document.createElement('div');
-      rowDiv.classList.add('row');
-      
-      for (let j = 0; j < seatCounts[i]; j++) {
-          const seat = document.createElement('div');
-          seat.classList.add('seat', 'parkett'); // Default category is 'parkett'
-          seat.addEventListener('click', () => toggleSeatCategory(seat));
-          rowDiv.appendChild(seat);
-      }
-      
-      seatLayout.appendChild(rowDiv);
-  }
-}
+                if (response.ok) {
+                    alert('Layout erfolgreich gespeichert!');
+                } else {
+                    alert('Fehler beim Speichern des Layouts.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Es gab einen Fehler beim Speichern.');
+            }
+        });
 
-function toggleSeatCategory(seat) {
-  if (seat.classList.contains('parkett')) {
-      seat.classList.remove('parkett');
-      seat.classList.add('vip');
-  } else if (seat.classList.contains('vip')) {
-      seat.classList.remove('vip');
-      seat.classList.add('loge');
-  } else {
-      seat.classList.remove('loge');
-      seat.classList.add('parkett');
-  }
-}
+        // Funktion, um den Saal darzustellen
+        function generateSeats() {
+            seatContainer.innerHTML = ""; // Leere das Container div
+            seatData = [];
+            
+            seatCounts.forEach((rowSeats, rowIndex) => {
+                const rowDiv = document.createElement("div");
+                rowDiv.classList.add("row");
 
-async function submitData(roomNumber, seatCounts) {
-  const seatLayout = document.querySelectorAll('.seat');
-  const seatsData = [];
+                for (let i = 0; i < rowSeats; i++) {
+                    const seatDiv = document.createElement("div");
+                    seatDiv.classList.add("seat");
+                    seatDiv.classList.add("available");
+                    seatDiv.dataset.rowIndex = rowIndex;
+                    seatDiv.dataset.seatIndex = i;
 
-  seatLayout.forEach((seat, index) => {
-      let category = 0; // Default to parkett
-      if (seat.classList.contains('vip')) category = 1;
-      if (seat.classList.contains('loge')) category = 2;
+                    seatDiv.addEventListener("click", () => {
+                        toggleSeatCategory(seatDiv);
+                    });
 
-      seatsData.push({
-          seatId: index + 1,  // Simple ID, can be customized
-          category: category
-      });
-  });
+                    rowDiv.appendChild(seatDiv);
+                    seatData.push({
+                        category: 0, // Standard Kategorie: Parkett
+                        status: 'available',
+                        reservedAt: null
+                    });
+                }
 
-  const response = await fetch('/api/saveLayout', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ roomNumber, seatCounts, seatsData }),
-  });
+                seatContainer.appendChild(rowDiv);
+            });
+        }
 
-  if (response.ok) {
-      alert("Layout erfolgreich gespeichert!");
-  } else {
-      alert("Fehler beim Speichern des Layouts.");
-  }
-}
+        // Funktion, um die Kategorie eines Sitzes zu wechseln
+        function toggleSeatCategory(seatDiv) {
+            const seatIndex = seatDiv.dataset.seatIndex;
+            const rowIndex = seatDiv.dataset.rowIndex;
+            
+            const seat = seatData[rowIndex * seatCounts[rowIndex] + parseInt(seatIndex)];
+            if (seat.status === 'available') {
+                seat.status = 'reserved';
+                seat.category = 1; // VIP
+                seatDiv.classList.remove('available');
+                seatDiv.classList.add('reserved');
+            } else if (seat.status === 'reserved') {
+                seat.status = 'available';
+                seat.category = 0; // Parkett
+                seatDiv.classList.remove('reserved');
+                seatDiv.classList.add('available');
+            } else if (seat.status === 'available') {
+                seat.status = 'reserved';
+                seat.category = 2; // Loge
+                seatDiv.classList.remove('available');
+                seatDiv.classList.add('vip');
+            }
+        }
+
+        // Funktion zum Parsen der Sitzanzahl
+        function parseSeatCounts() {
+            const input = seatCountsInput.value;
+            seatCounts = input.split(',').map(num => parseInt(num.trim()));
+            generateSeats();
+        }
+
+        // Event listener für die Eingabe der Sitzanzahl
+        seatCountsInput.addEventListener("input", parseSeatCounts);

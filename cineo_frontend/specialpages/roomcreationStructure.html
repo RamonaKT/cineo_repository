@@ -43,20 +43,29 @@
 
 <div class="main-content">
 
-    <form id="roomForm">
-        <label for="roomNumber">Saalnummer:</label>
-        <input type="text" id="roomNumber" name="roomNumber" required><br><br>
+    <!-- Raum Nummer Eingabe -->
+    <label for="roomNumber">Raum Nummer:</label>
+    <input type="number" id="roomNumber" placeholder="Raumnummer" required>
 
-        <label for="rows">Anzahl der Reihen:</label>
-        <input type="number" id="rows" name="rows" required><br><br>
+    <!-- Anzahl der Reihen und Sitze Eingabe -->
+    <div id="rowInput">
+        <label for="seatCounts">Anzahl der Reihen und Sitze pro Reihe (z.B. 10,15,20):</label>
+        <input type="text" id="seatCounts" placeholder="Beispiel: 10,15,20" required>
+    </div>
 
-        <label for="seats">Anzahl der Sitze pro Reihe (Komma getrennt):</label>
-        <input type="text" id="seats" name="seats" required><br><br>
+    <div class="category-label">
+        <div class="parkett">Parkett</div>
+        <div class="vip">VIP</div>
+        <div class="reserved">Reserviert</div>
+    </div>
 
-        <button type="submit">Bestätigen</button>
-    </form>
+    <!-- Sitzplan -->
+    <div id="seatLayout" class="seat-container"></div>
 
-    <div id="seatLayout"></div>
+    <!-- Bestätigungs Button -->
+    <div class="button-container">
+        <button id="submitButton">Layout Bestätigen</button>
+    </div>
       
 </div>
 

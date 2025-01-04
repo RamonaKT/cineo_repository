@@ -258,4 +258,19 @@ app.get('/confirmation', (req, res) => {
 app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
 
 
+/*
+const { ClerkExpressMiddleware } = require("@clerk/clerk-sdk-node");
 
+app.use(ClerkExpressMiddleware());
+app.use(express.static('mainpages'));
+
+    
+app.get("/protected", (req, res) => {
+    const user = req.auth;
+    if (user) {
+        res.json({ message: `Hallo, ${user.firstName}!` });
+    } else {
+        res.status(401).send("Nicht autorisiert.");
+    }
+});
+*/

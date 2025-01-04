@@ -2,7 +2,7 @@
 .idea/
 
 # Umgebungsvariablen
-cineo_backend/.env
+#cineo_backend/.env
 
 # Abhängigkeiten
 cineo_backend/node_modules/

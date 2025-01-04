@@ -1,0 +1,7 @@
+public enum SeatCategory {
+    VIP, STANDARD, ECONOMY
+}
+
+public enum SeatStatus {
+    AVAILABLE, RESERVED, OCCUPIED
+}

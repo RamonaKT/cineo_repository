@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cineo_Mannheim</title>
+
+    <link rel="stylesheet" href="/adminpages/roomcreationStyle.css" />
+    <link rel="stylesheet" href="/mainpages/mainStyle.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+   
+
+
+</head>
+
+<body>
+
+
+
+<!--- mainStyle: Logo - Überschrift - Login !-->
+<a href="/mainpages/homepageStructure.html">
+    <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
+</a>
+
+<h1 class="h1_mainStyle_headingTopMiddle">
+    Saalerstellung
+</h1>
+
+<a href="/mainpages/loginpageStructure.html">
+    <img src="../images/IconAccountMainstyle.png" alt="Account" class="img_mainStyle_accountLogin" />
+</a>
+
+<div class="div_mainStyle_navigationTop">
+    <a href="/mainpages/homepageStructure.html" class="a_mainStyle_highlightLink">Startseite</a>
+    <a href="/mainpages/programpageStructure.html">Programm</a>
+    <a href="/specialpages/specialpageStructure.html">Specials</a>
+    <a href="/specialpages/offerpageStructure.html">Angebote</a>
+    <a href="/specialpages/gastropageStructure.html">Gastro</a>
+    <a href="/specialpages/shoppageStructure.html">Shop</a>
+</div>
+
+
+
+<div class="main-content">
+    <form id="createRoomForm">
+        <label for="roomName">Raumname:</label>
+        <input type="text" id="roomName" name="roomName" required />
+      
+        <label for="rowCount">Anzahl der Reihen:</label>
+        <input type="number" id="rowCount" name="rowCount" required />
+      
+        <label for="columnCount">Sitzplätze pro Reihe:</label>
+        <input type="number" id="columnCount" name="columnCount" required />
+      
+        <button type="submit">Raum erstellen</button>
+      </form>
+      
+      <div id="roomMessage"></div>
+      
+</div>
+
+<!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
+<div class="div_mainStyle_navigationBeamBottom"> </div>
+
+<div class="div_mainStyle_navigationBottom">
+    <a href="/infopages/aboutcinemapageStructure.html">Unser Kino</a>
+    <a href="/infopages/contactpageStructure.html">Kontakt</a>
+    <a href="/infopages/aboutuspageStructure.html">Über Uns</a>
+    <a href="/infopages/careerpageStructure.html">Karriere</a>
+    <a href="/infopages/informationpageStructure.html">Information</a>
+    <a href="/infopages/legalpageStructure.html">Impressum</a>
+</div>
+
+<script src="/mainpages/roomcreationScript.js" defer></script>
+
+</body>
+</html>

@@ -45,12 +45,14 @@
     <div class="contentbox">
         
             <!-- Raum Nummer Eingabe -->
-            <label for="roomNumber">Raum Nummer:</label>
-            <input type="number" id="roomNumber" placeholder="Raumnummer" required>
+            <div class="roominput">
+                <label for="roomNumber">Raum Nummer: </label>
+                <input type="number" id="roomNumber" placeholder="Raumnummer" required>
+            </div>
 
             <!-- Anzahl der Reihen und Sitze Eingabe -->
             <div id="rowInput">
-                <label for="seatCounts">Anzahl der Reihen und Sitze pro Reihe (z.B. 10,15,20):</label>
+                <label for="seatCounts">Anzahl der Sitze pro Reihe (z.B. 10,15,20): </label>
                 <input type="text" id="seatCounts" placeholder="Beispiel: 10,15,20" required>
             </div>
 

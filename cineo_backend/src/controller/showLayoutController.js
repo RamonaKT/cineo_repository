@@ -84,4 +84,5 @@ router.post('/api/save-layout', async (req, res) => {
     }
 });
 
+// Der gesamte Controller wird exportiert
 module.exports = router;

@@ -16,7 +16,7 @@ const seatContainer = document.getElementById("seatLayout");
 
             // Sende Daten an den Server
             try {
-                const response = await fetch('/api/saveLayout', {
+                const response = await fetch('/api/save-layout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

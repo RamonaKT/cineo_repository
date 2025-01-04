@@ -12,7 +12,9 @@ async function saveLayout(layoutData, userId) {
         // 1. Raum in die Tabelle 'room' speichern
         const { data: roomDataResponse, error: roomError } = await supabase
             .from('room')
-            .upsert([{ user_id: userId, capacity: roomData.capacity }]);
+            .upsert([{
+                capacity: roomData.capacity // Nur das, was übergeben wird
+            }], { onConflict: ['room_id'] });
 
         if (roomError) {
             throw new Error(roomError.message);
@@ -29,7 +31,7 @@ async function saveLayout(layoutData, userId) {
 
         const { data: rowDataResponse, error: rowError } = await supabase
             .from('rows')
-            .upsert(rows);
+            .upsert(rows, { onConflict: ['row_id'] });
 
         if (rowError) {
             throw new Error(rowError.message);
@@ -51,7 +53,7 @@ async function saveLayout(layoutData, userId) {
 
         const { data: seatDataResponse, error: seatError } = await supabase
             .from('seat')
-            .upsert(seats);
+            .upsert(seats, { onConflict: ['seat_id'] });
 
         if (seatError) {
             throw new Error(seatError.message);

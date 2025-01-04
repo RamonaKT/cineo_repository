@@ -39,14 +39,12 @@
 
 
 <div class="main-content">
-    <div id="hall-container">
-        <div class="screen">Leinwand</div>
-        <div class="seat-layout"></div>
-    </div>
-    <footer>
-        <button id="confirm-selection">Auswahl bestätigen</button>
-    </footer>
-    <script src="mainScript.js"></script>
+    <div id="seat-layout"></div>
+
+    <label for="reservation-count">Reserviere x Plätze, um zu bestätigen:</label>
+    <input type="number" id="reservation-count" min="1">
+    <button onclick="confirmReservation()">Reservierung bestätigen</button>
+
 </div>
 
 <!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->

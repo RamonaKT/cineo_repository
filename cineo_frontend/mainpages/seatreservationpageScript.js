@@ -1,82 +1,64 @@
-// Beispiel: Säle und Sitzplatzdaten von der API oder Datenbank
-const halls = [
-    {
-        id: 1,
-        name: "Saal 1",
-        rows: 5,
-        columns: 8,
-        seats: [
-            { id: 1, row: 1, column: 1, type: "standard", reserved: false },
-            { id: 2, row: 1, column: 2, type: "premium", reserved: true },
-            { id: 3, row: 1, column: 3, type: "vip", reserved: false },
-            // Weitere Sitzplätze ...
-        ]
-    },
-    {
-        id: 2,
-        name: "Saal 2",
-        rows: 6,
-        columns: 10,
-        seats: [
-            // Sitzplatzdaten für Saal 2 ...
-        ]
-    }
-];
-
-const hallDropdown = document.getElementById("hall-dropdown");
-const seatLayout = document.getElementById("seat-layout");
 let selectedSeats = [];
+let totalSeats = [];
+const roomId = 1;  // Beispiel Room ID
+const seatLayout = document.getElementById('seat-layout');
+const reservationCountInput = document.getElementById('reservation-count');
 
-// Dynamisches Dropdown für Säle füllen
-function populateHallDropdown() {
-    halls.forEach(hall => {
-        const option = document.createElement("option");
-        option.value = hall.id;
-        option.textContent = hall.name;
-        hallDropdown.appendChild(option);
-    });
+// Funktion, um die Sitzplatzinformationen vom Backend abzurufen
+async function loadSeats() {
+    const response = await fetch(`/api/room/${roomId}/seats`);
+    const seats = await response.json();
+    totalSeats = seats;
+    displaySeats(seats);
 }
 
-// Sitzplatzlayout für einen Saal rendern
-function renderSeatLayout(hallId) {
-    seatLayout.innerHTML = ""; // Reset Layout
-    const hall = halls.find(h => h.id === parseInt(hallId));
-
-    if (!hall) return;
-
-    // Grid-Template für Sitzanordnung
-    seatLayout.style.gridTemplateRows = `repeat(${hall.rows}, 1fr)`;
-    seatLayout.style.gridTemplateColumns = `repeat(${hall.columns}, 1fr)`;
-
-    // Sitzplätze rendern
-    hall.seats.forEach(seat => {
-        const seatElement = document.createElement("div");
-        seatElement.classList.add("seat", seat.type);
-        if (seat.reserved) {
-            seatElement.classList.add("reserved");
-        } else {
-            seatElement.addEventListener("click", () => toggleSeatSelection(seat, seatElement));
-        }
-        seatElement.textContent = seat.row + "-" + seat.column; // Optional: Platznummer anzeigen
+// Funktion, um die Sitzplätze darzustellen
+function displaySeats(seats) {
+    seatLayout.innerHTML = '';  // Leert den Layout-Bereich
+    seats.forEach(seat => {
+        const seatElement = document.createElement('div');
+        seatElement.classList.add('seat');
+        seatElement.classList.add(seat.status === 'booked' ? 'reserved' : 'available');
+        seatElement.dataset.seatId = seat.seat_id;
+        seatElement.addEventListener('click', () => toggleSeatSelection(seatElement, seat.seat_id));
         seatLayout.appendChild(seatElement);
     });
 }
 
-// Sitzplatzauswahl umschalten
-function toggleSeatSelection(seat, seatElement) {
-    if (seatElement.classList.contains("selected")) {
-        seatElement.classList.remove("selected");
-        selectedSeats = selectedSeats.filter(s => s.id !== seat.id);
+// Funktion, um den Sitzplatz zu wählen oder abzuwählen
+function toggleSeatSelection(seatElement, seatId) {
+    if (seatElement.classList.contains('selected')) {
+        seatElement.classList.remove('selected');
+        selectedSeats = selectedSeats.filter(id => id !== seatId);
     } else {
-        seatElement.classList.add("selected");
-        selectedSeats.push(seat);
+        seatElement.classList.add('selected');
+        selectedSeats.push(seatId);
     }
 }
 
-// Event Listener für Dropdown-Änderung
-hallDropdown.addEventListener("change", (event) => {
-    renderSeatLayout(event.target.value);
-});
+// Funktion, um die Reservierung zu bestätigen
+async function confirmReservation() {
+    const requiredCount = parseInt(reservationCountInput.value, 10);
+    if (selectedSeats.length !== requiredCount) {
+        alert(`Bitte genau ${requiredCount} Sitzplätze auswählen.`);
+        return;
+    }
 
-// Initialisierung
-populateHallDropdown();
+    const response = await fetch('/api/confirm-reservation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ seatIds: selectedSeats, roomId })
+    });
+
+    if (response.ok) {
+        alert('Reservierung erfolgreich!');
+        loadSeats();  // Lade die Sitze erneut, um den Status zu aktualisieren
+    } else {
+        alert('Fehler bei der Reservierung.');
+    }
+}
+
+// Lade die Sitzplätze bei Laden der Seite
+window.onload = loadSeats;

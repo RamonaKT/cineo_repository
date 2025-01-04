@@ -5,28 +5,33 @@ const router = express.Router();
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Funktion zum Speichern des Layouts in Supabase
-async function saveLayout(layoutData, userId) {
-    const { roomData, rowData, seatData } = layoutData; // layoutData enthält alle Daten für Raum, Reihen und Sitzplätze
+async function saveLayout(layoutData) {
+    const { roomNumber, seatCounts, seatsData } = layoutData;
+
+    if (!roomNumber || seatCounts.length === 0 || seatsData.length === 0) {
+        throw new Error('Fehlende Layout-Daten');
+    }
 
     try {
         // 1. Raum in die Tabelle 'room' speichern
         const { data: roomDataResponse, error: roomError } = await supabase
             .from('room')
             .upsert([{
-                capacity: roomData.capacity // Nur das, was übergeben wird
+                room_id: roomNumber,  // room_id wird nun auf roomNumber gesetzt
+                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Berechne die Kapazität als Summe der Sitzplätze
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
             throw new Error(roomError.message);
         }
 
-        const roomId = roomDataResponse[0].room_id; // Nehme die room_id des neu gespeicherten Raums
+        const roomId = roomDataResponse[0].room_id; // room_id wird direkt der Raum-Nummer zugewiesen
 
         // 2. Reihen in die Tabelle 'rows' speichern
-        const rows = rowData.map(row => ({
+        const rows = seatCounts.map((seat_count, index) => ({
             room_id: roomId,
-            seat_count: row.seat_count,
-            row_number: row.row_number
+            seat_count: seat_count,
+            row_number: index + 1 // Reihen beginnen bei 1
         }));
 
         const { data: rowDataResponse, error: rowError } = await supabase
@@ -40,7 +45,7 @@ async function saveLayout(layoutData, userId) {
         // 3. Sitzplätze in die Tabelle 'seat' speichern
         const seats = [];
         rowDataResponse.forEach((row, rowIndex) => {
-            const rowSeats = seatData[rowIndex].map(seat => ({
+            const rowSeats = seatsData[rowIndex].map(seat => ({
                 room_id: roomId,
                 row_id: row.row_id,
                 category: seat.category,
@@ -71,21 +76,17 @@ async function saveLayout(layoutData, userId) {
 
 // Endpunkt zum Speichern des Layouts
 router.post('/api/save-layout', async (req, res) => {
-    const { layoutData, userId } = req.body;
-
-    // Überprüfen, ob Layout-Daten und userId vorhanden sind
-    if (!layoutData || !userId) {
-        return res.status(400).json({ error: 'Fehlende Layout-Daten oder Benutzer-ID' });
-    }
+    const { roomNumber, seatCounts, seatsData } = req.body;
 
     try {
-        const savedLayout = await saveLayout(layoutData, userId);
-        res.status(200).json({ message: 'Layout erfolgreich gespeichert', data: savedLayout });
+        const savedLayout = await saveLayout({ roomNumber, seatCounts, seatsData });
+        res.status(200).json({
+            message: 'Layout erfolgreich gespeichert',
+            data: savedLayout
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Der gesamte Controller wird exportiert
 module.exports = router;
-module.exports = { saveLayout };

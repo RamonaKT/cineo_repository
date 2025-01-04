@@ -2,6 +2,7 @@
 .contentbox {
     display: flex;
     flex-direction: column;
+    align-content: center;
 }
 
 .seat-container {

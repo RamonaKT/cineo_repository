@@ -13,7 +13,7 @@ const axios = require('axios');
 
 // Importiere den ShowLayoutController
 const showLayoutController = require('./src/controller/showlayoutController');  // Der Pfad hängt von der tatsächlichen Struktur ab
-
+const { saveLayoutController } = require('./controller/showLayoutController');  // Importiere den Controller
 // Routen
 app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
 

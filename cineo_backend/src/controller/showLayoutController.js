@@ -9,7 +9,7 @@ async function saveLayout(layoutData, userId) {
     try {
         // Speichern des Layouts in der Tabelle 'layouts'
         const { data, error } = await supabase
-            .from('layouts') // Stelle sicher, dass diese Tabelle existiert
+            .from('layouts')  // Stelle sicher, dass diese Tabelle existiert
             .upsert([{ user_id: userId, layout_data: layoutData }]); // Upsert, um entweder zu aktualisieren oder zu speichern
 
         if (error) {
@@ -36,31 +36,6 @@ router.post('/api/save-layout', async (req, res) => {
         res.status(200).json({ message: 'Layout erfolgreich gespeichert', data: savedLayout });
     } catch (error) {
         res.status(500).json({ error: error.message });
-    }
-});
-
-// Weitere bestehende Endpunkte für Sitzplätze und Reservierungen (bleiben unverändert)
-const { getSeatsForRoom } = require('./roomService');
-const { confirmReservation } = require('./seatReservationService');
-
-// Endpunkt zum Abrufen der Sitzplätze
-router.get('/api/room/:roomId/seats', async (req, res) => {
-    try {
-        const seats = await getSeatsForRoom(req.params.roomId);
-        res.json(seats);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
-
-// Endpunkt zum Bestätigen der Reservierung
-router.post('/api/confirm-reservation', async (req, res) => {
-    try {
-        const { seatIds, roomId } = req.body;
-        const result = await confirmReservation(seatIds, roomId);
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(500).send(error.message);
     }
 });
 

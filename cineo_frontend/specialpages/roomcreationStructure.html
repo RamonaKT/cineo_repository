@@ -43,23 +43,20 @@
 
 <div class="main-content">
 
-    <div class="layouts-container">
-        
-        
-        <!-- Eingabefelder -->
+    <form id="roomForm">
         <label for="roomNumber">Saalnummer:</label>
-        <input type="text" id="roomNumber" name="roomNumber">
-        
-        <label for="rowsCount">Anzahl der Reihen:</label>
-        <input type="number" id="rowsCount" name="rowsCount">
-        
-        <label for="seatsPerRow">Sitze pro Reihe (separate mit Komma):</label>
-        <input type="text" id="seatsPerRow" name="seatsPerRow">
-        
-        <button onclick="generateLayout()">Layout generieren</button>
-        
-        <div id="layout"></div>
-    </div>
+        <input type="text" id="roomNumber" name="roomNumber" required><br><br>
+
+        <label for="rows">Anzahl der Reihen:</label>
+        <input type="number" id="rows" name="rows" required><br><br>
+
+        <label for="seats">Anzahl der Sitze pro Reihe (Komma getrennt):</label>
+        <input type="text" id="seats" name="seats" required><br><br>
+
+        <button type="submit">Bestätigen</button>
+    </form>
+
+    <div id="seatLayout"></div>
       
 </div>
 

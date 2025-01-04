@@ -13,6 +13,9 @@ const axios = require('axios');
 // Importiere den ShowLayoutController
 const showLayoutController = require('./src/controller/showlayoutController');  // Der Pfad hängt von der tatsächlichen Struktur ab
 
+// Routen
+app.use('/api', roomController);
+
 app.use(cors());
 
 app.use(express.json());

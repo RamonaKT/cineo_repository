@@ -1,71 +1,71 @@
-// Generiert das Layout basierend auf Benutzereingaben
-function generateLayout() {
+document.getElementById('roomForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  
   const roomNumber = document.getElementById('roomNumber').value;
-  const rowsCount = parseInt(document.getElementById('rowsCount').value);
-  const seatsPerRow = document.getElementById('seatsPerRow').value.split(',').map(Number);
+  const rows = parseInt(document.getElementById('rows').value);
+  const seatCounts = document.getElementById('seats').value.split(',').map(num => parseInt(num.trim()));
+  
+  generateLayout(roomNumber, rows, seatCounts);
+});
 
-  const layoutDiv = document.getElementById('layout');
-  layoutDiv.innerHTML = '';  // Vorheriges Layout löschen
+function generateLayout(roomNumber, rows, seatCounts) {
+  const seatLayout = document.getElementById('seatLayout');
+  seatLayout.innerHTML = ''; // Clear any existing layout
 
-  for (let row = 0; row < rowsCount; row++) {
+  for (let i = 0; i < rows; i++) {
       const rowDiv = document.createElement('div');
       rowDiv.classList.add('row');
-
-      const seatCount = seatsPerRow[row] || seatsPerRow[seatsPerRow.length - 1];
-      for (let seat = 0; seat < seatCount; seat++) {
-          const seatDiv = document.createElement('div');
-          seatDiv.classList.add('seat');
-          seatDiv.dataset.row = row + 1;
-          seatDiv.dataset.seat = seat + 1;
-          seatDiv.dataset.status = 'available';
-          
-          seatDiv.addEventListener('click', () => {
-              toggleSeatStatus(seatDiv);
-          });
-
-          rowDiv.appendChild(seatDiv);
+      
+      for (let j = 0; j < seatCounts[i]; j++) {
+          const seat = document.createElement('div');
+          seat.classList.add('seat', 'parkett'); // Default category is 'parkett'
+          seat.addEventListener('click', () => toggleSeatCategory(seat));
+          rowDiv.appendChild(seat);
       }
-
-      layoutDiv.appendChild(rowDiv);
+      
+      seatLayout.appendChild(rowDiv);
   }
 }
 
-// Wechseln des Status eines Sitzes (available, selected, reserved)
-function toggleSeatStatus(seatDiv) {
-  const currentStatus = seatDiv.dataset.status;
-
-  if (currentStatus === 'available') {
-      seatDiv.classList.remove('available');
-      seatDiv.classList.add('selected');
-      seatDiv.dataset.status = 'selected';
-      updateSeatStatus(seatDiv, 'selected');
-  } else if (currentStatus === 'selected') {
-      seatDiv.classList.remove('selected');
-      seatDiv.classList.add('reserved');
-      seatDiv.dataset.status = 'reserved';
-      updateSeatStatus(seatDiv, 'reserved');
-  } else if (currentStatus === 'reserved') {
-      seatDiv.classList.remove('reserved');
-      seatDiv.classList.add('available');
-      seatDiv.dataset.status = 'available';
-      updateSeatStatus(seatDiv, 'available');
+function toggleSeatCategory(seat) {
+  if (seat.classList.contains('parkett')) {
+      seat.classList.remove('parkett');
+      seat.classList.add('vip');
+  } else if (seat.classList.contains('vip')) {
+      seat.classList.remove('vip');
+      seat.classList.add('loge');
+  } else {
+      seat.classList.remove('loge');
+      seat.classList.add('parkett');
   }
 }
 
-// API-Anfrage zum Aktualisieren des Sitzplatzstatus
-async function updateSeatStatus(seatDiv, status) {
-  const roomId = document.getElementById('roomNumber').value;
-  const row = seatDiv.dataset.row;
-  const seat = seatDiv.dataset.seat;
+async function submitData(roomNumber, seatCounts) {
+  const seatLayout = document.querySelectorAll('.seat');
+  const seatsData = [];
 
-  const response = await fetch(`/api/update-seat-status`, {
+  seatLayout.forEach((seat, index) => {
+      let category = 0; // Default to parkett
+      if (seat.classList.contains('vip')) category = 1;
+      if (seat.classList.contains('loge')) category = 2;
+
+      seatsData.push({
+          seatId: index + 1,  // Simple ID, can be customized
+          category: category
+      });
+  });
+
+  const response = await fetch('/api/saveLayout', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ roomId, row, seat, status }),
+      body: JSON.stringify({ roomNumber, seatCounts, seatsData }),
   });
 
-  const data = await response.json();
-  console.log('Sitzplatzstatus aktualisiert:', data);
+  if (response.ok) {
+      alert("Layout erfolgreich gespeichert!");
+  } else {
+      alert("Fehler beim Speichern des Layouts.");
+  }
 }

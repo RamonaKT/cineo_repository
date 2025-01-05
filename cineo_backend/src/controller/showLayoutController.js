@@ -65,6 +65,8 @@ router.post('/api/saveLayout', async (req, res) => {
         });
     }
 
+    console.log("seatCounts validiert:", seatCounts);
+
     // 3. Validierung von 'seatsData': Muss ein Array sein und die gleiche Länge wie 'seatCounts' haben
     if (!Array.isArray(seatsData) || seatsData.length !== seatCounts.length) {
         console.log("Fehler: Anzahl der Reihen in seatsData stimmt nicht mit seatCounts überein");
@@ -72,6 +74,8 @@ router.post('/api/saveLayout', async (req, res) => {
             error: 'Ungültige Sitzdaten. Die Anzahl der Reihen muss der Anzahl der Elemente in seatCounts entsprechen.'
         });
     }
+
+    console.log("seatsData validiert:", seatsData);
 
     // 4. Validierung jedes Sitzes in 'seatsData'
     for (let rowIndex = 0; rowIndex < seatsData.length; rowIndex++) {
@@ -82,6 +86,8 @@ router.post('/api/saveLayout', async (req, res) => {
                 error: `Reihe ${rowIndex + 1} ist ungültig. Bitte stellen Sie sicher, dass sie ein Array von Sitzobjekten ist.`
             });
         }
+
+        console.log(`Reihe ${rowIndex + 1} validiert:`, row);
 
         // 5. Validierung der Anzahl der Sitze in jeder Reihe
         if (row.length !== seatCounts[rowIndex]) {
@@ -127,15 +133,16 @@ router.post('/api/saveLayout', async (req, res) => {
         }
     }
 
+    console.log("Daten validiert, versuche Layout zu speichern.");
+
     // 7. Wenn die Validierung erfolgreich war, speichern wir das Layout
     try {
-        const result = await saveLayout({ roomNumber, seatCounts, seatsData }); // Die validierten Daten werden übergeben
+        const result = await saveLayout({ roomNumber, seatCounts, seatsData });
         return res.status(200).json(result);
     } catch (err) {
         console.error('Fehler beim Speichern des Layouts:', err.message);
         return res.status(500).json({ error: err.message });
     }
 });
-
 
 module.exports = router;

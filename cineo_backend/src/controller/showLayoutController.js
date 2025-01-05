@@ -83,7 +83,7 @@ router.post('/api/saveLayout', async (req, res) => {
     console.log("Received layout data:", req.body);  // Debugging: Prüfe, was empfangen wird
     const { roomNumber, seatCounts, seatsData } = req.body;
 
-    // Validierung der Anfrage
+    // 1. Validierung der Anfrage: Überprüfe, ob 'roomNumber' eine gültige Zahl ist
     if (!Number.isInteger(roomNumber) || roomNumber <= 0) {
         console.log("Fehler: Ungültige Raumnummer");
         return res.status(400).json({
@@ -91,6 +91,7 @@ router.post('/api/saveLayout', async (req, res) => {
         });
     }
 
+    // 2. Validierung von 'seatCounts': Muss ein Array mit positiven Ganzzahlen sein
     if (!Array.isArray(seatCounts) || seatCounts.length === 0) {
         console.log("Fehler: Ungültige seatCounts");
         return res.status(400).json({
@@ -98,6 +99,7 @@ router.post('/api/saveLayout', async (req, res) => {
         });
     }
 
+    // 3. Validierung von 'seatsData': Muss ein Array sein und die gleiche Länge wie 'seatCounts' haben
     if (!Array.isArray(seatsData) || seatsData.length !== seatCounts.length) {
         console.log("Fehler: Anzahl der Reihen in seatsData stimmt nicht mit seatCounts überein");
         return res.status(400).json({
@@ -105,7 +107,7 @@ router.post('/api/saveLayout', async (req, res) => {
         });
     }
 
-    // Validierung jedes Sitzes in seatsData
+    // 4. Validierung jedes Sitzes in 'seatsData'
     for (let rowIndex = 0; rowIndex < seatsData.length; rowIndex++) {
         const row = seatsData[rowIndex];
         if (!Array.isArray(row)) {
@@ -115,21 +117,53 @@ router.post('/api/saveLayout', async (req, res) => {
             });
         }
 
+        // 5. Validierung der Anzahl der Sitze in jeder Reihe
+        if (row.length !== seatCounts[rowIndex]) {
+            console.log(`Fehler: Anzahl der Sitze in Reihe ${rowIndex + 1} stimmt nicht mit seatCounts überein`);
+            return res.status(400).json({
+                error: `In Reihe ${rowIndex + 1} gibt es nicht die erwartete Anzahl an Sitzen. Erwartet: ${seatCounts[rowIndex]}, erhalten: ${row.length}.`
+            });
+        }
+
+        // 6. Validierung jedes einzelnen Sitzes
         for (let seatIndex = 0; seatIndex < row.length; seatIndex++) {
             const seat = row[seatIndex];
 
-            // Überprüfe jedes Sitzobjekt
-            if (!seat.seatNumber || !seat.rowNumber || seat.category === undefined) {
+            // Überprüfe jedes Sitzobjekt auf Vollständigkeit
+            if (seat.seatNumber == undefined || seat.rowNumber == undefined || seat.category == undefined) {
                 console.log(`Fehler: Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
                 return res.status(400).json({
                     error: `Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. seatNumber, rowNumber und category müssen vorhanden sein.`
                 });
             }
+
+            // Validierungen für 'seatNumber', 'rowNumber' und 'category'
+            if (!Number.isInteger(seat.seatNumber) || seat.seatNumber <= 0) {
+                console.log(`Fehler: Ungültige seatNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                return res.status(400).json({
+                    error: `Ungültige seatNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. Es muss eine positive Ganzzahl sein.`
+                });
+            }
+
+            if (!Number.isInteger(seat.rowNumber) || seat.rowNumber <= 0) {
+                console.log(`Fehler: Ungültige rowNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                return res.status(400).json({
+                    error: `Ungültige rowNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. Es muss eine positive Ganzzahl sein.`
+                });
+            }
+
+            if (![0, 1, 2].includes(seat.category)) {
+                console.log(`Fehler: Ungültige category in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                return res.status(400).json({
+                    error: `Ungültige category in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. Erlaubte Werte sind 0, 1 oder 2.`
+                });
+            }
         }
     }
 
+    // 7. Wenn die Validierung erfolgreich war, speichern wir das Layout
     try {
-        const result = await saveLayout({ roomNumber, seatCounts, seatsData });
+        const result = await saveLayout({ roomNumber, seatCounts, seatsData }); // Die validierten Daten werden übergeben
         return res.status(200).json(result);
     } catch (err) {
         console.error('Fehler beim Speichern des Layouts:', err.message);

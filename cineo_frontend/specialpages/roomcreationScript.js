@@ -151,6 +151,8 @@ async function submitLayout(layoutData) {
             body: JSON.stringify(layoutData)
         });
 
+        console.log("Antwort vom Server:", response);
+        
         // Überprüfe die Antwort des Servers
         if (!response.ok) {
             throw new Error("Fehler beim Speichern des Layouts");

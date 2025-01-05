@@ -37,39 +37,39 @@ submitButton.addEventListener("click", async () => {
 
 // Funktion zur Generierung der Sitze basierend auf seatCounts
 function generateSeats() {
-    seatContainer.innerHTML = ""; // Leere das Container div
-    seatData = []; // Initialisiere seatData als leeres Array
+  seatContainer.innerHTML = ""; // Leere das Container div
+  seatData = []; // Initialisiere seatData als leeres Array
 
-    seatCounts.forEach((rowSeats, rowIndex) => {
-        const rowDiv = document.createElement("div");
-        rowDiv.classList.add("row");
+  seatCounts.forEach((rowSeats, rowIndex) => {
+      const rowDiv = document.createElement("div");
+      rowDiv.classList.add("row");
 
-        let rowSeatsData = []; // Erstelle ein Array für die Sitze einer Reihe
+      let rowSeatsData = []; // Erstelle ein Array für die Sitze einer Reihe
 
-        for (let i = 0; i < rowSeats; i++) {
-            const seatDiv = document.createElement("div");
-            seatDiv.classList.add("seat");
-            seatDiv.classList.add("available"); // Standard-Kategorie ist Parkett
-            seatDiv.dataset.rowIndex = rowIndex;
-            seatDiv.dataset.seatIndex = i;
+      for (let i = 0; i < rowSeats; i++) {
+          const seatDiv = document.createElement("div");
+          seatDiv.classList.add("seat");
+          seatDiv.classList.add("available"); // Standard-Kategorie ist Parkett
+          seatDiv.dataset.rowIndex = rowIndex;
+          seatDiv.dataset.seatIndex = i;
 
-            seatDiv.addEventListener("click", () => {
-                toggleSeatCategory(seatDiv);
-            });
+          seatDiv.addEventListener("click", () => {
+              toggleSeatCategory(seatDiv);
+          });
 
-            rowDiv.appendChild(seatDiv);
+          rowDiv.appendChild(seatDiv);
 
-            // Füge einen Sitz zur rowSeatsData hinzu
-            rowSeatsData.push({
-                seatNumber: i + 1,
-                rowNumber: rowIndex + 1,
-                category: 0 // Standard Kategorie: Parkett
-            });
-        }
+          // Füge einen Sitz zur rowSeatsData hinzu
+          rowSeatsData.push({
+              seatNumber: i + 1, // Sitznummer (1-basiert)
+              rowNumber: rowIndex + 1, // Reihenummer (1-basiert)
+              category: 0 // Standard Kategorie: Parkett
+          });
+      }
 
-        seatContainer.appendChild(rowDiv);
-        seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
-    });
+      seatContainer.appendChild(rowDiv);
+      seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
+  });
 }
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
@@ -111,38 +111,47 @@ seatCountsInput.addEventListener("input", parseSeatCounts);
 
 // Funktion für den POST-Request
 async function submitLayout(layoutData) {
-    try {
-        // Überprüfe, ob roomNumber vorhanden und eine gültige Zahl ist
-        if (!layoutData.roomNumber || isNaN(layoutData.roomNumber)) {
-            throw new Error("Die Raumnummer ist ungültig. Bitte geben Sie eine Zahl an.");
-        }
+  try {
+      // Überprüfe, ob roomNumber vorhanden und eine gültige Zahl ist
+      if (!layoutData.roomNumber || isNaN(layoutData.roomNumber)) {
+          throw new Error("Die Raumnummer ist ungültig. Bitte geben Sie eine Zahl an.");
+      }
 
-        // Debug-Ausgabe: Zu sendende Daten
-        console.log("Daten, die gesendet werden:", layoutData);
+      // Konvertiere roomNumber in eine Zahl
+      layoutData.roomNumber = parseInt(layoutData.roomNumber, 10);
 
-        // API Request an den Server
-        const response = await fetch("/api/saveLayout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(layoutData)
-        });
+      // Flaches seatsData-Array erstellen
+      layoutData.seatsData = seatData.flat().map(seat => ({
+          seatNumber: seat.seatNumber,
+          rowNumber: seat.rowNumber,
+          category: seat.category
+      }));
 
-        // Überprüfe die Antwort des Servers
-        if (!response.ok) {
-            throw new Error("Fehler beim Speichern des Layouts");
-        }
+      // Debug-Ausgabe: Zu sendende Daten
+      console.log("Daten, die gesendet werden:", layoutData);
 
-        // Konvertiere die Antwort in JSON
-        const responseData = await response.json();
-        console.log("Layout erfolgreich gespeichert", responseData);
+      // API Request an den Server
+      const response = await fetch("/api/saveLayout", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(layoutData)
+      });
 
-        return true; // Erfolgsstatus zurückgeben
-    } catch (error) {
-        // Fehlerbehandlung
-        console.error("Fehler beim Speichern des Layouts:", error);
-        return false; // Fehlerstatus zurückgeben
-    }
+      // Überprüfe die Antwort des Servers
+      if (!response.ok) {
+          throw new Error("Fehler beim Speichern des Layouts");
+      }
+
+      // Konvertiere die Antwort in JSON
+      const responseData = await response.json();
+      console.log("Layout erfolgreich gespeichert", responseData);
+
+      return true; // Erfolgsstatus zurückgeben
+  } catch (error) {
+      // Fehlerbehandlung
+      console.error("Fehler beim Speichern des Layouts:", error);
+      return false; // Fehlerstatus zurückgeben
+  }
 }
-

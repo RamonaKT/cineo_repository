@@ -17,7 +17,8 @@ submitButton.addEventListener("click", async () => {
   // Vorbereiten der Daten zum Senden
   const layoutData = {
       roomNumber: roomNumber,
-      seatCounts: seatCounts // Sitzanzahl pro Reihe (Array)
+      seatCounts: seatCounts, // Sitzanzahl pro Reihe (Array)
+      seatsData: seatData    // Sitzdaten (Kategorie, Status, etc.)
   };
 
   try {
@@ -33,7 +34,6 @@ submitButton.addEventListener("click", async () => {
       alert('Es gab einen Fehler beim Speichern.');
   }
 });
-
 
 function generateSeats() {
   seatContainer.innerHTML = ""; // Leere das Container div

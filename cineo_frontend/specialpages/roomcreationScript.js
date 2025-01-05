@@ -22,6 +22,9 @@ submitButton.addEventListener("click", async () => {
     };
 
     try {
+        // Debug-Ausgabe der finalen Daten vor dem Senden
+        console.log("Daten, die gesendet werden:", JSON.stringify(layoutData, null, 2));
+
         const result = await submitLayout(layoutData);
 
         if (result) {
@@ -125,6 +128,9 @@ async function submitLayout(layoutData) {
         // Konvertiere roomNumber in eine Zahl
         layoutData.roomNumber = parseInt(layoutData.roomNumber, 10);
 
+        // Debug-Ausgabe: Sitzdaten vor der Umwandlung (zu Debug-Zwecken)
+        console.log("Sitzdaten vor Umwandlung:", JSON.stringify(seatData, null, 2));
+
         // Die Sitzdaten bleiben in ihrer strukturierten Form (mit Reihen)
         layoutData.seatsData = seatData.map(row => 
             row.map(seat => ({
@@ -135,7 +141,7 @@ async function submitLayout(layoutData) {
         );
 
         // Debug-Ausgabe: Zu sendende Daten
-        console.log("Daten, die gesendet werden:", layoutData);
+        console.log("Daten, die gesendet werden:", JSON.stringify(layoutData, null, 2));
 
         // API Request an den Server
         const response = await fetch("/api/saveLayout", {

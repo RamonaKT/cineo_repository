@@ -16,7 +16,7 @@ submitButton.addEventListener("click", async () => {
 
     // Sende Daten an den Server
     try {
-        const response = await fetch('/api/save-layout', {
+        const response = await fetch('/api/saveLayout', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

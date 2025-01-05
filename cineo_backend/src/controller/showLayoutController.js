@@ -72,7 +72,7 @@ async function saveLayout(layoutData) {
 
 // Endpunkt zum Speichern des Layouts
 
-router.post('/api/save-layout', async (req, res) => {
+router.post('/api/saveLayout', async (req, res) => {
     const { roomNumber, seatCounts, seatsData } = req.body;
 
     try {

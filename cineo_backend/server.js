@@ -25,7 +25,7 @@ app.use(express.json());
 
 
 // Routen
-//app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
+//app.post('/api/savelayout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
 app.use(showLayoutController);
 
 // Routen

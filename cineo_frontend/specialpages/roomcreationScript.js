@@ -40,12 +40,14 @@ function generateSeats() {
   seatContainer.innerHTML = ""; // Leere das Container div
   seatData = []; // Initialisiere seatData als leeres Array
 
+  // Iteriere durch die Anzahl der Reihen und erstelle die Sitze
   seatCounts.forEach((rowSeats, rowIndex) => {
       const rowDiv = document.createElement("div");
       rowDiv.classList.add("row");
 
       let rowSeatsData = []; // Erstelle ein Array für die Sitze einer Reihe
 
+      // Iteriere durch die Anzahl der Sitze in der aktuellen Reihe
       for (let i = 0; i < rowSeats; i++) {
           const seatDiv = document.createElement("div");
           seatDiv.classList.add("seat");
@@ -59,18 +61,19 @@ function generateSeats() {
 
           rowDiv.appendChild(seatDiv);
 
-          // Füge einen Sitz zur rowSeatsData hinzu
+          // Füge einen Sitz zur rowSeatsData hinzu (je Reihe ein Array von Sitzobjekten)
           rowSeatsData.push({
-              seatNumber: i + 1, // Sitznummer (1-basiert)
+              seatNumber: i + 1,  // Sitznummer (1-basiert)
               rowNumber: rowIndex + 1, // Reihenummer (1-basiert)
-              category: 0 // Standard Kategorie: Parkett
+              category: 0 // Standard Kategorie: Parkett (0)
           });
       }
 
       seatContainer.appendChild(rowDiv);
-      seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
+      seatData.push(rowSeatsData); // Jede Reihe wird als Array in seatData hinzugefügt
   });
 }
+
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
 function toggleSeatCategory(seatDiv) {

@@ -24,6 +24,12 @@ app.use(express.json());
 // ** Router verwenden**
 app.use(showLayoutController);  // Registriere den Router in der App
 
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Detaillierte Fehlerausgabe
+    res.status(500).send('Etwas ist schief gelaufen!');
+});
+
+
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;

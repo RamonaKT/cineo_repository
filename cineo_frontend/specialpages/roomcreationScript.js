@@ -105,35 +105,41 @@ function parseSeatCounts() {
 seatCountsInput.addEventListener("input", parseSeatCounts);
 
 // Funktion für den POST-Request
-async function submitLayout(layoutData) {
-    try {
-        const response = await fetch('/api/saveLayout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                roomNumber: layoutData.roomNumber,          // z.B. eine Zahl, z.B. 101
-                seatCounts: layoutData.seatCounts,          // Array von Integers, z.B. [10, 12, 14]
-                seatsData: layoutData.seatsData.map(row => row.map(seat => ({
-                    category: seat.category,               // z.B. "VIP" oder "Standard"
-                    status: seat.status,                   // z.B. "available" oder "reserved"
-                    show_id: seat.show_id,                 // z.B. eine Zahl, z.B. 1 oder 2
-                    reserved_at: seat.reserved_at || null, // z.B. ein Datum als String oder null
-                })))
-            })
-        });
+async function submitLayout() {
+  const roomNumber = document.getElementById("roomNumber").value;
+  const seatCounts = document.getElementById("seatCounts").value.split(",").map(Number);
 
-        const result = await response.json();
+  // Validierung der Eingabewerte
+  if (!roomNumber || seatCounts.some(isNaN)) {
+      alert("Bitte stellen Sie sicher, dass alle Felder korrekt ausgefüllt sind.");
+      return;
+  }
 
-        if (!response.ok) {
-            throw new Error(result.error || 'Unbekannter Fehler');
-        }
+  const layoutData = {
+      roomNumber: roomNumber,
+      seatCounts: seatCounts
+  };
 
-        console.log('Layout erfolgreich gespeichert:', result);
-        return result;
-    } catch (error) {
-        console.error('Fehler beim Senden des Layouts:', error);
-        throw error;
-    }
+  try {
+      // API Request an den Server
+      const response = await fetch("/api/saveLayout", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(layoutData)
+      });
+
+      if (!response.ok) {
+          throw new Error("Fehler beim Speichern des Layouts");
+      }
+
+      const responseData = await response.json();
+      console.log("Layout erfolgreich gespeichert", responseData);
+      alert("Layout erfolgreich gespeichert!");
+  } catch (error) {
+      console.error("Fehler beim Speichern des Layouts:", error);
+      alert("Es gab einen Fehler beim Speichern des Layouts.");
+  }
 }
+

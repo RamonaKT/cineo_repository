@@ -32,7 +32,7 @@ async function saveLayout(layoutData) {
 
         // 2. Reihen in die Tabelle 'rows' speichern
         const rows = seatCounts.map((seat_count, index) => ({
-            row_id: `${roomNumber}_${index + 1}`,
+            row_id: `${roomNumber}_${index + 1}`,  // row_id ist eine Kombination aus room_id und row_index
             created_at: now,
             seat_count: seat_count,
             row_number: index + 1
@@ -49,16 +49,16 @@ async function saveLayout(layoutData) {
         // 3. Sitzplätze in die Tabelle 'seat' speichern
         const seats = [];
         seatsData.forEach((row, rowIndex) => {
-            // Erstelle Sitzplätze für jede Reihe (hier verwenden wir einfache Kategorisierungen)
             row.forEach((seat, seatIndex) => {
                 const seatObj = {
-                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,
+                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,  // seat_id ist eine Kombination aus room_id, row_id und seatIndex
                     created_at: now,
                     room_id: roomNumber,
                     row_id: `${roomNumber}_${rowIndex + 1}`,
-                    category: seat.category,
-                    status: seat.status,
-                    reserved_at: seat.reserved_at
+                    category: seat.category,  // Die Kategorie des Sitzes
+                    status: 0,  // Status 0 bedeutet verfügbar
+                    reserved_at: null,  // reserved_at wird mit null gesetzt
+                    show_id: null  // show_id wird immer auf null gesetzt
                 };
                 seats.push(seatObj);
             });
@@ -90,7 +90,7 @@ router.post('/api/saveLayout', async (req, res) => {
         !Array.isArray(seatCounts) || 
         seatCounts.length === 0 || 
         !Array.isArray(seatsData) || 
-        seatsData.some(seat => !seat.row || !seat.seat || !seat.category)
+        seatsData.some(row => !Array.isArray(row) || row.some(seat => !seat.seatNumber || !seat.rowNumber || !seat.category))
     ) {
         console.error("Invalid request data:", req.body);
         return res.status(400).json({
@@ -108,4 +108,3 @@ router.post('/api/saveLayout', async (req, res) => {
 });
 
 module.exports = router;
-

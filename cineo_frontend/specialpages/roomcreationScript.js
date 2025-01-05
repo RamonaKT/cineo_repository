@@ -8,32 +8,32 @@ let seatCounts = [];
 
 // Event listener für den Bestätigungsbutton
 submitButton.addEventListener("click", async () => {
-    const roomNumber = roomNumberInput.value;
-    if (!roomNumber || seatCounts.length === 0 || seatData.length === 0) {
-        alert("Bitte fülle alle Felder aus!");
-        return;
-    }
+  const roomNumber = roomNumberInput.value;
+  if (!roomNumber || seatCounts.length === 0) {
+      alert("Bitte fülle alle Felder aus!");
+      return;
+  }
 
-    // Vorbereiten der Daten zum Senden
-    const layoutData = {
-        roomNumber: roomNumber,
-        seatCounts: seatCounts, // Sitzanzahl pro Reihe (Array)
-        seatsData: seatData      // Detailinformationen zu den Sitzplätzen (Array)
-    };
+  // Vorbereiten der Daten zum Senden
+  const layoutData = {
+      roomNumber: roomNumber,
+      seatCounts: seatCounts      // Sitzanzahl pro Reihe (Array)
+  };
 
-    try {
-        const result = await submitLayout(layoutData);
+  try {
+      const result = await submitLayout(layoutData);
 
-        if (result) {
-            alert('Layout erfolgreich gespeichert!');
-        } else {
-            alert('Fehler beim Speichern des Layouts.');
-        }
-    } catch (error) {
-        console.error(error);
-        alert('Es gab einen Fehler beim Speichern.');
-    }
+      if (result) {
+          alert('Layout erfolgreich gespeichert!');
+      } else {
+          alert('Fehler beim Speichern des Layouts.');
+      }
+  } catch (error) {
+      console.error(error);
+      alert('Es gab einen Fehler beim Speichern.');
+  }
 });
+
 
 function generateSeats() {
   seatContainer.innerHTML = ""; // Leere das Container div
@@ -105,21 +105,7 @@ function parseSeatCounts() {
 seatCountsInput.addEventListener("input", parseSeatCounts);
 
 // Funktion für den POST-Request
-async function submitLayout() {
-  const roomNumber = document.getElementById("roomNumber").value;
-  const seatCounts = document.getElementById("seatCounts").value.split(",").map(Number);
-
-  // Validierung der Eingabewerte
-  if (!roomNumber || seatCounts.some(isNaN)) {
-      alert("Bitte stellen Sie sicher, dass alle Felder korrekt ausgefüllt sind.");
-      return;
-  }
-
-  const layoutData = {
-      roomNumber: roomNumber,
-      seatCounts: seatCounts
-  };
-
+async function submitLayout(layoutData) {
   try {
       // API Request an den Server
       const response = await fetch("/api/saveLayout", {
@@ -136,10 +122,9 @@ async function submitLayout() {
 
       const responseData = await response.json();
       console.log("Layout erfolgreich gespeichert", responseData);
-      alert("Layout erfolgreich gespeichert!");
+      return true;
   } catch (error) {
       console.error("Fehler beim Speichern des Layouts:", error);
-      alert("Es gab einen Fehler beim Speichern des Layouts.");
+      return false;
   }
 }
-

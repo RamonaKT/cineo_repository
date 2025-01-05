@@ -7,23 +7,23 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 
 // Funktion zum Speichern des Layouts in Supabase
 async function saveLayout(layoutData) {
-    const { roomNumber, seatCounts, seatsData } = layoutData;
+    const { roomNumber, seatCounts } = layoutData;
 
-    if (!roomNumber || seatCounts.length === 0 || seatsData.length === 0) {
-        throw new Error('Fehlende Layout-Daten');
+    // Überprüfen, ob alle benötigten Felder vorhanden sind
+    if (!roomNumber || !Array.isArray(seatCounts) || seatCounts.length === 0) {
+        throw new Error('Fehlende oder ungültige Layout-Daten');
     }
 
     try {
-        // Aktuellen Zeitstempel für created_at
-        const now = new Date().toISOString();
+        const now = new Date().toISOString(); // Aktueller Zeitstempel
 
         // 1. Raum in die Tabelle 'room' speichern
         const { error: roomError, data: roomData } = await supabase
             .from('room')
             .upsert([{
                 room_id: roomNumber,          // room_id wird auf roomNumber gesetzt
-                created_at: now,              // aktueller Zeitstempel für created_at
-                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Kapazität als Summe der Sitzplätze
+                created_at: now,              // Aktueller Zeitstempel
+                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Gesamtkapazität basierend auf der Sitzanzahl
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
@@ -32,10 +32,10 @@ async function saveLayout(layoutData) {
 
         // 2. Reihen in die Tabelle 'rows' speichern
         const rows = seatCounts.map((seat_count, index) => ({
-            row_id: `${roomNumber}_${index + 1}`, // row_id generiert als "room_id_row_number"
-            created_at: now,                      // aktueller Zeitstempel für created_at
+            row_id: `${roomNumber}_${index + 1}`,
+            created_at: now,
             seat_count: seat_count,
-            row_number: index + 1 // Reihen beginnen bei 1
+            row_number: index + 1
         }));
 
         const { error: rowError, data: rowsData } = await supabase
@@ -49,17 +49,20 @@ async function saveLayout(layoutData) {
         // 3. Sitzplätze in die Tabelle 'seat' speichern
         const seats = [];
         rows.forEach((row, rowIndex) => {
-            const rowSeats = seatsData[rowIndex].map((seat, seatIndex) => ({
-                seat_id: `${roomNumber}_${row.row_number}_${seatIndex + 1}`,  // seat_id generiert als "room_id_row_number_seat_number"
-                created_at: now,                                               // aktueller Zeitstempel für created_at
-                room_id: roomNumber,
-                row_id: row.row_id,
-                category: seat.category,
-                status: seat.status,
-                show_id: seat.show_id,
-                reserved_at: seat.reserved_at || null  // reserved_at (optional, wenn nicht vorhanden)
-            }));
-            seats.push(...rowSeats);
+            // Erstelle Sitzplätze für jede Reihe (hier verwenden wir einfache Kategorisierungen)
+            for (let i = 0; i < row.seat_count; i++) {
+                const seat = {
+                    seat_id: `${roomNumber}_${row.row_number}_${i + 1}`,
+                    created_at: now,
+                    room_id: roomNumber,
+                    row_id: row.row_id,
+                    category: 0,   // Standard-Kategorie: Parkett
+                    status: "available", // Sitzstatus: verfügbar
+                    show_id: null, // Hier kannst du ein Show-ID setzen, falls erforderlich
+                    reserved_at: null // reserviert_at: null für nicht reservierte Sitze
+                };
+                seats.push(seat);
+            }
         });
 
         const { error: seatError, data: seatData } = await supabase
@@ -75,6 +78,7 @@ async function saveLayout(layoutData) {
         throw new Error(`Fehler beim Speichern des Layouts: ${err.message}`);
     }
 }
+
 
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {

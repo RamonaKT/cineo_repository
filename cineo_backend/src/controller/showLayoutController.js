@@ -85,18 +85,21 @@ router.post('/api/saveLayout', async (req, res) => {
 
     // Validierung der Anfrage
     if (!Number.isInteger(roomNumber) || roomNumber <= 0) {
+        console.log("Fehler: Ungültige Raumnummer");
         return res.status(400).json({
             error: 'Ungültige Raumnummer. Bitte geben Sie eine positive Ganzzahl an.'
         });
     }
 
     if (!Array.isArray(seatCounts) || seatCounts.length === 0) {
+        console.log("Fehler: Ungültige seatCounts");
         return res.status(400).json({
             error: 'Ungültige Sitzanzahl. Bitte stellen Sie sicher, dass seatCounts ein Array mit positiven Ganzzahlen ist.'
         });
     }
 
     if (!Array.isArray(seatsData) || seatsData.length !== seatCounts.length) {
+        console.log("Fehler: Anzahl der Reihen in seatsData stimmt nicht mit seatCounts überein");
         return res.status(400).json({
             error: 'Ungültige Sitzdaten. Die Anzahl der Reihen muss der Anzahl der Elemente in seatCounts entsprechen.'
         });
@@ -106,6 +109,7 @@ router.post('/api/saveLayout', async (req, res) => {
     for (let rowIndex = 0; rowIndex < seatsData.length; rowIndex++) {
         const row = seatsData[rowIndex];
         if (!Array.isArray(row)) {
+            console.log(`Fehler: Reihe ${rowIndex + 1} ist nicht gültig`);
             return res.status(400).json({
                 error: `Reihe ${rowIndex + 1} ist ungültig. Bitte stellen Sie sicher, dass sie ein Array von Sitzobjekten ist.`
             });
@@ -116,6 +120,7 @@ router.post('/api/saveLayout', async (req, res) => {
 
             // Überprüfe jedes Sitzobjekt
             if (!seat.seatNumber || !seat.rowNumber || seat.category === undefined) {
+                console.log(`Fehler: Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
                 return res.status(400).json({
                     error: `Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. seatNumber, rowNumber und category müssen vorhanden sein.`
                 });

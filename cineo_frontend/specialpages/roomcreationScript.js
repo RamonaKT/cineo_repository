@@ -19,8 +19,10 @@ submitButton.addEventListener("click", async () => {
         const response = await fetch('/api/save-layout', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
-            },
+              'Content-Type': 'application/json',
+              //'Authorization': 'Bearer YOUR_SUPABASE_API_KEY',  // Falls erforderlich
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o'  // Falls erforderlich
+          },
             body: JSON.stringify({
                 roomNumber: roomNumber,  // Raum-Nummer als room_id
                 seatCounts: seatCounts,   // Sitzanzahl pro Reihe

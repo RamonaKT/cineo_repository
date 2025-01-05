@@ -73,23 +73,25 @@ function generateSeats() {
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
 function toggleSeatCategory(seatDiv) {
-    const seatIndex = seatDiv.dataset.seatIndex;
-    const rowIndex = seatDiv.dataset.rowIndex;
+  const seatIndex = seatDiv.dataset.seatIndex;  // Den Index des Sitzes holen
+  const rowIndex = seatDiv.dataset.rowIndex;    // Den Index der Reihe holen
 
-    const seat = seatData[rowIndex * seatCounts[rowIndex] + parseInt(seatIndex)];
-    if (seat.category === 0) {
-        seat.category = 1; // VIP
-        seatDiv.classList.remove('available');
-        seatDiv.classList.add('vip');
-    } else if (seat.category === 1) {
-        seat.category = 2; // Loge
-        seatDiv.classList.remove('vip');
-        seatDiv.classList.add('logen');
-    } else {
-        seat.category = 0; // Parkett
-        seatDiv.classList.remove('logen');
-        seatDiv.classList.add('available');
-    }
+  // Hole das Sitzobjekt aus seatData
+  const seat = seatData[rowIndex][seatIndex];   // rowIndex ist die Reihe, seatIndex ist der Sitz in der Reihe
+
+  if (seat.category === 0) {
+      seat.category = 1;  // Wechsle von Parkett (0) zu VIP (1)
+      seatDiv.classList.remove('available');
+      seatDiv.classList.add('vip');
+  } else if (seat.category === 1) {
+      seat.category = 2;  // Wechsle von VIP (1) zu Loge (2)
+      seatDiv.classList.remove('vip');
+      seatDiv.classList.add('logen');
+  } else {
+      seat.category = 0;  // Wechsle von Loge (2) zu Parkett (0)
+      seatDiv.classList.remove('logen');
+      seatDiv.classList.add('available');
+  }
 }
 
 // Funktion zum Parsen der Sitzanzahl

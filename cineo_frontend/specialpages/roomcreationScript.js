@@ -61,7 +61,8 @@ function generateSeats() {
           // Füge einen Sitz zur rowSeatsData hinzu (jede Reihe ist jetzt ein Array)
           rowSeatsData.push({
               category: 0, // Standard Kategorie: Parkett
-              reservedAt: null
+              status: "available",  // Status für den Sitz
+              reserved_at: null
           });
       }
 
@@ -69,7 +70,6 @@ function generateSeats() {
       seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
   });
 }
-
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
 function toggleSeatCategory(seatDiv) {

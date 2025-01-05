@@ -11,7 +11,7 @@ const { createClient } = require('@supabase/supabase-js');
 // Für TMDB Verbindung
 const axios = require('axios');
 
-const { saveLayout } = require('./src/controllers/showLayoutController'); // Dein Controller
+const { saveLayout } = require('./src/controllers/showLayoutController.js'); // Dein Controller
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)

@@ -14,27 +14,26 @@ async function saveLayout(layoutData) {
 
     try {
         // 1. Raum in die Tabelle 'room' speichern
-        const { data: roomDataResponse, error: roomError } = await supabase
+        const { error: roomError } = await supabase
             .from('room')
             .upsert([{
-                room_id: roomNumber,  // room_id wird nun auf roomNumber gesetzt
-                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Berechne die Kapazität als Summe der Sitzplätze
+                room_id: roomNumber, // room_id wird auf roomNumber gesetzt
+                capacity: seatCounts.reduce((total, count) => total + count, 0) // Kapazität als Summe der Sitzplätze
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
             throw new Error(roomError.message);
         }
 
-        const roomId = roomDataResponse[0].room_id; // room_id wird direkt der Raum-Nummer zugewiesen
-
         // 2. Reihen in die Tabelle 'rows' speichern
         const rows = seatCounts.map((seat_count, index) => ({
-            room_id: roomId,
+            row_id: `${roomNumber}_${index + 1}`, // row_id generiert als "room_id_row_number"
+            room_id: roomNumber,
             seat_count: seat_count,
             row_number: index + 1 // Reihen beginnen bei 1
         }));
 
-        const { data: rowDataResponse, error: rowError } = await supabase
+        const { error: rowError } = await supabase
             .from('rows')
             .upsert(rows, { onConflict: ['row_id'] });
 
@@ -44,9 +43,10 @@ async function saveLayout(layoutData) {
 
         // 3. Sitzplätze in die Tabelle 'seat' speichern
         const seats = [];
-        rowDataResponse.forEach((row, rowIndex) => {
-            const rowSeats = seatsData[rowIndex].map(seat => ({
-                room_id: roomId,
+        rows.forEach((row, rowIndex) => {
+            const rowSeats = seatsData[rowIndex].map((seat, seatIndex) => ({
+                seat_id: `${roomNumber}_${row.row_number}_${seatIndex + 1}`, // seat_id generiert als "room_id_row_number_seat_number"
+                room_id: roomNumber,
                 row_id: row.row_id,
                 category: seat.category,
                 status: seat.status,
@@ -56,7 +56,7 @@ async function saveLayout(layoutData) {
             seats.push(...rowSeats);
         });
 
-        const { data: seatDataResponse, error: seatError } = await supabase
+        const { error: seatError } = await supabase
             .from('seat')
             .upsert(seats, { onConflict: ['seat_id'] });
 
@@ -64,11 +64,7 @@ async function saveLayout(layoutData) {
             throw new Error(seatError.message);
         }
 
-        return {
-            room: roomDataResponse,
-            rows: rowDataResponse,
-            seats: seatDataResponse
-        };
+        return { message: 'Layout erfolgreich gespeichert' };
     } catch (err) {
         throw new Error(`Fehler beim Speichern des Layouts: ${err.message}`);
     }

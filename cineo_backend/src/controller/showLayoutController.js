@@ -71,14 +71,57 @@ async function saveLayout(layoutData) {
 }
 
 // Endpunkt zum Speichern des Layouts
+
 router.post('/api/save-layout', async (req, res) => {
     const { roomNumber, seatCounts, seatsData } = req.body;
 
     try {
-        const savedLayout = await saveLayout({ roomNumber, seatCounts, seatsData });
+        // 1. Raum speichern
+        const { data: roomData, error: roomError } = await supabase
+            .from('room')
+            .upsert([{ room_number: roomNumber }])
+            .select();
+
+        if (roomError) throw new Error(`Fehler beim Speichern des Raums: ${roomError.message}`);
+        const roomId = roomData[0].room_id;
+
+        // 2. Reihen speichern
+        const rowsToInsert = seatCounts.map((row, index) => ({
+            row_number: index + 1,
+            seat_count: row,
+        }));
+
+        const { data: rowsData, error: rowsError } = await supabase
+            .from('rows')
+            .insert(rowsToInsert)
+            .select();
+
+        if (rowsError) throw new Error(`Fehler beim Speichern der Reihen: ${rowsError.message}`);
+        const rowIds = rowsData.map(row => row.row_id);
+
+        // 3. Sitze speichern
+        const seatsToInsert = seatsData.map(seat => ({
+            room_id: roomId,
+            row_id: rowIds[seat.rowNumber - 1], // Mapping basierend auf rowNumber
+            category: seat.category,
+            status: seat.status,
+        }));
+
+        const { data: seatsDataResult, error: seatsError } = await supabase
+            .from('seat')
+            .insert(seatsToInsert)
+            .select();
+
+        if (seatsError) throw new Error(`Fehler beim Speichern der Sitze: ${seatsError.message}`);
+
+        // Erfolgreiches Speichern aller Daten
         res.status(200).json({
             message: 'Layout erfolgreich gespeichert',
-            data: savedLayout
+            data: {
+                room: roomData,
+                rows: rowsData,
+                seats: seatsDataResult,
+            },
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

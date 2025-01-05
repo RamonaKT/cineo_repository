@@ -81,29 +81,77 @@ async function saveLayout(layoutData) {
 
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {
-    const { roomNumber, seatCounts } = req.body;
+    const { roomNumber, seatCounts, seatsData } = req.body;
 
     // Validierung der Anfrage
-    if (!roomNumber || !Array.isArray(seatCounts)) {
+    if (!roomNumber || !Array.isArray(seatCounts) || seatCounts.length === 0 || !Array.isArray(seatsData)) {
         return res.status(400).json({
             error: 'Ungültige Anfrage. Bitte stellen Sie sicher, dass alle erforderlichen Felder vorhanden sind.'
         });
     }
 
     try {
-        // Weiterverarbeitung der Anfrage (z.B. Aufruf der saveLayout Funktion)
-        const result = await saveLayout({
-            roomNumber,
-            seatCounts
+        const now = new Date().toISOString(); // Aktueller Zeitstempel
+
+        // 1. Raum in die Tabelle 'room' speichern
+        const { error: roomError, data: roomData } = await supabase
+            .from('room')
+            .upsert([{
+                room_id: roomNumber,          // room_id wird auf roomNumber gesetzt
+                created_at: now,              // aktueller Zeitstempel für created_at
+                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Kapazität als Summe der Sitzplätze
+            }], { onConflict: ['room_id'] });
+
+        if (roomError) {
+            throw new Error(roomError.message);
+        }
+
+        // 2. Reihen in die Tabelle 'rows' speichern
+        const rows = seatCounts.map((seat_count, index) => ({
+            row_id: `${roomNumber}_${index + 1}`,
+            created_at: now,
+            seat_count: seat_count,
+            row_number: index + 1
+        }));
+
+        const { error: rowError, data: rowsData } = await supabase
+            .from('rows')
+            .upsert(rows, { onConflict: ['row_id'] });
+
+        if (rowError) {
+            throw new Error(rowError.message);
+        }
+
+        // 3. Sitzplätze in die Tabelle 'seat' speichern
+        const seats = [];
+        seatsData.forEach((row, rowIndex) => {
+            // Erstelle Sitzplätze für jede Reihe (hier verwenden wir einfache Kategorisierungen)
+            row.forEach((seat, seatIndex) => {
+                const seatObj = {
+                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,
+                    created_at: now,
+                    room_id: roomNumber,
+                    row_id: `${roomNumber}_${rowIndex + 1}`,
+                    category: seat.category,
+                    status: seat.status,
+                    reserved_at: seat.reserved_at
+                };
+                seats.push(seatObj);
+            });
         });
 
-        // Erfolgreiches Speichern
-        res.status(200).json(result); // Rückgabe der resultierenden Daten
+        const { error: seatError, data: seatData } = await supabase
+            .from('seat')
+            .upsert(seats, { onConflict: ['seat_id'] });
 
-    } catch (error) {
-        // Fehlerbehandlung
-        console.error('Fehler beim Speichern des Layouts:', error.message);
-        res.status(500).json({ error: error.message });
+        if (seatError) {
+            throw new Error(seatError.message);
+        }
+
+        return res.status(200).json({ message: 'Layout erfolgreich gespeichert', data: { roomData, rowsData, seatData } });
+    } catch (err) {
+        console.error('Fehler beim Speichern des Layouts:', err.message);
+        return res.status(500).json({ error: err.message });
     }
 });
 

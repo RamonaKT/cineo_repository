@@ -69,22 +69,7 @@ function generateSeats() {
       seatContainer.appendChild(rowDiv);
       seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
   });
-
-  // Nachdem die Sitze generiert wurden, aktualisieren wir das layoutData
-  // LayoutData mit SeatData füllen
-  const layoutData = {
-      roomNumber: roomNumberInput.value,
-      seatCounts: seatCounts,
-      seatsData: seatData  // Sende auch die detaillierten Sitzinformationen mit
-  };
-
-  // Optional: Daten anzeigen, um sicherzustellen, dass sie korrekt sind
-  console.log("layoutData vor dem Senden:", layoutData);
-
-  // Jetzt den Layout-Daten an den Server senden
-  submitLayout(layoutData);
 }
-
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
 function toggleSeatCategory(seatDiv) {
@@ -122,20 +107,13 @@ seatCountsInput.addEventListener("input", parseSeatCounts);
 // Funktion für den POST-Request
 async function submitLayout(layoutData) {
   try {
-      // Layout-Daten aufbereiten: RoomData + SeatData
-      const requestData = {
-          roomNumber: layoutData.roomNumber,
-          seatCounts: layoutData.seatCounts,
-          seatsData: layoutData.seatsData // Hier werden auch die Sitzdaten übermittelt
-      };
-
       // API Request an den Server
       const response = await fetch("/api/saveLayout", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
           },
-          body: JSON.stringify(requestData)  // sendet die vollständigen Daten
+          body: JSON.stringify(layoutData)
       });
 
       if (!response.ok) {

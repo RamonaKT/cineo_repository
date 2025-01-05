@@ -14,23 +14,17 @@ submitButton.addEventListener("click", async () => {
         return;
     }
 
-    // Sende Daten an den Server
-    try {
-        const response = await fetch('/api/saveLayout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              //'Authorization': 'Bearer YOUR_SUPABASE_API_KEY',  // Falls erforderlich
-              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o'  // Falls erforderlich
-          },
-            body: JSON.stringify({
-                roomNumber: roomNumber,  // Raum-Nummer als room_id
-                seatCounts: seatCounts,   // Sitzanzahl pro Reihe
-                seatsData: seatData      // Detailinformationen zu den Sitzplätzen
-            })
-        });
+    // Vorbereiten der Daten zum Senden
+    const layoutData = {
+        roomNumber: roomNumber,
+        seatCounts: seatCounts, // Sitzanzahl pro Reihe (Array)
+        seatsData: seatData      // Detailinformationen zu den Sitzplätzen (Array)
+    };
 
-        if (response.ok) {
+    try {
+        const result = await submitLayout(layoutData);
+
+        if (result) {
             alert('Layout erfolgreich gespeichert!');
         } else {
             alert('Fehler beim Speichern des Layouts.');
@@ -102,3 +96,37 @@ function parseSeatCounts() {
 
 // Event listener für die Eingabe der Sitzanzahl
 seatCountsInput.addEventListener("input", parseSeatCounts);
+
+// Funktion für den POST-Request
+async function submitLayout(layoutData) {
+    try {
+        const response = await fetch('/api/saveLayout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                roomNumber: layoutData.roomNumber,          // z.B. eine Zahl, z.B. 101
+                seatCounts: layoutData.seatCounts,          // Array von Integers, z.B. [10, 12, 14]
+                seatsData: layoutData.seatsData.map(row => row.map(seat => ({
+                    category: seat.category,               // z.B. "VIP" oder "Standard"
+                    status: seat.status,                   // z.B. "available" oder "reserved"
+                    show_id: seat.show_id,                 // z.B. eine Zahl, z.B. 1 oder 2
+                    reserved_at: seat.reserved_at || null, // z.B. ein Datum als String oder null
+                })))
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || 'Unbekannter Fehler');
+        }
+
+        console.log('Layout erfolgreich gespeichert:', result);
+        return result;
+    } catch (error) {
+        console.error('Fehler beim Senden des Layouts:', error);
+        throw error;
+    }
+}

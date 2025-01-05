@@ -17,7 +17,7 @@ submitButton.addEventListener("click", async () => {
   // Vorbereiten der Daten zum Senden
   const layoutData = {
       roomNumber: roomNumber,
-      seatCounts: seatCounts      // Sitzanzahl pro Reihe (Array)
+      seatCounts: seatCounts // Sitzanzahl pro Reihe (Array)
   };
 
   try {

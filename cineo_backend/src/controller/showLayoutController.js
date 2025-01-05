@@ -9,7 +9,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts } = layoutData;
 
-    // Überprüfen, ob alle benötigten Felder vorhanden sind
+    // Überprüfe, ob alle benötigten Felder vorhanden sind
     if (!roomNumber || !Array.isArray(seatCounts) || seatCounts.length === 0) {
         throw new Error('Fehlende oder ungültige Layout-Daten');
     }
@@ -22,8 +22,8 @@ async function saveLayout(layoutData) {
             .from('room')
             .upsert([{
                 room_id: roomNumber,          // room_id wird auf roomNumber gesetzt
-                created_at: now,              // Aktueller Zeitstempel
-                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Gesamtkapazität basierend auf der Sitzanzahl
+                created_at: now,              // aktueller Zeitstempel für created_at
+                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Kapazität als Summe der Sitzplätze
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
@@ -59,7 +59,7 @@ async function saveLayout(layoutData) {
                     category: 0,   // Standard-Kategorie: Parkett
                     status: "available", // Sitzstatus: verfügbar
                     show_id: null, // Hier kannst du ein Show-ID setzen, falls erforderlich
-                    reserved_at: null // reserviert_at: null für nicht reservierte Sitze
+                    reserved_at: null // reserved_at: null für nicht reservierte Sitze
                 };
                 seats.push(seat);
             }
@@ -79,13 +79,12 @@ async function saveLayout(layoutData) {
     }
 }
 
-
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {
-    const { roomNumber, seatCounts, seatsData } = req.body;
+    const { roomNumber, seatCounts } = req.body;
 
     // Validierung der Anfrage
-    if (!roomNumber || !Array.isArray(seatCounts) || !Array.isArray(seatsData)) {
+    if (!roomNumber || !Array.isArray(seatCounts)) {
         return res.status(400).json({
             error: 'Ungültige Anfrage. Bitte stellen Sie sicher, dass alle erforderlichen Felder vorhanden sind.'
         });
@@ -95,8 +94,7 @@ router.post('/api/saveLayout', async (req, res) => {
         // Weiterverarbeitung der Anfrage (z.B. Aufruf der saveLayout Funktion)
         const result = await saveLayout({
             roomNumber,
-            seatCounts,
-            seatsData
+            seatCounts
         });
 
         // Erfolgreiches Speichern

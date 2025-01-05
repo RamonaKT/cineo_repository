@@ -410,4 +410,3 @@ app.get('/confirmation', (req, res) => {
 
 // Server wird gestartet
 app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
-

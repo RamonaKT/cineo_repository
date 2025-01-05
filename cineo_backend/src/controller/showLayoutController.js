@@ -6,7 +6,6 @@ const router = express.Router();
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Funktion zum Speichern des Layouts in Supabase
-// Funktion zum Speichern des Layouts in Supabase
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts, seatsData } = layoutData;
 
@@ -27,14 +26,59 @@ async function saveLayout(layoutData) {
                 capacity: seatCounts.reduce((total, count) => total + count, 0)
             }], { onConflict: ['room_id'] });
 
+        // Fehlerbehandlung für die 'room'-Tabelle
         if (roomError) {
             console.error('Fehler beim Speichern des Raums:', roomError.message, roomError);
             throw new Error(roomError.message);
         }
 
-        // Weitere Upsert-Operationen für 'rows' und 'seats'...
-        // (weitere Fehlerprotokollierung wie oben einfügen)
+        // 2. Reihen in die Tabelle 'rows' speichern
+        const rows = seatCounts.map((seat_count, index) => ({
+            row_id: `${roomNumber}_${index + 1}`,
+            created_at: now,
+            seat_count: seat_count,
+            row_number: index + 1
+        }));
 
+        const { error: rowError, data: rowsData } = await supabase
+            .from('rows')
+            .upsert(rows, { onConflict: ['row_id'] });
+
+        // Fehlerbehandlung für die 'rows'-Tabelle
+        if (rowError) {
+            console.error('Fehler beim Speichern der Reihen:', rowError.message, rowError);
+            throw new Error(rowError.message);
+        }
+
+        // 3. Sitzplätze in die Tabelle 'seat' speichern
+        const seats = [];
+        seatsData.forEach((row, rowIndex) => {
+            row.forEach((seat, seatIndex) => {
+                const seatObj = {
+                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,
+                    created_at: now,
+                    room_id: roomNumber,
+                    row_id: `${roomNumber}_${rowIndex + 1}`,
+                    category: seat.category,
+                    status: 0, // initialer Status
+                    reserved_at: null,
+                    show_id: null
+                };
+                seats.push(seatObj);
+            });
+        });
+
+        const { error: seatError, data: seatData } = await supabase
+            .from('seat')
+            .upsert(seats, { onConflict: ['seat_id'] });
+
+        // Fehlerbehandlung für die 'seat'-Tabelle
+        if (seatError) {
+            console.error('Fehler beim Speichern der Sitzplätze:', seatError.message, seatError);
+            throw new Error(seatError.message);
+        }
+
+        // Erfolgreiches Speichern
         return { message: 'Layout erfolgreich gespeichert', data: { roomData, rowsData, seatData } };
     } catch (err) {
         console.error('Fehler beim Speichern des Layouts:', err.message, err);
@@ -42,8 +86,6 @@ async function saveLayout(layoutData) {
     }
 }
 
-
-// Endpunkt zum Speichern des Layouts
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {
     console.log("Received layout data:", req.body);  // Debugging: Prüfe, was empfangen wird

@@ -113,7 +113,7 @@ router.post('/api/saveLayout', async (req, res) => {
         console.log("Erfolgreiches Ergebnis:", result); // Logge das Ergebnis
         return res.status(200).json(result);
     } catch (err) {
-        console.error("Fehler beim Speichern des Layouts:", err.message, err.stack); // Detaillierte Fehlerausgabe
+        console.error("Fehler beim Speichern des Layouts: :(((Controller)", err.message, err.stack); // Detaillierte Fehlerausgabe
         return res.status(500).json({ error: err.message });
     }
 });

@@ -2,6 +2,7 @@ const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const router = express.Router();
 
+// Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Funktion zum Speichern des Layouts in Supabase
@@ -14,7 +15,7 @@ async function saveLayout(layoutData) {
 
     try {
         // 1. Raum in die Tabelle 'room' speichern
-        const { error: roomError } = await supabase
+        const { error: roomError, data: roomData } = await supabase
             .from('room')
             .upsert([{
                 room_id: roomNumber, // room_id wird auf roomNumber gesetzt
@@ -33,7 +34,7 @@ async function saveLayout(layoutData) {
             row_number: index + 1 // Reihen beginnen bei 1
         }));
 
-        const { error: rowError } = await supabase
+        const { error: rowError, data: rowsData } = await supabase
             .from('rows')
             .upsert(rows, { onConflict: ['row_id'] });
 
@@ -56,7 +57,7 @@ async function saveLayout(layoutData) {
             seats.push(...rowSeats);
         });
 
-        const { error: seatError } = await supabase
+        const { error: seatError, data: seatData } = await supabase
             .from('seat')
             .upsert(seats, { onConflict: ['seat_id'] });
 
@@ -64,68 +65,40 @@ async function saveLayout(layoutData) {
             throw new Error(seatError.message);
         }
 
-        return { message: 'Layout erfolgreich gespeichert' };
+        return { message: 'Layout erfolgreich gespeichert', data: { roomData, rowsData, seatData } };
     } catch (err) {
         throw new Error(`Fehler beim Speichern des Layouts: ${err.message}`);
     }
 }
 
 // Endpunkt zum Speichern des Layouts
-
 router.post('/api/saveLayout', async (req, res) => {
     const { roomNumber, seatCounts, seatsData } = req.body;
 
-    try {
-        // 1. Raum speichern
-        const { data: roomData, error: roomError } = await supabase
-            .from('room')
-            .upsert([{ room_number: roomNumber }])
-            .select();
-
-        if (roomError) throw new Error(`Fehler beim Speichern des Raums: ${roomError.message}`);
-        const roomId = roomData[0].room_id;
-
-        // 2. Reihen speichern
-        const rowsToInsert = seatCounts.map((row, index) => ({
-            row_number: index + 1,
-            seat_count: row,
-        }));
-
-        const { data: rowsData, error: rowsError } = await supabase
-            .from('rows')
-            .insert(rowsToInsert)
-            .select();
-
-        if (rowsError) throw new Error(`Fehler beim Speichern der Reihen: ${rowsError.message}`);
-        const rowIds = rowsData.map(row => row.row_id);
-
-        // 3. Sitze speichern
-        const seatsToInsert = seatsData.map(seat => ({
-            room_id: roomId,
-            row_id: rowIds[seat.rowNumber - 1], // Mapping basierend auf rowNumber
-            category: seat.category,
-            status: seat.status,
-        }));
-
-        const { data: seatsDataResult, error: seatsError } = await supabase
-            .from('seat')
-            .insert(seatsToInsert)
-            .select();
-
-        if (seatsError) throw new Error(`Fehler beim Speichern der Sitze: ${seatsError.message}`);
-
-        // Erfolgreiches Speichern aller Daten
-        res.status(200).json({
-            message: 'Layout erfolgreich gespeichert',
-            data: {
-                room: roomData,
-                rows: rowsData,
-                seats: seatsDataResult,
-            },
+    // Validierung der Anfrage
+    if (!roomNumber || !Array.isArray(seatCounts) || !Array.isArray(seatsData)) {
+        return res.status(400).json({
+            error: 'Ungültige Anfrage. Bitte stellen Sie sicher, dass alle erforderlichen Felder vorhanden sind.'
         });
+    }
+
+    try {
+        // Weiterverarbeitung der Anfrage (z.B. Aufruf der saveLayout Funktion)
+        const result = await saveLayout({
+            roomNumber,
+            seatCounts,
+            seatsData
+        });
+
+        // Erfolgreiches Speichern
+        res.status(200).json(result); // Rückgabe der resultierenden Daten
+
     } catch (error) {
+        // Fehlerbehandlung
+        console.error('Fehler beim Speichern des Layouts:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 module.exports = router;

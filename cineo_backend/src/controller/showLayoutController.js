@@ -22,7 +22,7 @@ async function saveLayout(layoutData) {
             .from('room')
             .upsert([{
                 room_id: roomNumber,
-                created_at: now,
+                
                 capacity: seatCounts.reduce((total, count) => total + count, 0)
             }], { onConflict: ['room_id'] });
 
@@ -34,7 +34,7 @@ async function saveLayout(layoutData) {
 
         // 2. Reihen in die Tabelle 'rows' speichern
         const rows = seatCounts.map((seat_count, index) => ({
-            row_id: `${roomNumber}_${index + 1}`,
+            row_id: roomNumber * 1000 + (index + 1),
             created_at: now,
             seat_count: seat_count,
             row_number: index + 1
@@ -55,10 +55,10 @@ async function saveLayout(layoutData) {
         seatsData.forEach((row, rowIndex) => {
             row.forEach((seat, seatIndex) => {
                 const seatObj = {
-                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,
+                    seat_id: roomNumber * 10000 + (rowIndex + 1) * 100 + (seatIndex + 1),
                     created_at: now,
                     room_id: roomNumber,
-                    row_id: `${roomNumber}_${rowIndex + 1}`,
+                    row_id: roomNumber * 1000 + (rowIndex + 1),
                     category: seat.category,
                     status: 0, // initialer Status
                     reserved_at: null,

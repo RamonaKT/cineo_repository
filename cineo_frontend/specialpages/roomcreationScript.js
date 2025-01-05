@@ -108,6 +108,8 @@ seatCountsInput.addEventListener("input", parseSeatCounts);
 async function submitLayout(layoutData) {
   try {
       // API Request an den Server
+      console.log("Daten, die gesendet werden:", layoutData);
+
       const response = await fetch("/api/saveLayout", {
           method: "POST",
           headers: {

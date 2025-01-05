@@ -35,36 +35,41 @@ submitButton.addEventListener("click", async () => {
     }
 });
 
-// Funktion, um den Saal darzustellen
 function generateSeats() {
-    seatContainer.innerHTML = ""; // Leere das Container div
-    seatData = [];
+  seatContainer.innerHTML = ""; // Leere das Container div
+  seatData = []; // Initialisiere seatData als leeres Array
 
-    seatCounts.forEach((rowSeats, rowIndex) => {
-        const rowDiv = document.createElement("div");
-        rowDiv.classList.add("row");
+  seatCounts.forEach((rowSeats, rowIndex) => {
+      const rowDiv = document.createElement("div");
+      rowDiv.classList.add("row");
 
-        for (let i = 0; i < rowSeats; i++) {
-            const seatDiv = document.createElement("div");
-            seatDiv.classList.add("seat");
-            seatDiv.classList.add("available"); // Standard-Kategorie ist Parkett
-            seatDiv.dataset.rowIndex = rowIndex;
-            seatDiv.dataset.seatIndex = i;
+      let rowSeatsData = []; // Erstelle ein Array für die Sitze einer Reihe
 
-            seatDiv.addEventListener("click", () => {
-                toggleSeatCategory(seatDiv);
-            });
+      for (let i = 0; i < rowSeats; i++) {
+          const seatDiv = document.createElement("div");
+          seatDiv.classList.add("seat");
+          seatDiv.classList.add("available"); // Standard-Kategorie ist Parkett
+          seatDiv.dataset.rowIndex = rowIndex;
+          seatDiv.dataset.seatIndex = i;
 
-            rowDiv.appendChild(seatDiv);
-            seatData.push({
-                category: 0, // Standard Kategorie: Parkett
-                reservedAt: null
-            });
-        }
+          seatDiv.addEventListener("click", () => {
+              toggleSeatCategory(seatDiv);
+          });
 
-        seatContainer.appendChild(rowDiv);
-    });
+          rowDiv.appendChild(seatDiv);
+
+          // Füge einen Sitz zur rowSeatsData hinzu (jede Reihe ist jetzt ein Array)
+          rowSeatsData.push({
+              category: 0, // Standard Kategorie: Parkett
+              reservedAt: null
+          });
+      }
+
+      seatContainer.appendChild(rowDiv);
+      seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
+  });
 }
+
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
 function toggleSeatCategory(seatDiv) {

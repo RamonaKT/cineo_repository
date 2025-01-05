@@ -122,6 +122,47 @@ font-weight: bold;
     text-align: center;
 }
 
+#selected-tickets {
+    display: flex;
+    gap: 2vh;
+}
+
+
+.selected-ticket-item {
+    display: flex;
+    align-items: center;
+    width: 20vw;
+    height: 8vh;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 0.8));
+    border-radius: 10px;
+    font-family: "Lato", sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    gap: 20%;
+}
+
+.ticket-info {
+    align-self: left;
+    text-align: left;
+    margin-left: 10%;
+}
+
+.discount-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    height: 100%;
+    
+}
+
+.selected-ticket-item select {
+    width: 80%;
+    height: 50%;
+    align-self: right;
+    border-radius: 10px;
+    background-color: aqua;
+}
 
 
 /* Gesamtpreis-Anzeige */

@@ -142,15 +142,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     }
 
-                    ticketItem.innerHTML = `${option.type} - ${ticketPrice.toFixed(2)}€`;
+                    ticketItem.innerHTML = `
+                          <span class="ticket-info">${option.type} - ${ticketPrice.toFixed(2)}€</span>
+                                           `;
 
                     // Rabatt auswählen, wenn vorhanden
+                    const discountContainer = document.createElement("div");
+                    discountContainer.className = "discount-container";
+
                     const discountSelect = document.createElement("select");
                     discountSelect.dataset.ticketId = ticket.id; // Eindeutige ID für jedes Ticket
                     const defaultOption = document.createElement("option");
                     defaultOption.value = "";
                     defaultOption.textContent = "Rabatt auswählen";
                     discountSelect.appendChild(defaultOption);
+
+                    discountContainer.appendChild(discountSelect);
+                    
 
                     rabatte.forEach(discountObj => {
                         const option = document.createElement("option");
@@ -173,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         updateTotalPrice(); // Gesamtpreis aktualisieren
                     });
 
-                    ticketItem.appendChild(discountSelect);
+                    ticketItem.appendChild(discountContainer);
                     selectedTicketsContainer.appendChild(ticketItem);
                 });
             });
@@ -198,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     }
 
-                    ticketsToBook.push({ type: option.type, price: totalPrice,  discount_name: ticket.discount || null});
+                    ticketsToBook.push({ type: option.type, price: totalPrice, discount_name: ticket.discount || null });
                 });
             });
 

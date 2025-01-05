@@ -5,14 +5,47 @@ const router = express.Router();
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-const { data: roomData, error: roomCheckError } = await supabase.from('room').select('*');
-console.log("Aktuelle Räume:", roomData, roomCheckError);
+// Beispiel: Async-Funktion deklarieren
+async function getRoomData() {
+    const { data: roomData, error: roomCheckError } = await supabase.from('room').select('*');
+    if (roomCheckError) {
+        throw new Error(roomCheckError.message);
+    }
+    return roomData;
+}
 
-const { data: rowData, error: rowCheckError } = await supabase.from('rows').select('*');
-console.log("Aktuelle Reihen:", rowData, rowCheckError);
+// Aufruf der Funktion
+getRoomData().then(roomData => {
+    console.log(roomData);
+}).catch(error => {
+    console.error(error);
+});
 
-const { data: seatData, error: seatCheckError } = await supabase.from('seat').select('*');
-console.log("Aktuelle Sitzplätze:", seatData, seatCheckError);
+
+async function fetchRoomAndSeatsData() {
+    try {
+        // Abrufen der Reihen-Daten
+        const { data: rowData, error: rowCheckError } = await supabase.from('rows').select('*');
+        if (rowCheckError) {
+            console.error('Fehler beim Abrufen der Reihen:', rowCheckError);
+        } else {
+            console.log("Aktuelle Reihen:", rowData);
+        }
+
+        // Abrufen der Sitzplätze-Daten
+        const { data: seatData, error: seatCheckError } = await supabase.from('seat').select('*');
+        if (seatCheckError) {
+            console.error('Fehler beim Abrufen der Sitzplätze:', seatCheckError);
+        } else {
+            console.log("Aktuelle Sitzplätze:", seatData);
+        }
+    } catch (error) {
+        console.error('Fehler beim Abrufen von Reihen und Sitzplätzen:', error);
+    }
+}
+
+// Aufruf der Async-Funktion
+fetchRoomAndSeatsData();
 
 // Funktion zum Speichern des Layouts in Supabase
 async function saveLayout(layoutData) {

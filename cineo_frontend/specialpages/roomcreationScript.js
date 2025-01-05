@@ -103,8 +103,6 @@ function toggleSeatCategory(seatDiv) {
         seatDiv.classList.add('available');
     }
 
-    // Debugging: Sitzdaten nach Änderung
-    console.log(`Sitzkategorie aktualisiert: Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}, Kategorie ${seat.category}`);
 }
 
 // Funktion zum Parsen der Sitzanzahl

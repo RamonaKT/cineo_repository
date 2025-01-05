@@ -62,7 +62,7 @@ function generateSeats() {
           rowSeatsData.push({
               category: 0, // Standard Kategorie: Parkett
               status: "available",  // Status für den Sitz
-              reserved_at: null
+              reserved_at: null // reserved_at: null für nicht reservierte Sitze
           });
       }
 
@@ -70,6 +70,7 @@ function generateSeats() {
       seatData.push(rowSeatsData); // Jede Reihe wird als Array hinzugefügt
   });
 }
+
 
 // Funktion, um die Kategorie eines Sitzes zu wechseln
 function toggleSeatCategory(seatDiv) {
@@ -107,9 +108,18 @@ seatCountsInput.addEventListener("input", parseSeatCounts);
 // Funktion für den POST-Request
 async function submitLayout(layoutData) {
   try {
-      // API Request an den Server
+      // Überprüfe, ob roomNumber vorhanden und eine gültige Zahl ist
+      if (!layoutData.roomNumber || isNaN(+layoutData.roomNumber)) {
+          throw new Error("Die Raumnummer ist ungültig. Bitte geben Sie eine Zahl an.");
+      }
+
+      // Konvertiere roomNumber in einen Integer
+      layoutData.roomNumber = parseInt(layoutData.roomNumber, 10);
+
+      // Debug-Ausgabe: Zu sendende Daten
       console.log("Daten, die gesendet werden:", layoutData);
 
+      // API Request an den Server
       const response = await fetch("/api/saveLayout", {
           method: "POST",
           headers: {
@@ -118,15 +128,20 @@ async function submitLayout(layoutData) {
           body: JSON.stringify(layoutData)
       });
 
+      // Überprüfe die Antwort des Servers
       if (!response.ok) {
           throw new Error("Fehler beim Speichern des Layouts");
       }
 
+      // Konvertiere die Antwort in JSON
       const responseData = await response.json();
       console.log("Layout erfolgreich gespeichert", responseData);
-      return true;
+
+      return true; // Erfolgsstatus zurückgeben
   } catch (error) {
+      // Fehlerbehandlung
       console.error("Fehler beim Speichern des Layouts:", error);
-      return false;
+      return false; // Fehlerstatus zurückgeben
   }
 }
+

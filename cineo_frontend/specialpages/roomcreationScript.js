@@ -63,8 +63,8 @@ function generateSeats() {
 
             // Füge einen Sitz zur rowSeatsData hinzu (je Reihe ein Array von Sitzobjekten)
             rowSeatsData.push({
-                seatNumber: i + 1,  // Sitznummer (1-basiert)
-                rowNumber: rowIndex + 1, // Reihenummer (1-basiert)
+                seatNumber: (i + 1) / 10,  // Sitznummer durch 10 teilen (Korrektur)
+                rowNumber: (rowIndex + 1) / 10, // Reihenummer durch 10 teilen (Korrektur)
                 category: 0 // Standard Kategorie: Parkett (0)
             });
         }
@@ -122,14 +122,12 @@ async function submitLayout(layoutData) {
         // Konvertiere roomNumber in eine Zahl
         layoutData.roomNumber = parseInt(layoutData.roomNumber, 10);
 
-        // Korrekte Struktur für seatsData erstellen (jede Reihe als Array)
-        layoutData.seatsData = seatData.map(rowSeatsData => 
-            rowSeatsData.map(seat => ({
-                seatNumber: seat.seatNumber,
-                rowNumber: seat.rowNumber,
-                category: seat.category
-            }))
-        );
+        // Flaches seatsData-Array erstellen und dabei alle Sitzinformationen korrekt formatieren
+        layoutData.seatsData = seatData.flat().map(seat => ({
+            seatNumber: seat.seatNumber,  // Sitznummer (bereits geteilt durch 10)
+            rowNumber: seat.rowNumber,    // Reihenummer (bereits geteilt durch 10)
+            category: seat.category       // Kategorie des Sitzes
+        }));
 
         // Debug-Ausgabe: Zu sendende Daten
         console.log("Daten, die gesendet werden:", layoutData);

@@ -27,6 +27,7 @@ async function saveLayout(layoutData) {
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
+            console.error('Fehler beim Speichern des Raums:', roomError.message);  // Fehler in der Konsole protokollieren
             throw new Error(roomError.message);
         }
 
@@ -168,6 +169,7 @@ router.post('/api/saveLayout', async (req, res) => {
     } catch (err) {
         console.error('Fehler beim Speichern des Layouts:', err.message);
         return res.status(500).json({ error: err.message });
+        console.log('Fehler beim Speichern:', err.message); // Fehler wird in der Konsole protokolliert
     }
 });
 

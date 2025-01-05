@@ -17,6 +17,12 @@ async function saveLayout(layoutData) {
     try {
         const now = new Date().toISOString(); // Aktueller Zeitstempel
 
+        // Debugging-Ausgabe der aufbereiteten Daten vor dem Speichern
+        console.log("Preparing data for database...");
+        console.log("Room number:", roomNumber);
+        console.log("Seat counts:", seatCounts);
+        console.log("Seats data:", seatsData);
+
         // 1. Raum in die Tabelle 'room' speichern
         const { error: roomError, data: roomData } = await supabase
             .from('room')
@@ -82,6 +88,11 @@ async function saveLayout(layoutData) {
 router.post('/api/saveLayout', async (req, res) => {
     console.log("Received layout data:", req.body);  // Debugging: Prüfe, was empfangen wird
     const { roomNumber, seatCounts, seatsData } = req.body;
+
+    // Weitere Debugging-Ausgabe, um sicherzustellen, dass alle Felder vorhanden sind
+    console.log("roomNumber:", roomNumber);
+    console.log("seatCounts:", seatCounts);
+    console.log("seatsData:", seatsData);
 
     // Validierung der Anfrage
     if (

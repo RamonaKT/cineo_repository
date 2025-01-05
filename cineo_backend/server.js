@@ -11,10 +11,7 @@ const { createClient } = require('@supabase/supabase-js');
 // Für TMDB Verbindung
 const axios = require('axios');
 
-
-// Importiere den ShowLayoutController
-const showLayoutController = require('./src/controller/showLayoutController');  // Der Pfad hängt von der tatsächlichen Struktur ab
-
+const { saveLayout } = require('./controllers/showLayoutController'); // Dein Controller
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
@@ -26,8 +23,8 @@ app.use(express.json());
 
 // Routen
 //app.post('/api/savelayout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
-app.use(showLayoutController);
-
+//app.use(showLayoutController);
+app.post('/api/saveLayout', saveLayout);
 // Routen
 //app.use('/api', roomController);
 

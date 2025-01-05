@@ -152,11 +152,13 @@ async function submitLayout(layoutData) {
         });
 
         console.log("Antwort vom Server:", response);
-        
+
         // Überprüfe die Antwort des Servers
         if (!response.ok) {
-            throw new Error("Fehler beim Speichern des Layouts");
-        }
+          const errorData = await response.json();
+          console.error("Fehlerantwort vom Server (Script)", errorData); // Antwort des Servers detailliert ausgeben
+          throw new Error(`Server Fehler: ${errorData.error || 'Unbekannter Fehler'}`);
+      }
 
         // Konvertiere die Antwort in JSON
         const responseData = await response.json();

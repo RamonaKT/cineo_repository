@@ -8,6 +8,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 // Funktion zum Speichern des Layouts in Supabase
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts, seatsData } = layoutData;
+    const currentTimestamp = new Date().toISOString(); // Aktueller Zeitpunkt für 'created_at'
 
     if (!roomNumber || seatCounts.length === 0 || seatsData.length === 0) {
         throw new Error('Fehlende Layout-Daten');
@@ -18,7 +19,8 @@ async function saveLayout(layoutData) {
         const { error: roomError, data: roomData } = await supabase
             .from('room')
             .upsert([{
-                room_id: roomNumber, // room_id wird auf roomNumber gesetzt
+                room_id: roomNumber,    // room_id wird auf roomNumber gesetzt
+                created_at: currentTimestamp, // Setze das Erstellungsdatum auf 'now'
                 capacity: seatCounts.reduce((total, count) => total + count, 0) // Kapazität als Summe der Sitzplätze
             }], { onConflict: ['room_id'] });
 
@@ -28,10 +30,10 @@ async function saveLayout(layoutData) {
 
         // 2. Reihen in die Tabelle 'rows' speichern
         const rows = seatCounts.map((seat_count, index) => ({
-            row_id: `${roomNumber}_${index + 1}`, // row_id generiert als "room_id_row_number"
-            room_id: roomNumber,
-            seat_count: seat_count,
-            row_number: index + 1 // Reihen beginnen bei 1
+            row_id: `${roomNumber}_${index + 1}`,  // row_id generiert als "room_id_row_number"
+            created_at: currentTimestamp,          // Setze das Erstellungsdatum auf 'now'
+            seat_count: seat_count,                // Anzahl der Sitze pro Reihe
+            row_number: index + 1                  // Reihen beginnen bei 1
         }));
 
         const { error: rowError, data: rowsData } = await supabase
@@ -47,12 +49,13 @@ async function saveLayout(layoutData) {
         rows.forEach((row, rowIndex) => {
             const rowSeats = seatsData[rowIndex].map((seat, seatIndex) => ({
                 seat_id: `${roomNumber}_${row.row_number}_${seatIndex + 1}`, // seat_id generiert als "room_id_row_number_seat_number"
-                room_id: roomNumber,
-                row_id: row.row_id,
-                category: seat.category,
-                status: seat.status,
-                show_id: seat.show_id,
-                reserved_at: seat.reserved_at
+                created_at: currentTimestamp,         // Setze das Erstellungsdatum auf 'now'
+                room_id: roomNumber,                  // Verweise auf room_id
+                row_id: row.row_id,                   // Verweise auf row_id
+                category: seat.category,              // Kategorie des Sitzes
+                status: seat.status,                  // Status des Sitzes
+                show_id: seat.show_id,                // Show ID
+                reserved_at: seat.reserved_at        // Zeitpunkt der Reservierung
             }));
             seats.push(...rowSeats);
         });

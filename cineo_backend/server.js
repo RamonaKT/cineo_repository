@@ -23,13 +23,13 @@ app.use(bodyParser.json());
 
 app.use(express.json());
 
-app.use(showLayoutController);
-// Routen
-app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
-//app.use(showLayoutController);
 
 // Routen
-app.use('/api', roomController);
+//app.post('/api/save-layout', showLayoutController.saveLayout); // Route für das Speichern des Layouts
+app.use(showLayoutController);
+
+// Routen
+//app.use('/api', roomController);
 
 
 

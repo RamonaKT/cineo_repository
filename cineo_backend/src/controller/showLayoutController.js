@@ -78,35 +78,50 @@ async function saveLayout(layoutData) {
     }
 }
 
-
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {
     console.log("Received layout data:", req.body);  // Debugging: Prüfe, was empfangen wird
     const { roomNumber, seatCounts, seatsData } = req.body;
 
     // Validierung der Anfrage
-    if (
-        !Number.isInteger(roomNumber) || 
-        roomNumber <= 0 || 
-        !Array.isArray(seatCounts) || 
-        seatCounts.length === 0 || 
-        !Array.isArray(seatsData) || 
-        seatsData.some(row => 
-            row.some(seat => !seat.seatNumber || !seat.rowNumber || seat.category === undefined)
-        )
-    ) {
-        console.error("Invalid request data:", req.body);
+    if (!Number.isInteger(roomNumber) || roomNumber <= 0) {
         return res.status(400).json({
-            error: 'Ungültige Anfrage. Bitte stellen Sie sicher, dass alle erforderlichen Felder vorhanden sind.',
-            details: {
-                roomNumberValid: Number.isInteger(roomNumber) && roomNumber > 0,
-                seatCountsValid: Array.isArray(seatCounts) && seatCounts.length > 0,
-                seatsDataValid: Array.isArray(seatsData),
-                seatDetailsValid: seatsData.every(row => row.every(seat => seat.seatNumber && seat.rowNumber && seat.category !== undefined)),
-            }
+            error: 'Ungültige Raumnummer. Bitte geben Sie eine positive Ganzzahl an.'
         });
     }
-    
+
+    if (!Array.isArray(seatCounts) || seatCounts.length === 0) {
+        return res.status(400).json({
+            error: 'Ungültige Sitzanzahl. Bitte stellen Sie sicher, dass seatCounts ein Array mit positiven Ganzzahlen ist.'
+        });
+    }
+
+    if (!Array.isArray(seatsData) || seatsData.length !== seatCounts.length) {
+        return res.status(400).json({
+            error: 'Ungültige Sitzdaten. Die Anzahl der Reihen muss der Anzahl der Elemente in seatCounts entsprechen.'
+        });
+    }
+
+    // Validierung jedes Sitzes in seatsData
+    for (let rowIndex = 0; rowIndex < seatsData.length; rowIndex++) {
+        const row = seatsData[rowIndex];
+        if (!Array.isArray(row)) {
+            return res.status(400).json({
+                error: `Reihe ${rowIndex + 1} ist ungültig. Bitte stellen Sie sicher, dass sie ein Array von Sitzobjekten ist.`
+            });
+        }
+
+        for (let seatIndex = 0; seatIndex < row.length; seatIndex++) {
+            const seat = row[seatIndex];
+
+            // Überprüfe jedes Sitzobjekt
+            if (!seat.seatNumber || !seat.rowNumber || seat.category === undefined) {
+                return res.status(400).json({
+                    error: `Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. seatNumber, rowNumber und category müssen vorhanden sein.`
+                });
+            }
+        }
+    }
 
     try {
         const result = await saveLayout({ roomNumber, seatCounts, seatsData });
@@ -118,4 +133,3 @@ router.post('/api/saveLayout', async (req, res) => {
 });
 
 module.exports = router;
-

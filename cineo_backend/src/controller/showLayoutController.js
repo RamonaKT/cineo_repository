@@ -84,7 +84,15 @@ router.post('/api/saveLayout', async (req, res) => {
     const { roomNumber, seatCounts, seatsData } = req.body;
 
     // Validierung der Anfrage
-    if (!roomNumber || !Array.isArray(seatCounts) || seatCounts.length === 0 || !Array.isArray(seatsData)) {
+    if (
+        !Number.isInteger(roomNumber) || 
+        roomNumber <= 0 || 
+        !Array.isArray(seatCounts) || 
+        seatCounts.length === 0 || 
+        !Array.isArray(seatsData) || 
+        seatsData.some(seat => !seat.row || !seat.seat || !seat.category)
+    ) {
+        console.error("Invalid request data:", req.body);
         return res.status(400).json({
             error: 'Ungültige Anfrage. Bitte stellen Sie sicher, dass alle erforderlichen Felder vorhanden sind.'
         });

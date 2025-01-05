@@ -1,9 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.kino</groupId>
-    <artifactId>kino-backend</artifactId>
+
+    <groupId>com.cineo</groupId>
+    <artifactId>cineo-backend</artifactId>
     <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>cineo_backend</name>
+    <description>Backend for managing cineo</description>
+    <url>http://maven.apache.org</url>
+
     <dependencies>
         <!-- Spring Boot Starter -->
         <dependency>
@@ -23,13 +32,29 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Datenbank -->
+        
+        <!-- Supabase JDBC or RESTful Client -->
+        <dependency>
+            <groupId>io.supabase</groupId>
+            <artifactId>supabase-java</artifactId>
+            <version>2.0.0</version> <!-- Beispiel-Version -->
+        </dependency>
+
+        <!-- H2 Database for in-memory testing (optional, for local dev) -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Log4j for logging -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version> <!-- Aktuelle Version prüfen -->
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -38,4 +63,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

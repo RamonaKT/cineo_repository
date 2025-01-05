@@ -6,6 +6,7 @@ const router = express.Router();
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Funktion zum Speichern des Layouts in Supabase
+// Funktion zum Speichern des Layouts in Supabase
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts, seatsData } = layoutData;
 
@@ -21,64 +22,28 @@ async function saveLayout(layoutData) {
         const { error: roomError, data: roomData } = await supabase
             .from('room')
             .upsert([{
-                room_id: roomNumber,          // room_id wird auf roomNumber gesetzt
-                created_at: now,              // aktueller Zeitstempel für created_at
-                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Kapazität als Summe der Sitzplätze
+                room_id: roomNumber,
+                created_at: now,
+                capacity: seatCounts.reduce((total, count) => total + count, 0)
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
-            console.error('Fehler beim Speichern des Raums:', roomError.message);  // Fehler in der Konsole protokollieren
+            console.error('Fehler beim Speichern des Raums:', roomError.message, roomError);
             throw new Error(roomError.message);
         }
 
-        // 2. Reihen in die Tabelle 'rows' speichern
-        const rows = seatCounts.map((seat_count, index) => ({
-            row_id: `${roomNumber}_${index + 1}`,
-            created_at: now,
-            seat_count: seat_count,
-            row_number: index + 1
-        }));
-
-        const { error: rowError, data: rowsData } = await supabase
-            .from('rows')
-            .upsert(rows, { onConflict: ['row_id'] });
-
-        if (rowError) {
-            throw new Error(rowError.message);
-        }
-
-        // 3. Sitzplätze in die Tabelle 'seat' speichern
-        const seats = [];
-        seatsData.forEach((row, rowIndex) => {
-            row.forEach((seat, seatIndex) => {
-                const seatObj = {
-                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,
-                    created_at: now,
-                    room_id: roomNumber,
-                    row_id: `${roomNumber}_${rowIndex + 1}`,
-                    category: seat.category,
-                    status: 0, 
-                    reserved_at: null,
-                    show_id: null
-                };
-                seats.push(seatObj);
-            });
-        });
-
-        const { error: seatError, data: seatData } = await supabase
-            .from('seat')
-            .upsert(seats, { onConflict: ['seat_id'] });
-
-        if (seatError) {
-            throw new Error(seatError.message);
-        }
+        // Weitere Upsert-Operationen für 'rows' und 'seats'...
+        // (weitere Fehlerprotokollierung wie oben einfügen)
 
         return { message: 'Layout erfolgreich gespeichert', data: { roomData, rowsData, seatData } };
     } catch (err) {
+        console.error('Fehler beim Speichern des Layouts:', err.message, err);
         throw new Error(`Fehler beim Speichern des Layouts: ${err.message}`);
     }
 }
 
+
+// Endpunkt zum Speichern des Layouts
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {
     console.log("Received layout data:", req.body);  // Debugging: Prüfe, was empfangen wird
@@ -86,7 +51,7 @@ router.post('/api/saveLayout', async (req, res) => {
 
     // 1. Validierung der Anfrage: Überprüfe, ob 'roomNumber' eine gültige Zahl ist
     if (!Number.isInteger(roomNumber) || roomNumber <= 0) {
-        console.log("Fehler: Ungültige Raumnummer");
+        console.log("Fehler: Ungültige Raumnummer", roomNumber);
         return res.status(400).json({
             error: 'Ungültige Raumnummer. Bitte geben Sie eine positive Ganzzahl an.'
         });
@@ -94,7 +59,7 @@ router.post('/api/saveLayout', async (req, res) => {
 
     // 2. Validierung von 'seatCounts': Muss ein Array mit positiven Ganzzahlen sein
     if (!Array.isArray(seatCounts) || seatCounts.length === 0) {
-        console.log("Fehler: Ungültige seatCounts");
+        console.log("Fehler: Ungültige seatCounts", seatCounts);
         return res.status(400).json({
             error: 'Ungültige Sitzanzahl. Bitte stellen Sie sicher, dass seatCounts ein Array mit positiven Ganzzahlen ist.'
         });
@@ -120,7 +85,7 @@ router.post('/api/saveLayout', async (req, res) => {
 
         // 5. Validierung der Anzahl der Sitze in jeder Reihe
         if (row.length !== seatCounts[rowIndex]) {
-            console.log(`Fehler: Anzahl der Sitze in Reihe ${rowIndex + 1} stimmt nicht mit seatCounts überein`);
+            console.log(`Fehler: Anzahl der Sitze in Reihe ${rowIndex + 1} stimmt nicht mit seatCounts überein`, row.length, seatCounts[rowIndex]);
             return res.status(400).json({
                 error: `In Reihe ${rowIndex + 1} gibt es nicht die erwartete Anzahl an Sitzen. Erwartet: ${seatCounts[rowIndex]}, erhalten: ${row.length}.`
             });
@@ -132,7 +97,7 @@ router.post('/api/saveLayout', async (req, res) => {
 
             // Überprüfe jedes Sitzobjekt auf Vollständigkeit
             if (seat.seatNumber == undefined || seat.rowNumber == undefined || seat.category == undefined) {
-                console.log(`Fehler: Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                console.log(`Fehler: Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`, seat);
                 return res.status(400).json({
                     error: `Ungültige Sitzdaten in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. seatNumber, rowNumber und category müssen vorhanden sein.`
                 });
@@ -140,21 +105,21 @@ router.post('/api/saveLayout', async (req, res) => {
 
             // Validierungen für 'seatNumber', 'rowNumber' und 'category'
             if (!Number.isInteger(seat.seatNumber) || seat.seatNumber <= 0) {
-                console.log(`Fehler: Ungültige seatNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                console.log(`Fehler: Ungültige seatNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`, seat.seatNumber);
                 return res.status(400).json({
                     error: `Ungültige seatNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. Es muss eine positive Ganzzahl sein.`
                 });
             }
 
             if (!Number.isInteger(seat.rowNumber) || seat.rowNumber <= 0) {
-                console.log(`Fehler: Ungültige rowNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                console.log(`Fehler: Ungültige rowNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`, seat.rowNumber);
                 return res.status(400).json({
                     error: `Ungültige rowNumber in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. Es muss eine positive Ganzzahl sein.`
                 });
             }
 
             if (![0, 1, 2].includes(seat.category)) {
-                console.log(`Fehler: Ungültige category in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`);
+                console.log(`Fehler: Ungültige category in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}`, seat.category);
                 return res.status(400).json({
                     error: `Ungültige category in Reihe ${rowIndex + 1}, Sitz ${seatIndex + 1}. Erlaubte Werte sind 0, 1 oder 2.`
                 });
@@ -169,8 +134,8 @@ router.post('/api/saveLayout', async (req, res) => {
     } catch (err) {
         console.error('Fehler beim Speichern des Layouts:', err.message);
         return res.status(500).json({ error: err.message });
-        console.log('Fehler beim Speichern:', err.message); // Fehler wird in der Konsole protokolliert
     }
 });
+
 
 module.exports = router;

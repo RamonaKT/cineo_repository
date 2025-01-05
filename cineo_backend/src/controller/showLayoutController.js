@@ -21,9 +21,9 @@ async function saveLayout(layoutData) {
         const { error: roomError, data: roomData } = await supabase
             .from('room')
             .upsert([{
-                room_id: roomNumber,           // room_id wird auf roomNumber gesetzt
-                created_at: now,               // aktueller Zeitstempel für created_at
-                capacity: seatCounts.reduce((total, count) => total + count, 0) // Kapazität als Summe der Sitzplätze
+                room_id: roomNumber,          // room_id wird auf roomNumber gesetzt
+                created_at: now,              // aktueller Zeitstempel für created_at
+                capacity: seatCounts.reduce((total, count) => total + count, 0)  // Kapazität als Summe der Sitzplätze
             }], { onConflict: ['room_id'] });
 
         if (roomError) {
@@ -51,14 +51,14 @@ async function saveLayout(layoutData) {
         seatsData.forEach((row, rowIndex) => {
             row.forEach((seat, seatIndex) => {
                 const seatObj = {
-                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`, // Seat ID mit Raum-, Reihe- und Sitznummer
-                    created_at: now, // Aktueller Zeitstempel
+                    seat_id: `${roomNumber}_${rowIndex + 1}_${seatIndex + 1}`,
+                    created_at: now,
                     room_id: roomNumber,
-                    row_id: `${roomNumber}_${rowIndex + 1}`, // Verweis auf die Reihe
-                    category: seat.category, // Kategorie (0, 1, 2)
-                    status: 0, // Status (Standardwert: 0 für verfügbar)
-                    reserved_at: null, // reserviert_at (Standardwert: null)
-                    show_id: null // show_id (Standardwert: null)
+                    row_id: `${roomNumber}_${rowIndex + 1}`,
+                    category: seat.category,
+                    status: 0, 
+                    reserved_at: null,
+                    show_id: null
                 };
                 seats.push(seatObj);
             });
@@ -78,6 +78,7 @@ async function saveLayout(layoutData) {
     }
 }
 
+
 // Endpunkt zum Speichern des Layouts
 router.post('/api/saveLayout', async (req, res) => {
     console.log("Received layout data:", req.body);  // Debugging: Prüfe, was empfangen wird
@@ -90,7 +91,9 @@ router.post('/api/saveLayout', async (req, res) => {
         !Array.isArray(seatCounts) || 
         seatCounts.length === 0 || 
         !Array.isArray(seatsData) || 
-        seatsData.some(row => row.some(seat => !Number.isInteger(seat.seatNumber) || !Number.isInteger(seat.rowNumber) || ![0, 1, 2].includes(seat.category)))
+        seatsData.some(row => 
+            row.some(seat => !seat.seatNumber || !seat.rowNumber || seat.category === undefined)
+        )
     ) {
         console.error("Invalid request data:", req.body);
         return res.status(400).json({

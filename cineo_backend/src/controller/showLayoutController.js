@@ -74,22 +74,22 @@ async function saveLayout(layoutData) {
             seat_count,
             row_number: index + 1,
         }));
-        console.log("Generierte Reihen:", rows);
 
-        const { error: rowError } = await supabase
-            .from('rows')
-            .upsert(rows, { onConflict: ['row_id'] });
+        for (const row of rows) {
+            const { error: rowError } = await supabase
+                .from('rows')
+                .upsert(row, { onConflict: ['row_id'] });
 
-        if (rowError) {
-            console.error("Fehler beim Speichern der Reihen:", rowError);
-            throw new Error(rowError.message);
+            if (rowError) {
+                console.error("Fehler beim Speichern der Reihe:", rowError);
+                throw new Error(rowError.message);
+            }
         }
 
         console.log("Speichere Sitzplätze:");
-        const seats = [];
-        seatsData.forEach((row, rowIndex) => {
-            row.forEach((seat, seatIndex) => {
-                seats.push({
+        for (const [rowIndex, row] of seatsData.entries()) {
+            for (const [seatIndex, seat] of row.entries()) {
+                const seatData = {
                     seat_id: roomNumber * 1000000 + (rowIndex + 1) * 1000 + (seatIndex + 1),
                     created_at: now,
                     room_id: roomNumber,
@@ -98,18 +98,17 @@ async function saveLayout(layoutData) {
                     status: 0,
                     reserved_at: null,
                     show_id: null
-                });
-            });
-        });
-        console.log("Generierte Sitzplätze:", seats);
+                };
 
-        const { error: seatError } = await supabase
-            .from('seat')
-            .upsert(seats, { onConflict: ['seat_id'] });
+                const { error: seatError } = await supabase
+                    .from('seat')
+                    .upsert(seatData, { onConflict: ['seat_id'] });
 
-        if (seatError) {
-            console.error("Fehler beim Speichern der Sitzplätze:", seatError);
-            throw new Error(seatError.message);
+                if (seatError) {
+                    console.error("Fehler beim Speichern eines Sitzplatzes:", seatError);
+                    throw new Error(seatError.message);
+                }
+            }
         }
 
         console.log("Layout erfolgreich gespeichert!");

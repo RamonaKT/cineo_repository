@@ -13,10 +13,11 @@
 
 /* Container für den gesamten Inhalt */
 .ticket-container {
+    align-self: center;
     width: 80%;
     max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 5vh 0 5vh 0;
+    padding: 20px 20px 25vh 20px;
     border-radius: 8px;
     /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
 }
@@ -122,17 +123,21 @@ font-weight: bold;
     text-align: center;
 }
 
-#selected-tickets {
-    display: flex;
-    gap: 2vh;
-}
 
+#selected-tickets {
+    margin-top: 2vh;
+    display: grid;
+    grid-template-columns: repeat( 4, 1fr); 
+    width: 100%;
+    gap: 1vw; 
+    
+}
 
 .selected-ticket-item {
     display: flex;
     align-items: center;
-    width: 20vw;
-    height: 8vh;
+    width:100%;
+    height: 6vh;
     background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 0.8));
     border-radius: 10px;
     font-family: "Lato", sans-serif;
@@ -145,14 +150,31 @@ font-weight: bold;
     align-self: left;
     text-align: left;
     margin-left: 10%;
+    white-space: nowrap;
+    width: 5vw;
 }
 
 .discount-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40%;
-    height: 100%;
+    width: 7vw;
+    height: 100%; 
+}
+
+.discount-container option {
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    color: white;
+    -webkit-text-stroke: 2px solid white;
+    background-color: rgb(0, 208, 208);
+    font-size: 1rem;
+    text-align: center;
+    
+}
+
+.discount-container option:hover {
+   background-color: #560192;
     
 }
 
@@ -161,7 +183,9 @@ font-weight: bold;
     height: 50%;
     align-self: right;
     border-radius: 10px;
-    background-color: aqua;
+    background-color: rgba(0, 255, 255, 0.453);
+    color: white;
+    text-align: center;
 }
 
 
@@ -192,6 +216,7 @@ font-weight: bold;
     max-width: 300px;
     margin-left: auto;
     margin-right: auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #book-tickets-button:hover {

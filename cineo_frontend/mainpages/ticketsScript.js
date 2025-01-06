@@ -96,6 +96,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             updateTotalPrice(); // Gesamtpreis aktualisieren
         });
 
+
+
         // Funktion zur Berechnung des Gesamtpreises
         function updateTotalPrice() {
             let totalPrice = 0;
@@ -109,12 +111,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (ticket.discount) {
                         const discountObj = rabatte.find(d => d.name === ticket.discount);
                         if (discountObj) {
-                            const discountPercentage = discountObj.value;
-                            ticketPrice *= (1 - discountPercentage / 100);
+                            if (discountObj.type === "prozent") {
+                                const discountPercentage = discountObj.value;
+                                ticketPrice *= (1 - discountPercentage / 100);
+                            } else if (discountObj.type === "euro") {
+                                const discountAmount = discountObj.value;
+                                ticketPrice -= discountAmount;
+                            }
                         }
                     }
 
-                    totalPrice += ticketPrice;
+                    totalPrice += ticketPrice > 0 ? ticketPrice : 0; // Preis kann nicht negativ sein
                 });
             });
 
@@ -137,14 +144,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (ticket.discount) {
                         const discountObj = rabatte.find(d => d.name === ticket.discount);
                         if (discountObj) {
-                            const discountPercentage = discountObj.value;
-                            ticketPrice *= (1 - discountPercentage / 100);
+                            if (discountObj.type === "prozent") {
+                                const discountPercentage = discountObj.value;
+                                ticketPrice *= (1 - discountPercentage / 100);
+                            } else if (discountObj.type === "euro") {
+                                const discountAmount = discountObj.value;
+                                ticketPrice -= discountAmount;
+                            }
                         }
                     }
 
                     ticketItem.innerHTML = `
-                          <span class="ticket-info">${option.type} - ${ticketPrice.toFixed(2)}€</span>
-                                           `;
+                <div class="ticket-info"> <span>${option.type} - ${ticketPrice.toFixed(2)}€</span> </div>
+            `;
 
                     // Rabatt auswählen, wenn vorhanden
                     const discountContainer = document.createElement("div");
@@ -154,16 +166,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                     discountSelect.dataset.ticketId = ticket.id; // Eindeutige ID für jedes Ticket
                     const defaultOption = document.createElement("option");
                     defaultOption.value = "";
-                    defaultOption.textContent = "Rabatt auswählen";
+                    defaultOption.textContent = "Rabatt wählen";
                     discountSelect.appendChild(defaultOption);
 
                     discountContainer.appendChild(discountSelect);
-                    
 
                     rabatte.forEach(discountObj => {
                         const option = document.createElement("option");
                         option.value = discountObj.name;
-                        option.textContent = `${discountObj.name} (${discountObj.value}% Rabatt)`;
+                        option.textContent = `${discountObj.name}`;
                         discountSelect.appendChild(option);
                     });
 
@@ -186,6 +197,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             });
         }
+
+
 
         // Ticketbuchung
         document.getElementById("book-tickets-button").addEventListener("click", async () => {

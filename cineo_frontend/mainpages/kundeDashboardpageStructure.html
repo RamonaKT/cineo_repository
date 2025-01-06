@@ -37,7 +37,28 @@
 </div>
 
 
-
+<div class="main-content">
+    <div class="container">
+        <h1>Kundenbereich - Zahlungsinformationen</h1>
+        
+        <form id="ibanForm">
+            <label for="iban">IBAN hinterlegen:</label>
+            <input type="text" id="iban" 
+                   pattern="[A-Z]{2}[0-9]{2}(?:[ ]?[0-9A-Z]{1,30})"
+                   required placeholder="DE89 3704 0044 0532 0130 00" />
+            
+            <button type="submit">IBAN speichern</button>
+        </form>        
+        
+        
+        <div id="ibanAnzeige" class="iban-display">
+            <h2>Hinterlegte IBAN:</h2>
+            <p id="ibanText">Keine IBAN hinterlegt</p>
+        </div>
+        
+        <p id="confirmationMessage" style="display: none;">Ihre IBAN wurde erfolgreich gespeichert.</p>
+    </div>
+</div>
 
 
   

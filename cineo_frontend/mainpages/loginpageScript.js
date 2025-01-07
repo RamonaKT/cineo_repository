@@ -82,6 +82,9 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         }
 
         if (data.length > 0) {
+            // Speichern der E-Mail im localStorage
+            localStorage.setItem('userEmail', data[0].email);
+
             // Überprüfen, ob die E-Mail mit "@cineo.com" endet
             const isEmployee = email.endsWith("@cineo.com");
 

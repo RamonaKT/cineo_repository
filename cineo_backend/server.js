@@ -189,6 +189,48 @@ app.post('/api/tickets', async (req, res) => {
     }
 });
 
+// API-Endpoint zum Abrufen und Speichern der IBAN
+app.get('/api/iban', async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        return res.status(400).json({ error: 'E-Mail wird benötigt' });
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('iban')
+        .eq('email', email)
+        .single();
+
+    if (error) {
+        return res.status(500).json({ error: 'Fehler beim Abrufen der IBAN' });
+    }
+
+    res.json(data);
+});
+
+
+app.post('/api/iban', async (req, res) => {
+    const { email, iban } = req.body;
+
+    if (!email || !iban) {
+        return res.status(400).json({ error: 'E-Mail und IBAN sind erforderlich' });
+    }
+
+    const { error } = await supabase
+        .from('users')
+        .update({ iban })
+        .eq('email', email);
+
+    if (error) {
+        return res.status(500).json({ error: 'Fehler beim Speichern der IBAN' });
+    }
+
+    res.json({ message: 'IBAN erfolgreich gespeichert' });
+});
+
+
 
 
 

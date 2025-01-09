@@ -1,6 +1,10 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
-const router = express.Router();
+const routerLayout = express.Router();
+const bodyParser = require('body-parser');
+const app = express();
+app.use(express.json());
+app.use(bodyParser.json());
 
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
@@ -51,6 +55,7 @@ fetchRoomAndSeatsData();
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts, seatsData } = layoutData;
     const now = new Date().toISOString();
+    console.log("Route /api/saveLayout erreicht.");
 
     try {
         console.log("Speichere Raum:", { roomNumber, seatCounts });
@@ -120,11 +125,11 @@ async function saveLayout(layoutData) {
 }
 
 // Endpunkt zum Speichern des Layouts
-router.post('/api/saveLayout', async (req, res) => {
+routerLayout.post('/save', async (req, res) => {
     console.log("Empfangene Daten:", req.body); // Logge die empfangenen Daten
     const { roomNumber, seatCounts, seatsData } = req.body;
 
-    // Validierung
+    // Validierung der Eingaben
     if (!Number.isInteger(roomNumber) || roomNumber <= 0) {
         console.error("Ungültige Raumnummer:", roomNumber);
         return res.status(400).json({ error: 'Ungültige Raumnummer.' });
@@ -145,9 +150,16 @@ router.post('/api/saveLayout', async (req, res) => {
         console.log("Erfolgreiches Ergebnis:", result); // Logge das Ergebnis
         return res.status(200).json(result);
     } catch (err) {
-        console.error("Fehler beim Speichern des Layouts: :(((Controller)", err.message, err.stack); // Detaillierte Fehlerausgabe
+        console.error("Fehler beim Speichern des Layouts:", err.message, err.stack); // Detaillierte Fehlerausgabe
         return res.status(500).json({ error: err.message });
     }
 });
 
-module.exports = router;
+module.exports = {
+    saveLayout,
+    fetchRoomAndSeatsData,
+    getRoomData,
+    routerLayout,
+};
+
+module.exports = routerLayout;

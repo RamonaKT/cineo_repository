@@ -117,6 +117,7 @@ seatCountsInput.addEventListener("input", parseSeatCounts);
 
 // Funktion für den POST-Request
 async function submitLayout(layoutData) {
+    let response; // Variable außerhalb von try definieren
     try {
         // Überprüfe, ob roomNumber vorhanden und eine gültige Zahl ist
         if (!layoutData.roomNumber || isNaN(layoutData.roomNumber)) {
@@ -142,14 +143,19 @@ async function submitLayout(layoutData) {
         console.log("Daten, die gesendet werden:", JSON.stringify(layoutData, null, 2));
 
         // API Request an den Server
-        const response = await fetch("/api/saveLayout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o"
-            },
-            body: JSON.stringify(layoutData)
-        });
+        async function saveLayout() {
+            const response = await fetch("/api/saveLayout/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(layoutData)
+            });
+        
+            const result = await response.json();
+            console.log(result);
+        }
+        saveLayout();
 
         console.log("Antwort vom Server:", response);
 
@@ -164,10 +170,16 @@ async function submitLayout(layoutData) {
         const responseData = await response.json();
         console.log("Layout erfolgreich gespeichert", responseData);
 
-        return true; // Erfolgsstatus zurückgeben
+        if (response.ok) {
+            console.log("Erfolgreich:", data);
+            return data;
+        } else {
+            throw new Error(`Fehler: ${data.message || "Unbekannter Fehler"}`);
+        } 
+
     } catch (error) {
         // Fehlerbehandlung
-        console.error("Fehler beim Speichern des Layouts:", error);
+        console.error("Fehler beim Speichern des Layouts:", error.message, response ? `Status: ${response.status}` : "Keine Antwort");
         return false; // Fehlerstatus zurückgeben
     }
 }

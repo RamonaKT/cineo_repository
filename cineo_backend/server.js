@@ -3,7 +3,6 @@ require('dotenv').config({ path: '../cineo_backend/.env' });
 
 const cors = require('cors');
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
@@ -12,17 +11,18 @@ const { createClient } = require('@supabase/supabase-js');
 const axios = require('axios');
 
 // ** Router Import**
-const showLayoutController = require('./src/controller/showLayoutController'); // Importiere den Router
+const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
 }));
-app.use(bodyParser.json());
 
 app.use(express.json());
 
 // ** Router verwenden**
-app.use(showLayoutController);  // Registriere den Router in der App
+//app.use(showLayoutController); 
+app.use('/api/saveLayout', routerLayout);                     // Registriere den Router in der App
+
 
 app.use((err, req, res, next) => {
     console.error(err.stack); // Detaillierte Fehlerausgabe

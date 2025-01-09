@@ -18,13 +18,18 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.47.10",
     "axios": "^1.7.9",
+    
+    "cors": "^2.8.5", // stammt aus merge; darf/soll hier sein? idk
+
     "cineo_backend": "file:",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mysql2": "^3.11.5"
+    "mysql2": "^3.11.5",
+    "safer-buffer": "^2.1.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
-  }
+  },
+  "type": "commonjs"
 }

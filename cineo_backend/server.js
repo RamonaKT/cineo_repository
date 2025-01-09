@@ -10,10 +10,25 @@ const { createClient } = require('@supabase/supabase-js');
 // Für TMDB Verbindung
 const axios = require('axios');
 
+// ** Router Import**
+const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
 
-app.use(cors());
+app.use(cors({
+    origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
+}));
 
 app.use(express.json());
+
+// ** Router verwenden**
+//app.use(showLayoutController); 
+app.use('/api/saveLayout', routerLayout);                     // Registriere den Router in der App
+
+
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Detaillierte Fehlerausgabe
+    res.status(500).send('Etwas ist schief gelaufen!');
+});
+
 
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -707,6 +722,3 @@ app.get('/confirmation', (req, res) => {
 
 // Server wird gestartet
 app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
-
-
-

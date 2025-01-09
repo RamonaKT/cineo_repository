@@ -70,7 +70,7 @@ a {
 
 /* Navigation oben */
 .div_mainStyle_navigationTop {
-    position: fixed;
+    position: absolute;
     top: 12vh;
     width: 100vw;
     height: 5vh;

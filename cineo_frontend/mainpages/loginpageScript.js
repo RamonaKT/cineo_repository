@@ -22,13 +22,23 @@ showRegisterLink.addEventListener("click", () => {
 });
 
 // Registrierung
+// Registrierung
 document.getElementById("registerButton").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
     const messageDiv = document.getElementById("message");
 
-    if (!email || !password) {
+    // Überprüfen, ob alle Felder ausgefüllt sind
+    if (!email || !password || !confirmPassword) {
         messageDiv.textContent = "Please fill out all fields.";
+        messageDiv.style.color = "red";
+        return;
+    }
+
+    // Überprüfen, ob die Passwörter übereinstimmen
+    if (password !== confirmPassword) {
+        messageDiv.textContent = "Passwords do not match. Please try again.";
         messageDiv.style.color = "red";
         return;
     }
@@ -37,6 +47,7 @@ document.getElementById("registerButton").addEventListener("click", async () => 
     const isEmployee = email.endsWith("@cineo.com");
 
     try {
+        // Registrierung bei Supabase durchführen
         const { data, error } = await supabase
             .from("users")
             .insert([{ email, password, role: isEmployee ? "employee" : "customer" }]); // Rolle speichern
@@ -54,6 +65,7 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         messageDiv.style.color = "red";
     }
 });
+
 
 // Login
 document.getElementById("loginButton").addEventListener("click", async () => {

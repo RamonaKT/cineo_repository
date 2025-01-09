@@ -25,7 +25,6 @@ getRoomData().then(roomData => {
     console.error(error);
 });
 
-
 async function fetchRoomAndSeatsData() {
     try {
         // Abrufen der Reihen-Daten
@@ -59,7 +58,7 @@ async function saveLayout(layoutData) {
 
     try {
         console.log("Speichere Raum:", { roomNumber, seatCounts });
-        const { error: roomError } = await supabase
+        const { data: roomData, error: roomError } = await supabase
             .from('rooms')
             .upsert([{
                 room_id: roomNumber,
@@ -67,11 +66,15 @@ async function saveLayout(layoutData) {
                 capacity: seatCounts.reduce((total, count) => total + count, 0)
             }], { onConflict: ['room_id'] });
 
+        // Logge die Antwort von Supabase (Raum)
         if (roomError) {
             console.error("Fehler beim Speichern des Raums:", roomError);
             throw new Error(roomError.message);
+        } else {
+            console.log("Antwort beim Speichern des Raums:", roomData); // Logge das Ergebnis
         }
 
+        // Logge und speichere Reihen
         console.log("Speichere Reihen:");
         const rows = seatCounts.map((seat_count, index) => ({
             row_id: roomNumber * 1000 + (index + 1),
@@ -81,16 +84,20 @@ async function saveLayout(layoutData) {
         }));
 
         for (const row of rows) {
-            const { error: rowError } = await supabase
+            const { data: rowData, error: rowError } = await supabase
                 .from('rows')
                 .upsert(row, { onConflict: ['row_id'] });
 
+            // Logge die Antwort von Supabase (Reihe)
             if (rowError) {
                 console.error("Fehler beim Speichern der Reihe:", rowError);
                 throw new Error(rowError.message);
+            } else {
+                console.log("Antwort beim Speichern der Reihe:", rowData); // Logge das Ergebnis
             }
         }
 
+        // Logge und speichere Sitzplätze
         console.log("Speichere Sitzplätze:");
         for (const [rowIndex, row] of seatsData.entries()) {
             for (const [seatIndex, seat] of row.entries()) {
@@ -105,22 +112,25 @@ async function saveLayout(layoutData) {
                     show_id: null
                 };
 
-                const { error: seatError } = await supabase
+                const { data: seatDataResponse, error: seatError } = await supabase
                     .from('seat')
                     .upsert(seatData, { onConflict: ['seat_id'] });
 
+                // Logge die Antwort von Supabase (Sitzplatz)
                 if (seatError) {
                     console.error("Fehler beim Speichern eines Sitzplatzes:", seatError);
                     throw new Error(seatError.message);
+                } else {
+                    console.log("Antwort beim Speichern des Sitzplatzes:", seatDataResponse); // Logge das Ergebnis
                 }
             }
         }
 
         console.log("Layout erfolgreich gespeichert!");
-        return { message: 'Layout erfolgreich gespeichert' };
+        return { message: 'Layout erfolgreich gespeichert', status: 'success' };
     } catch (err) {
         console.error("Fehler in saveLayout:", err.message, err.stack);
-        throw new Error(err.message);
+        return { error: err.message, status: 'error' };  // Gib die Fehlernachricht zurück
     }
 }
 
@@ -148,12 +158,20 @@ routerLayout.post('/save', async (req, res) => {
     try {
         const result = await saveLayout({ roomNumber, seatCounts, seatsData });
         console.log("Erfolgreiches Ergebnis:", result); // Logge das Ergebnis
-        return res.status(200).json(result);
+
+        // Wenn das Ergebnis einen Fehler enthält, gebe ihn zurück
+        if (result.error) {
+            return res.status(500).json({ error: result.error });
+        }
+
+        // Rückgabe der erfolgreichen Antwort
+        return res.status(200).json(result); 
     } catch (err) {
         console.error("Fehler beim Speichern des Layouts:", err.message, err.stack); // Detaillierte Fehlerausgabe
         return res.status(500).json({ error: err.message });
     }
 });
+
 
 module.exports = {
     saveLayout,

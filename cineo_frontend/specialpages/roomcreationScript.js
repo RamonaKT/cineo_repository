@@ -16,9 +16,9 @@ submitButton.addEventListener("click", async () => {
 
     // Vorbereiten der Daten zum Senden
     const layoutData = {
-        roomNumber: parseInt(roomNumber, 10), // Konvertiere in eine Zahl
-        seatCounts: seatCounts, // Sitzanzahl pro Reihe (Array)
-        seatsData: seatData    // Sitzdaten (Kategorie, Status, etc.)
+        roomNumber: parseInt(roomNumber, 10),
+        seatCounts: seatCounts,
+        seatsData: seatData
     };
 
     try {
@@ -27,16 +27,17 @@ submitButton.addEventListener("click", async () => {
 
         const result = await submitLayout(layoutData);
 
-        if (result) {
-            alert('Layout erfolgreich gespeichert!');
+        if (result && result.status === 'success') {
+            console.log("Erfolgreich gespeichert");
         } else {
-            alert('Fehler beim Speichern des Layouts.');
+            alert(`Fehler: ${result.statusText || 'Unbekannter Fehler'}`);
         }
     } catch (error) {
-        console.error(error);
-        alert('Es gab einen Fehler beim Speichern.');
+        console.error("Fehler beim Absenden des Layouts:", error);
+        alert(`Fehler: ${error.message || 'Unbekannter Fehler'}`);
     }
 });
+
 
 // Funktion zur Generierung der Sitze basierend auf seatCounts
 function generateSeats() {
@@ -116,8 +117,9 @@ function parseSeatCounts() {
 seatCountsInput.addEventListener("input", parseSeatCounts);
 
 // Funktion für den POST-Request
+// Funktion für den POST-Request
 async function submitLayout(layoutData) {
-    let response; // Variable außerhalb von try definieren
+    let response;
     try {
         // Überprüfe, ob roomNumber vorhanden und eine gültige Zahl ist
         if (!layoutData.roomNumber || isNaN(layoutData.roomNumber)) {
@@ -127,59 +129,45 @@ async function submitLayout(layoutData) {
         // Konvertiere roomNumber in eine Zahl
         layoutData.roomNumber = parseInt(layoutData.roomNumber, 10);
 
-        // Debug-Ausgabe: Sitzdaten vor der Umwandlung (zu Debug-Zwecken)
-        console.log("Sitzdaten vor Umwandlung:", JSON.stringify(seatData, null, 2));
-
-        // Die Sitzdaten bleiben in ihrer strukturierten Form (mit Reihen)
-        layoutData.seatsData = seatData.map(row => 
-            row.map(seat => ({
-                seatNumber: seat.seatNumber,  // Sitznummer
-                rowNumber: seat.rowNumber,    // Reihenummer
-                category: seat.category       // Kategorie des Sitzes
-            }))
-        );
-
-        // Debug-Ausgabe: Zu sendende Daten
+        // Debug-Ausgabe der zu sendenden Daten
         console.log("Daten, die gesendet werden:", JSON.stringify(layoutData, null, 2));
 
-        // API Request an den Server
-        async function saveLayout() {
-            const response = await fetch("/api/saveLayout/save", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(layoutData)
-            });
-        
-            const result = await response.json();
-            console.log(result);
-        }
-        saveLayout();
+        // API-Request an den Server
+        response = await fetch("/api/saveLayout/save", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(layoutData)
+        });
 
-        console.log("Antwort vom Server:", response);
+        // Antwort vom Server erhalten
+        const result = await response.json();
+        console.log("Serverantwort:", result);  // Debug-Ausgabe der gesamten Antwort vom Server
 
-        // Überprüfe die Antwort des Servers
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Fehlerantwort vom Server (Script)", errorData); // Antwort des Servers detailliert ausgeben
-          throw new Error(`Server Fehler: ${errorData.error || 'Unbekannter Fehler'}`);
-      }
-
-        // Konvertiere die Antwort in JSON
-        const responseData = await response.json();
-        console.log("Layout erfolgreich gespeichert", responseData);
-
+        // Überprüfen, ob die Antwort des Servers erfolgreich war
         if (response.ok) {
-            console.log("Erfolgreich:", data);
-            return data;
+            // Erfolgreiche Antwort vom Server
+            if (result && result.message) {
+                console.log("Layout erfolgreich gespeichert:", result.message);
+                alert(result.message);  // Zeige Erfolgsmeldung an
+                return { status: 'success', message: result.message };  // Erfolgsstatus zurückgeben
+            } else {
+                console.error("Antwort des Servers enthält keine 'message'.");
+                alert("Layout wurde erfolgreich gespeichert, aber keine Nachricht erhalten.");
+                return { status: 'error', message: 'Keine Nachricht vom Server' };  // Fehlerstatus zurückgeben
+            }
         } else {
-            throw new Error(`Fehler: ${data.message || "Unbekannter Fehler"}`);
-        } 
+            // Fehlerantwort vom Server
+            console.error("Fehlerantwort vom Server:", result);
+            alert(`Fehler: ${result.message || 'Unbekannter Fehler'}`);
+            return { status: 'error', message: result.message || 'Unbekannter Fehler' };  // Fehlerstatus zurückgeben
+        }
 
     } catch (error) {
         // Fehlerbehandlung
-        console.error("Fehler beim Speichern des Layouts:", error.message, response ? `Status: ${response.status}` : "Keine Antwort");
-        return false; // Fehlerstatus zurückgeben
+        console.error("Fehler beim Speichern des Layouts:", error.message);
+        alert(`Fehler: ${error.message || 'catch: Unbekannter Fehler'}`);
+        return { status: 'error', message: error.message || 'catch:Unbekannter Fehler' };  // Fehlerstatus zurückgeben
     }
 }

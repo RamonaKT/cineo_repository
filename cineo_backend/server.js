@@ -12,6 +12,7 @@ const axios = require('axios');
 
 // ** Router Import**
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
+const routerCreateShowSeats = require ('./src/controller/createshowseatsController');
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
@@ -21,7 +22,8 @@ app.use(express.json());
 
 // ** Router verwenden**
 //app.use(showLayoutController); 
-app.use('/api/saveLayout', routerLayout);                     // Registriere den Router in der App
+app.use('/api/saveLayout', routerLayout);             // Registriere den Router in der App
+app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);        // Registriere den Router in der App
 
 
 app.use((err, req, res, next) => {

@@ -185,6 +185,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 responseMessage.style.color = '#5afff5';
                 form.reset();
                 roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
+
+                // Sitzplätze erstellen für die neue Vorstellung
+                const createSeatsResponse = await fetch(`/api/sitzplaetzeErstellen/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ room_id: roomId, show_id: result.show_id }),
+                });
+
+                const seatResult = await createSeatsResponse.json();
+
+                if (createSeatsResponse.ok) {
+                    responseMessage.textContent += ' Sitzplätze erfolgreich erstellt!';
+                } else {
+                    responseMessage.textContent += ` Fehler beim Erstellen der Sitzplätze: ${seatResult.message}`;
+                    responseMessage.style.color = 'red';
+                }
+
             } else {
                 responseMessage.textContent = `Fehler: ${result.message}`;
                 responseMessage.style.color = 'red';

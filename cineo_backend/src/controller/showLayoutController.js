@@ -55,7 +55,7 @@ async function saveLayout(layoutData) {
     try {
         console.log("Speichere Raum:", { roomNumber, seatCounts });
         const { error: roomError } = await supabase
-            .from('room')
+            .from('rooms')
             .upsert([{
                 room_id: roomNumber,
                 created_at: now,

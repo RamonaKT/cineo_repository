@@ -19,7 +19,7 @@
     "@supabase/supabase-js": "^2.47.10",
     "axios": "^1.7.9",
     
-    "cors": "^2.8.5", // stammt aus merge; darf/soll hier sein? idk
+    "cors": "^2.8.5", 
 
     "cineo_backend": "file:",
     "dotenv": "^16.4.7",

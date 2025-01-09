@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 
 
+html {
+    font-size: 100%;
+    /* Stellt sicher, dass 1rem = 16px ist */
+}
+
+
 body {
     display: flex;
     flex-direction: column;
@@ -83,7 +89,7 @@ body {
 #movie-image {
     width: 21vw;
     height: 55vh;
-    border-radius: 1em;
+    border-radius: 15px;
     border: 0.025vh solid #5afff5;
     margin: 5vh 0 0 6vw;
 }
@@ -93,7 +99,11 @@ body {
     display: flex;
     justify-content: flex-start;
     border: none;
-    border-top: 0.5px solid #5afff5;
+    /* border-top: 0.5px solid #5afff5;*/
+
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, #5afff5, #5afff5, #220537) 1;
+
     width: 50vw;
     margin-left: 0;
     margin: 0;
@@ -103,46 +113,75 @@ body {
 
 }
 
-.second-line {
-    border: none;
-    border-top: 0.1px solid #5afff5;
-    width: 50vw;
-    text-align: left;
-    margin-top: 8vh;
-}
-
-.movie-content {
-    transition: max-height 0.4s ease-out;
-    /* Animation für sanfte Anpassung */
-    overflow: hidden;
-    /* Verhindert, dass unsichtbarer Text angezeigt wird */
-    /* max-height: 30vh;  Standardhöhe im gekürzten Zustand */
-
+.content-wrapper {
     position: absolute;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    margin: 6vh 0 0 31vw;
-    width: 45%;
+    gap: 5vh;
+    align-self: left;
+
+    width: 76%;
+    border-right: 1px solid;
+    border-image: linear-gradient(to bottom, #220537, #5afff5, #220537) 1;
+
+}
+
+#second-line {
+    position: relative;
+    border: none;
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, #5afff5, #5afff5, #220537) 1;
+
+    width: 50vw;
+    text-align: left;
+    margin-top: 9vh;
+
+
+}
+
+#second-line.expanded {
+    margin-top: 10vh;
+    /* Erhöhter Abstand, wenn der Text erweitert ist */
+    margin-bottom: 5vh;
+}
+
+
+.movie-content {
+    transition: max-height 1s ease-out;
+    /* Animation für sanfte Anpassung */
+    overflow: hidden;
+    /* Verhindert, dass unsichtbarer Text angezeigt wird */
+   /*  max-height: 30vh;  Standardhöhe im gekürzten Zustand */
+    align-self: left;
+    display: flex;
+    flex-direction: column;
+    margin: 5vh 0 0 30vw;
+    width: 58%;
+    height: fit-content;
     color: white;
     font-family: "Lato", sans-serif;
     line-height: 1.5;
+
+
 }
 
 .movie-content p {
-    font-size: 1.4em;
+    font-size: 1.3rem;
     line-height: 1.5;
     -webkit-text-stroke: 0.3px white;
 }
 
 .movie-content .title {
-    font-size: 3em;
+    font-size: 2.5rem;
     -webkit-text-stroke: 1.5px white;
 }
 
+
+
 .movie-content.expanded {
-    max-height: none;
+ /*   max-height: none;
     /*Ein großer Wert, der den gesamten Inhalt abdeckt */
+ /*   max-height: 100vh;*/
     overflow: visible;
     height: auto;
 }
@@ -150,7 +189,7 @@ body {
 
 .mehr-weniger-button {
     margin: 2vh 0 0 0;
-    width: 10vw;
+    width: fit-content;
     padding: 5px 40px;
     background-color: #560192;
     border-radius: 90px;
@@ -160,22 +199,33 @@ body {
     font-size: 1.2em;
     font-family: "Lato", sans-serif;
     cursor: pointer;
-    box-shadow: 1px 1px 10px #000000;
+    box-shadow: 1px 1px 10px  #000000;
+}
+
+
+.mehr-weniger-button:hover {
+    background-color: #7a02cf;
 }
 
 /* CSS für die Showtimes Grid */
 .showtimes-grid {
+    width: 55%;
     position: relative;
-    margin: -22vh 0 0 31vw;
+    /*margin: -22vh 0 0 31vw;*/
+    align-self: center;
+
+    margin: 0 0 0 25vw;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13.5vw, 1fr));
     gap: 0.2vw;
     transition: margin-top 0.4s ease-out;
+    height: max-content;
+    /*  background-color: antiquewhite;*/
 }
 
 
 .showtimes-grid.expanded {
-    margin-top: -5vh;
+    margin-top: 10vh;
     /* Erhöhter Abstand, wenn der Text erweitert ist */
     margin-bottom: 5vh;
 }
@@ -185,7 +235,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 17vh;
+    /*height: 17vh;*/
+    height: fit-content;
     margin: 10px;
 
 }
@@ -234,10 +285,11 @@ body {
 .movie-info {
     position: absolute;
     display: flex;
-    font-size: 3em;
+    font-size: 2.5rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     margin: 2vh 1.5vw 0 80vw;
     right: 0;
     width: fit-content;
@@ -276,7 +328,7 @@ body {
     -webkit-text-stroke: 1px white;
     letter-spacing: 0.15em;
     border-radius: 100px;
-    margin: 10vh 0 0 0;
+    margin: 5vh 0 0 0;
 
 }
 

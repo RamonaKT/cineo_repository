@@ -160,17 +160,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Abruf der Vorstellungen
         const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
         const showtimes = await showResponse.json();
-        const selectedShow = showtimes.find(show => show.show_id === parseInt(showId)); 
+        const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
 
         if (!selectedShow) {
             alert("Vorstellung nicht gefunden.");
             return;
         }
 
+
         // Filmtitel und Vorstellungen anzeigen
         document.getElementById("movie-title").textContent = movie.title;
-        document.getElementById("show-details").textContent = `Datum: ${selectedShow.date}, Uhrzeit: ${selectedShow.time}, Saal: ${selectedShow.room}`;
-        
+
+        // Kombiniere Datum und Uhrzeit in ein ISO-Format
+        const showDateTime = new Date(`${selectedShow.date}T${selectedShow.time}`);
+
+        // Formatierer für deutsches Datum und Uhrzeit
+        const formatter = new Intl.DateTimeFormat('de-DE', {
+            dateStyle: 'long',
+            timeStyle: 'short'
+        });
+
+        // Setze die formatierten Details
+        document.getElementById("show-details").textContent = `Datum: ${formatter.format(showDateTime)}, Kinosaal: ${selectedShow.room_id}`;
+
+
         // 3. Ticket options and prices
         const ticketOptions = [
             { type: "VIP", price: 15 },
@@ -178,14 +191,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             { type: "Kind", price: 5 },
             { type: "Student", price: 7 },
         ];
-    
+
         // Render ticket options
         const ticketContainer = document.getElementById("ticket-options");
         const ticketQuantities = {};
-    
+
         ticketOptions.forEach(option => {
             ticketQuantities[option.type] = 0;
-    
+
             const ticketDiv = document.createElement("div");
             ticketDiv.className = "ticket-option";
             ticketDiv.innerHTML = ` 
@@ -197,51 +210,51 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
             ticketContainer.appendChild(ticketDiv);
         });
-    
+
         // Handle increase and decrease buttons
         ticketContainer.addEventListener("click", (event) => {
             const button = event.target;
             const type = button.dataset.type;
-    
+
             if (button.classList.contains("increase")) {
                 ticketQuantities[type]++;
             } else if (button.classList.contains("decrease") && ticketQuantities[type] > 0) {
                 ticketQuantities[type]--;
             }
-    
+
             document.getElementById(`quantity-${type}`).textContent = ticketQuantities[type];
-    
+
             // Update total price whenever quantities change
             updateTotalPrice();
         });
-    
+
         // Funktion zur Berechnung und Anzeige des Gesamtpreises
         function updateTotalPrice() {
             let totalPrice = 0;
-    
+
             Object.entries(ticketQuantities).forEach(([type, quantity]) => {
                 const ticketOption = ticketOptions.find(option => option.type === type);
                 if (ticketOption) {
                     totalPrice += ticketOption.price * quantity;
                 }
             });
-    
+
             // Gesamtpreis anzeigen
             const totalPriceElement = document.getElementById("total-price");
             totalPriceElement.textContent = `Gesamtpreis: ${totalPrice.toFixed(2)}€`;
         }
-    
+
         // Handle ticket booking
         document.getElementById("book-tickets-button").addEventListener("click", async () => {
             const ticketsToBook = Object.entries(ticketQuantities)
                 .filter(([, quantity]) => quantity > 0)
                 .map(([type, quantity]) => ({ type, quantity, price: ticketOptions.find(opt => opt.type === type).price }));
-    
+
             if (ticketsToBook.length === 0) {
                 alert("Bitte wählen Sie mindestens ein Ticket aus.");
                 return;
             }
-    
+
             try {
                 // Zuerst versuchen, die Tickets zu buchen
                 for (const ticket of ticketsToBook) {
@@ -272,12 +285,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     }
                 }
-    
+
                 alert("Tickets erfolgreich gebucht!");
                 window.location.href = `/mainpages/confirmationpageStructure.html?movie_id=${movieId}`;
             } catch (error) {
-                alert(error.message === "Kapazität überschritten" 
-                    ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht." 
+                alert(error.message === "Kapazität überschritten"
+                    ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."
                     : "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
             }
         });

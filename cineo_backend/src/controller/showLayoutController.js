@@ -108,8 +108,9 @@ async function saveLayout(layoutData) {
                     row_id: roomNumber * 1000 + (rowIndex + 1),
                     category: seat.category,
                     status: 0,
+                    show_id: null,
+                    seat_number: (seatIndex +1),
                     reserved_at: null,
-                    show_id: null
                 };
 
                 const { data: seatDataResponse, error: seatError } = await supabase

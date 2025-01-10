@@ -553,6 +553,95 @@ app.post('/api/tickets', async (req, res) => {
 });
 
 
+// User registration
+app.post("/api/register", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "All fields are required." });
+
+    try {
+        const { data, error } = await supabase.from("users").insert([{ email, password }]);
+        if (error) throw error;
+        res.status(200).json({ message: "Registration successful!" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// User login
+app.post("/api/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "All fields are required." });
+
+    try {
+        const { data } = await supabase.from("users").select("*").eq("email", email).eq("password", password);
+        if (data.length === 0) return res.status(401).json({ error: "Invalid credentials." });
+
+        res.status(200).json({
+            message: "Login successful!",
+            role: email.endsWith("@cineo.com") ? "employee" : "customer",
+        });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// Guest login
+app.post("/api/guest", (req, res) => {
+    const { email } = req.body;
+
+    if (!/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: "Invalid email format." });
+
+    res.status(200).json({ message: "Guest login successful!" });
+});
+
+
+
+
+// API-Endpoint zum Abrufen und Speichern der IBAN
+app.get('/api/iban', async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        return res.status(400).json({ error: 'E-Mail wird benötigt' });
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('iban')
+        .eq('email', email)
+        .single();
+
+    if (error) {
+        return res.status(500).json({ error: 'Fehler beim Abrufen der IBAN' });
+    }
+
+    res.json(data);
+});
+
+
+app.post('/api/iban', async (req, res) => {
+    const { email, iban } = req.body;
+
+    if (!email || !iban) {
+        return res.status(400).json({ error: 'E-Mail und IBAN sind erforderlich' });
+    }
+
+    const { error } = await supabase
+        .from('users')
+        .update({ iban })
+        .eq('email', email);
+
+    if (error) {
+        return res.status(500).json({ error: 'Fehler beim Speichern der IBAN' });
+    }
+
+    res.json({ message: 'IBAN erfolgreich gespeichert' });
+});
+
+
+
 
 
 // server.js - API Endpunkte zur Verwaltung von Ticketpreisen und Rabatten
@@ -708,4 +797,19 @@ app.get('/confirmation', (req, res) => {
 app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
 
 
+/*
+const { ClerkExpressMiddleware } = require("@clerk/clerk-sdk-node");
 
+app.use(ClerkExpressMiddleware());
+app.use(express.static('mainpages'));
+
+    
+app.get("/protected", (req, res) => {
+    const user = req.auth;
+    if (user) {
+        res.json({ message: `Hallo, ${user.firstName}!` });
+    } else {
+        res.status(401).send("Nicht autorisiert.");
+    }
+});
+*/

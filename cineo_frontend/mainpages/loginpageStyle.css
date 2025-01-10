@@ -1,104 +1,117 @@
-/* Gesamt-Layout */
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #3e006a;
-    color: white;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
-
-/* Container für das Login-Formular */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
+    background-color: #2a002e;
+  }
+  .form-container {
+    background: #2a002e;
     padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+  .form-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #ff00ff;
+  }
+  .form-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: white;
+  }
+  .form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: white;
+    font-size: 1em;
+    background: #2a002e;
+  }
+  .form-container button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #5d009a;
+    color: #fff;
+    font-size: 1em;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .form-container button:hover {
+    background: #5d009a;
+  }
+  .message {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #ff00ff;
+  }
+  
+
+ /* Stil für die anklickbaren Links */
+.switch-link {
+    color: #5d009a;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
-/* Formular */
-.login-form {
-    width: 100%;
+/* Hover-Effekt für die Links */
+.switch-link:hover {
+    color: #3d006a;
+}
+
+p {
+    color: #555; /* Hier kannst du die gewünschte Farbe einfügen */
+}
+
+
+#notification-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification {
+    background-color: #f8d7da; /* Rot für Fehler */
+    color: #721c24;
+    padding: 15px 25px;
+    margin: 10px 0;
+    border: 3px solid #5e0009;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 300px;
     text-align: center;
 }
 
-.login-title {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: #6f00b0;
-    font-weight: bold;
+.notification.success {
+    background-color: #d4edda; /* Grün für Erfolg */
+    color: #155724;
+    border-color: #c3e6cb;
+    border: 2px solid #003e00;
 }
 
-/* Formular-Gruppen */
-.form-group {
-    margin-bottom: 1.2rem;
-    text-align: left;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: #444;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    transition: all 0.3s;
-}
-
-/* Eingabefelder: Fokus */
-.form-group input:focus {
-    border-color: #6f00b0;
-    box-shadow: 0 0 5px rgba(111, 0, 176, 0.5);
-}
-
-/* Button */
-.login-button {
-    width: 100%;
-    padding: 0.8rem;
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    background-color: #6f00b0;
-    color: #fff;
+.notification button {
+    background: none;
     border: none;
-    border-radius: 5px;
+    color: inherit;
+    font-size: 16px;
+    margin-left: 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 1rem;
 }
 
-.login-button:hover {
-    background-color: #5d009a;
-}
-
-/* Footer */
-.login-footer {
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.login-footer a {
-    color: #6f00b0;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.login-footer a:hover {
-    text-decoration: underline;
-}

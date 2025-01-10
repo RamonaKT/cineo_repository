@@ -1,0 +1,87 @@
+/* Gesamt-Layout */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #3e006a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1e1e2f;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+h1 {
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #d1d1e0;
+}
+
+input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #5c5c8a;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #3700b3;
+}
+
+#confirmationMessage {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #4caf50;
+}
+
+.iban-display {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #2c2c3f;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.iban-display h2 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.iban-display p {
+    font-size: 1.2rem;
+    color: #d1d1e0;
+    font-weight: bold;
+}
+

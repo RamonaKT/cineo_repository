@@ -5,11 +5,65 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Umschalten zwischen Register und Login über Links
+
+
+//neu
+
+
+// Umschalten zwischen Login, Registrierung und Gast
 const registerContainer = document.getElementById("registerContainer");
 const loginContainer = document.getElementById("loginContainer");
+const guestContainer = document.getElementById("guestContainer");
+
+// Links für den Wechsel
 const showLoginLink = document.getElementById("showLoginLink");
 const showRegisterLink = document.getElementById("showRegisterLink");
+const showGuestLink = document.getElementById("showGuestLink");
+const showLoginFromGuestLink = document.getElementById("showLoginFromGuestLink");
+const showRegisterFromGuestLink = document.getElementById("showRegisterFromGuestLink");
+
+// Umschalten zu Login
+showLoginLink.addEventListener("click", () => {
+    registerContainer.style.display = "none";
+    guestContainer.style.display = "none";
+    loginContainer.style.display = "block";
+});
+
+// Umschalten zu Registrierung
+showRegisterLink.addEventListener("click", () => {
+    loginContainer.style.display = "none";
+    guestContainer.style.display = "none";
+    registerContainer.style.display = "block";
+});
+
+// Umschalten zu Gast
+showGuestLink.addEventListener("click", () => {
+    loginContainer.style.display = "none";
+    registerContainer.style.display = "none";
+    guestContainer.style.display = "block";
+});
+
+// Umschalten von Gast zu Login
+showLoginFromGuestLink.addEventListener("click", () => {
+    guestContainer.style.display = "none";
+    loginContainer.style.display = "block";
+});
+
+// Umschalten von Gast zu Registrierung
+showRegisterFromGuestLink.addEventListener("click", () => {
+    guestContainer.style.display = "none";
+    registerContainer.style.display = "block";
+});
+
+
+
+
+
+
+
+
+//emde
+
 
 showLoginLink.addEventListener("click", () => {
     registerContainer.style.display = "none";
@@ -21,6 +75,7 @@ showRegisterLink.addEventListener("click", () => {
     registerContainer.style.display = "block";
 });
 
+// Registrierung
 // Registrierung
 // Registrierung
 document.getElementById("registerButton").addEventListener("click", async () => {
@@ -43,14 +98,36 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         return;
     }
 
-    // Überprüfen, ob der Benutzer ein Mitarbeiter ist (E-Mail endet mit "@cineo.com")
-    const isEmployee = email.endsWith("@cineo.com");
-
     try {
+        // Überprüfen, ob die E-Mail bereits in der Datenbank existiert
+        const { data: existingUser, error: fetchError } = await supabase
+            .from("users")
+            .select("email")
+            .eq("email", email)
+            .single();
+
+        if (fetchError && fetchError.code !== "PGRST116") {
+            // Fehler außer "Row not found"
+            console.error("Error checking email:", fetchError);
+            messageDiv.textContent = "Unexpected error occurred while checking email.";
+            messageDiv.style.color = "red";
+            return;
+        }
+
+        if (existingUser) {
+            // E-Mail existiert bereits
+            messageDiv.textContent = "This email is already registered. Please use a different email.";
+            messageDiv.style.color = "red";
+            return;
+        }
+
+        // Überprüfen, ob der Benutzer ein Mitarbeiter ist (E-Mail endet mit "@cineo.com")
+        const isEmployee = email.endsWith("@cineo.com");
+
         // Registrierung bei Supabase durchführen
         const { data, error } = await supabase
             .from("users")
-            .insert([{ email, password, role: isEmployee ? "employee" : "customer" }]); // Rolle speichern
+            .insert([{ email, password, role: isEmployee ? "employee" : "customer" }]);
 
         if (error) {
             messageDiv.textContent = `Error: ${error.message}`;
@@ -65,6 +142,7 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         messageDiv.style.color = "red";
     }
 });
+
 
 
 // Login
@@ -122,4 +200,42 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         messageDiv.textContent = "Unexpected error occurred.";
         messageDiv.style.color = "red";
     }
+});
+
+
+
+
+
+
+// Gastmodus mit E-Mail-Validierung (ohne Datenbankprüfung)
+document.getElementById("guestButton").addEventListener("click", () => {
+    const guestEmail = document.getElementById("guestEmail").value;
+    const messageDiv = document.getElementById("guestMessage");
+
+    // Überprüfen, ob eine E-Mail-Adresse eingegeben wurde
+    if (!guestEmail) {
+        messageDiv.textContent = "Please enter an email address.";
+        messageDiv.style.color = "red";
+        return;
+    }
+
+    // E-Mail-Format validieren
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(guestEmail)) {
+        messageDiv.textContent = "Please enter a valid email address.";
+        messageDiv.style.color = "red";
+        return;
+    }
+
+    // Gastdaten lokal speichern
+    localStorage.setItem("userEmail", guestEmail);
+    localStorage.setItem("userRole", "guest");
+
+    // Erfolgsmeldung und Weiterleitung
+    messageDiv.textContent = "Continuing as guest...";
+    messageDiv.style.color = "green";
+
+    setTimeout(() => {
+        window.location.href = "kundeDashboardpageStructure.html"; // Kunden-Dashboard-Seite
+    }, 2000);
 });

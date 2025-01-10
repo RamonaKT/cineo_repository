@@ -302,7 +302,7 @@ document.getElementById("guestButton").addEventListener("click", () => {
 */
 
 
-
+/*
 // Utility function for notifications
 function showNotification(message, type = "error") {
     const notificationContainer = document.getElementById("notification-container");
@@ -409,5 +409,185 @@ document.getElementById("guestButton").addEventListener("click", async () => {
         setTimeout(() => (window.location.href = "kundeDashboardpageStructure.html"), 2000);
     } catch (err) {
         showNotification(`Error: ${err.message}`);
+    }
+});
+*/
+
+// Umschalten zwischen Login, Registrierung und Gast
+const registerContainer = document.getElementById("registerContainer");
+const loginContainer = document.getElementById("loginContainer");
+const guestContainer = document.getElementById("guestContainer");
+
+// Links für den Wechsel
+const showLoginLink = document.getElementById("showLoginLink");
+const showRegisterLink = document.getElementById("showRegisterLink");
+const showGuestLink = document.getElementById("showGuestLink");
+const showLoginFromGuestLink = document.getElementById("showLoginFromGuestLink");
+const showRegisterFromGuestLink = document.getElementById("showRegisterFromGuestLink");
+
+// Umschalten zu Login
+showLoginLink.addEventListener("click", () => {
+    registerContainer.style.display = "none";
+    guestContainer.style.display = "none";
+    loginContainer.style.display = "block";
+});
+
+// Umschalten zu Registrierung
+showRegisterLink.addEventListener("click", () => {
+    loginContainer.style.display = "none";
+    guestContainer.style.display = "none";
+    registerContainer.style.display = "block";
+});
+
+// Umschalten zu Gast
+showGuestLink.addEventListener("click", () => {
+    loginContainer.style.display = "none";
+    registerContainer.style.display = "none";
+    guestContainer.style.display = "block";
+});
+
+// Umschalten von Gast zu Login
+showLoginFromGuestLink.addEventListener("click", () => {
+    guestContainer.style.display = "none";
+    loginContainer.style.display = "block";
+});
+
+// Umschalten von Gast zu Registrierung
+showRegisterFromGuestLink.addEventListener("click", () => {
+    guestContainer.style.display = "none";
+    registerContainer.style.display = "block";
+});
+
+// Benachrichtigungen anzeigen
+function showNotification(message, type = "error") {
+    const notificationContainer = document.getElementById("notification-container");
+    const notification = document.createElement("div");
+    notification.classList.add("notification");
+    if (type === "success") {
+        notification.classList.add("success");
+    }
+
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">✖</button>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    // Automatisches Entfernen nach 5 Sekunden
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Registrierung
+document.getElementById("registerButton").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (!email || !password || !confirmPassword) {
+        showNotification("Please fill out all fields.", "error");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showNotification("Passwords do not match. Please try again.", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showNotification(result.message, "success");
+        } else {
+            showNotification(result.error, "error");
+        }
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        showNotification("Unexpected error occurred.", "error");
+    }
+});
+
+// Login
+document.getElementById("loginButton").addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) {
+        showNotification("Please fill out all fields.", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem("userEmail", email);
+
+            if (result.role === "employee") {
+                showNotification("Login successful! Redirecting to employee dashboard...", "success");
+                setTimeout(() => {
+                    window.location.href = "mitarbeiterDashboardpageStructure.html";
+                }, 2000);
+            } else {
+                showNotification("Login successful! Redirecting to customer homepage...", "success");
+                setTimeout(() => {
+                    window.location.href = "kundeDashboardpageStructure.html";
+                }, 2000);
+            }
+        } else {
+            showNotification(result.error, "error");
+        }
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        showNotification("Unexpected error occurred.", "error");
+    }
+});
+
+// Gastmodus mit E-Mail-Validierung
+document.getElementById("guestButton").addEventListener("click", async () => {
+    const guestEmail = document.getElementById("guestEmail").value;
+
+    if (!guestEmail) {
+        showNotification("Please enter an email address.", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/guest", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: guestEmail }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem("userEmail", guestEmail);
+            localStorage.setItem("userRole", "guest");
+            showNotification(result.message, "success");
+            setTimeout(() => {
+                window.location.href = "kundeDashboardpageStructure.html";
+            }, 2000);
+        } else {
+            showNotification(result.error, "error");
+        }
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        showNotification("Unexpected error occurred.", "error");
     }
 });

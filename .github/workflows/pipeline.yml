@@ -16,7 +16,7 @@ jobs:
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.DO_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.DIGITALOCEAN_ID_RSA_CICD_PRIVATE }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
     - name: Copy files to Droplet
@@ -26,8 +26,7 @@ jobs:
     - name: Deploy application
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << 'EOF'
-          cd /var/www/myapp
+          cd /var/www/html/cineo_repository
           # Commands to restart your application, e.g.,:
-          docker-compose pull
-          docker-compose up -d --build
+         git pull origin main
         EOF

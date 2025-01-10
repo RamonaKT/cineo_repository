@@ -187,14 +187,30 @@ document.addEventListener('DOMContentLoaded', async () => {
                 form.reset();
                 roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
     
+                const showId = result.show_id;  // show_id ist die ID der gerade erstellten Vorstellung
                 // Sitzplätze erstellen für die neue Vorstellung
-                const seatCreationResult = await createSeats(roomId, result.show_id);
+                const payloadData = {
+                    room_id: roomId,
+                    show_id: showId
+                };
 
-                if (seatCreationResult.success) {
-                    responseMessage.textContent += ' ' + seatCreationResult.message;
-                } else {
-                    responseMessage.textContent += ' ' + seatCreationResult.message;
-                    responseMessage.style.color = 'red';
+                try {
+                    // Debug-Ausgabe der finalen Daten vor dem Senden
+                    console.log("Daten, die gesendet werden:", JSON.stringify(payloadData, null, 2));
+            
+                    const seatCreationResult = await createSeats(payloadData);
+            
+                    if (seatCreationResult && seatCreationResult.status === 'success') {
+                        console.log("SItzplätze erfolgreich gespeichert");
+                        responseMessage.textContent += ' ' + seatCreationResult.message;
+                    } else {
+                        alert(`Fehler: ${seatCreationResult.statusText || 'Unbekannter Fehler'}`);
+                        responseMessage.textContent += ' ' + seatCreationResult.message;
+                        responseMessage.style.color = 'red';
+                    }
+                } catch (error) {
+                    console.error("Fehler beim Absenden der Erstellung:", error);
+                    alert(`Fehler: ${error.message || 'Unbekannter Fehler'}`);
                 }
                 
 
@@ -413,15 +429,16 @@ document.addEventListener('DOMContentLoaded', async () => {
  * @param {string} showId - Die ID der Vorstellung
  * @returns {Promise<object>} - Erfolgsmeldung oder Fehlernachricht
  */
-async function createSeats(roomId, showId) {
+async function createSeats(payloadData) {
     let response;
     try {
-        const response = await fetch('/api/sitzplaetzeErstellen/create', {
+        // Der Payload wird direkt aus den übergebenen Daten (payloadData) genutzt
+        response = await fetch('/api/sitzplaetzeErstellen/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ room_id: roomId, show_id: showId })
+            body: JSON.stringify(payloadData)  // Payload wird direkt übergeben
         });
 
         if (!response.ok) {
@@ -437,5 +454,3 @@ async function createSeats(roomId, showId) {
         return { success: false, message: 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.' };
     }
 }
-
-

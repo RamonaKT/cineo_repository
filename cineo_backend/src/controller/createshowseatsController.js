@@ -11,10 +11,19 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 const routerCreateShowSeats = express.Router();
 
 routerCreateShowSeats.post('/create', async (req, res) => {
-    const { room_id, show_id } = req.body;
+    let { room_id, show_id } = req.body;
+
+    // Sicherstellen, dass room_id und show_id als Zahlen verarbeitet werden
+    room_id = parseInt(room_id, 10);
+    show_id = parseInt(show_id, 10);
+
+    if (isNaN(room_id) || isNaN(show_id)) {
+        console.log(`Ungültige Eingaben - room_id: ${room_id}, show_id: ${show_id}`);
+        return res.status(400).json({ error: 'room_id und show_id müssen gültige Zahlen sein.' });
+    }
 
     try {
-        // Sitzplätze ohne zugewiesene Vorstellung abrufen
+        // Sitzplätze abrufen
         const { data: existingSeats, error: selectError } = await supabase
             .from('seat')
             .select('*')
@@ -31,13 +40,12 @@ routerCreateShowSeats.post('/create', async (req, res) => {
             return res.status(404).json({ message: 'Keine Sitzplätze zum Erstellen gefunden.' });
         }
 
-        // Neue Sitzplätze vorbereiten (alle Spalten außer 'seat_id' werden übernommen)
+        // Sitzplätze vorbereiten
         const newSeats = existingSeats.map(seat => {
-            const seatNumber = seat.seat_id.toString().slice(-3); // Extrahiere die letzten 3 Ziffern der seat_id
-            const newSeatId = show_id * 100000 + seat.seat_id; // Neue seat_id erstellen
+            const seatNumber = seat.seat_id.toString().slice(-3);
+            const newSeatId = show_id * 10000000 + seat.seat_id;
 
-            // Logge die neuen Seat-Daten zur Überprüfung
-            console.log('Neue Seat-Daten:', {
+            return {
                 seat_id: newSeatId,
                 room_id: seat.room_id,
                 row_id: seat.row_id,
@@ -47,50 +55,28 @@ routerCreateShowSeats.post('/create', async (req, res) => {
                 seat_number: seatNumber,
                 reserved_at: null,
                 reserved_by: seat.reserved_by,
-                created_at: seat.created_at,
-            });
-
-            return {
-                seat_id: newSeatId, 
-                room_id: seat.room_id,
-                row_id: seat.row_id,
-                category: seat.category,
-                status: seat.status,
-                show_id: show_id, 
-                seat_number: seatNumber,  
-                reserved_at: null, 
-                reserved_by: seat.reserved_by,
-                created_at: seat.created_at,
             };
         });
 
-        // Logge die neuen Sitzplätze zur Fehlerbehebung
         console.log('Zu erstellende Sitzplätze:', newSeats);
 
-        // Upsert: Sitzplätze in die Datenbank einfügen oder aktualisieren
-        const { data, status, statusText, error: upsertError } = await supabase
+        // Sitzplätze einfügen oder aktualisieren
+        const { data, error: upsertError } = await supabase
             .from('seat')
             .upsert(newSeats, { onConflict: ['seat_id'] });
 
         if (upsertError) {
-            console.error('Fehler beim Upsert der Sitzplätze:'+ upsertError.message,upsertError);
-            return res.status(500).json({ error: 'Fehler beim Upsert der Sitzplätze.', details: upsertError.message });
+            console.error('Fehler beim Upsert der Sitzplätze:', upsertError);
+            return res.status(503).json({ error: 'Fehler beim Upsert der Sitzplätze.', details: upsertError.message });
         }
-       
-        // Erfolgreiche Antwort zurück an den Client
-        console.log('Upserted Daten:', data); // Zeigt die eingefügten oder aktualisierten Daten
-        console.log('Status:', status); // Statuscode der Antwort
-        console.log('StatusText:', statusText); // StatusText der Antwort
 
-        res.status(status).json({
-            message: 'Sitzplätze erfolgreich erstellt oder aktualisiert.',
-            data: data, // Rückgabe der upserted Daten
-            status: status,
-            statusText: statusText
+        res.status(200).json({
+            message: 'Sitzplätze erfolgreich erstellt.',
+            data,
         });
 
     } catch (error) {
-        console.error('Fehler beim Erstellen oder Updaten der Sitzplätze:', error);
+        console.error('Fehler beim Erstellen der Sitzplätze:', error);
         res.status(500).json({ error: 'Fehler beim Erstellen oder Updaten der Sitzplätze.', details: error.message });
     }
 });

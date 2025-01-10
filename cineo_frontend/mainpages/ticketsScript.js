@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // Ticketbuchung
-      /*  document.getElementById("book-tickets-button").addEventListener("click", async () => {
+        document.getElementById("book-tickets-button").addEventListener("click", async () => {
             const ticketsToBook = [];
 
             // Alle Tickets durchlaufen und mit Rabatt berechnen
@@ -250,14 +250,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
 
                 alert("Tickets erfolgreich gebucht!");
-                window.location.href = `/mainpages/confirmationpageStructure.html?movie_id=${movieId}`;
+                 // Weiterleitung zur Login-Seite mit Ticketdaten
+                 window.location.href = `/mainpages/loginpageStructure.html?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(JSON.stringify(ticketsToBook))}`;
             } catch (error) {
                 alert(error.message === "Kapazität überschritten"
                     ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."
                     : "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
             }
-        });*/
+        });
+    } catch (error) {
+        console.error("Fehler beim Abrufen der Daten:", error);
+        alert("Es gab ein Problem beim Laden der Filmdaten. Bitte versuchen Sie es später erneut.");
+    }
+});
 
+    
+        /*
          // Handle ticket booking
          document.getElementById("book-tickets-button").addEventListener("click", async () => {
             const ticketsToBook = Object.entries(ticketQuantities)
@@ -311,3 +319,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Es gab ein Problem beim Laden der Filmdaten. Bitte versuchen Sie es später erneut.");
     }
 });
+*/

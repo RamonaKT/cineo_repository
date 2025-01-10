@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cineo_Mannheim</title>
+
+
+    <link rel="stylesheet" href="/mainpages/mainStyle.css" />
+    <link rel="stylesheet" href="/mainpages/ticketsStyle.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+</head>
+
+<body>
+
+    <!-- mainStyle: Logo - Überschrift - Login -->
+<a href="/mainpages/homepageStructure.html">
+    <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
+</a>
+
+<h1 id="movie-title" class="h1_mainStyle_headingTopMiddle">
+</h1>
+
+<a href="/mainpages/loginpageStructure.html">
+    <img src="../images/IconAccountMainstyle.png" alt="Account" class="img_mainStyle_accountLogin" />
+</a>
+
+
+<div class="div_mainStyle_navigationTop">
+    <a href="/mainpages/programpageStructure.html"> <img src="../images/arrow.png" alt="arrow-icon" class="arrow"></a>
+    <a href="/mainpages/homepageStructure.html">Startseite</a>
+    <a href="/mainpages/programpageStructure.html">Programm</a>
+    <a href="/specialpages/specialpageStructure.html">Specials</a>
+    <a href="/specialpages/offerpageStructure.html">Angebote</a>
+    <a href="/specialpages/gastropageStructure.html">Gastro</a>
+    <a href="/specialpages/shoppageStructure.html">Shop</a>
+</div>
+
+
+
+<div id="checkout-container">
+    <h2>Wählen Sie eine Option, um fortzufahren:</h2>
+
+    <!-- Optionen für den Login, Registrierung oder Gastzugang -->
+    <div>
+        <button id="loginButton">Einloggen</button>
+        <button id="registerButton">Registrieren</button>
+        <button id="guestButton">Als Gast fortfahren</button>
+    </div>
+
+    <!-- Rabattinfo -->
+    <div id="discount-info" style="display: none;">
+        <p>Rabatt: <span id="discount-amount">0%</span> auf den Gesamtpreis, da Sie einen Account besitzen!</p>
+    </div>
+
+    <!-- Gesamtpreis -->
+    <p>Gesamtpreis: <span id="total-price"></span></p>
+</div>
+
+
+
+
+    <!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
+    <div class="div_mainStyle_navigationBeamBottom"> </div>
+
+<div class="div_mainStyle_navigationBottom">
+    <a href="/infopages/aboutcinemapageStructure.html">Unser Kino</a>
+    <a href="/infopages/contactpageStructure.html">Kontakt</a>
+    <a href="/infopages/aboutuspageStructure.html">Über Uns</a>
+    <a href="/infopages/careerpageStructure.html">Karriere</a>
+    <a href="/infopages/informationpageStructure.html">Information</a>
+    <a href="/infopages/legalpageStructure.html">Impressum</a>
+</div>
+
+
+    <script src="/mainpages/ticketCheckoutScript.js"></script>
+</body>
+</html>

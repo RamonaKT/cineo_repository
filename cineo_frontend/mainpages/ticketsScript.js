@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // Ticketbuchung
-        document.getElementById("book-tickets-button").addEventListener("click", async () => {
+      /*  document.getElementById("book-tickets-button").addEventListener("click", async () => {
             const ticketsToBook = [];
 
             // Alle Tickets durchlaufen und mit Rabatt berechnen
@@ -255,6 +255,55 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert(error.message === "Kapazität überschritten"
                     ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."
                     : "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
+            }
+        });*/
+
+         // Handle ticket booking
+         document.getElementById("book-tickets-button").addEventListener("click", async () => {
+            const ticketsToBook = Object.entries(ticketQuantities)
+                .filter(([, quantity]) => quantity > 0)
+                .map(([type, quantity]) => ({ type, quantity, price: ticketOptions.find(opt => opt.type === type).price }));
+    
+            if (ticketsToBook.length === 0) {
+                alert("Bitte wählen Sie mindestens ein Ticket aus.");
+                return;
+            }
+    
+            try {
+                // Zuerst versuchen, die Tickets zu buchen
+                for (const ticket of ticketsToBook) {
+                    const payload = {
+                        show_id: showId,
+                        ticket_type: ticket.type,
+                        price: ticket.price * ticket.quantity,
+                    };
+
+                    // Sende die Buchungsanfrage an den Server
+                    const response = await fetch("http://localhost:4000/api/tickets", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                    });
+
+                    // Prüfen, ob die Antwort erfolgreich war
+                    if (response.status === 201) {
+                        console.log("Ticket erfolgreich gebucht.");
+                    } else {
+                        // Fehler, falls Kapazität überschritten wurde oder ein anderer Fehler auftritt
+                        const result = await response.json();
+                        if (response.status === 409 || result.error === "Maximale Kapazität erreicht") {
+                            alert("Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde bereits erreicht.");
+                            return; // Beende die Buchung, wenn Kapazität überschritten wurde
+                        } else {
+                            throw new Error(result.error || "Unbekannter Fehler");
+                        }
+                    }
+                }
+
+                // Weiterleitung zur Login-Seite mit Ticketdaten
+                window.location.href = `/mainpages/loginpageStructure.html?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(JSON.stringify(ticketsToBook))}`;
+            } catch (error) {
+                alert("Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
             }
         });
     } catch (error) {

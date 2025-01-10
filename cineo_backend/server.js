@@ -189,6 +189,53 @@ app.post('/api/tickets', async (req, res) => {
     }
 });
 
+
+// User registration
+app.post("/api/register", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "All fields are required." });
+
+    try {
+        const { data, error } = await supabase.from("users").insert([{ email, password }]);
+        if (error) throw error;
+        res.status(200).json({ message: "Registration successful!" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// User login
+app.post("/api/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "All fields are required." });
+
+    try {
+        const { data } = await supabase.from("users").select("*").eq("email", email).eq("password", password);
+        if (data.length === 0) return res.status(401).json({ error: "Invalid credentials." });
+
+        res.status(200).json({
+            message: "Login successful!",
+            role: email.endsWith("@cineo.com") ? "employee" : "customer",
+        });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// Guest login
+app.post("/api/guest", (req, res) => {
+    const { email } = req.body;
+
+    if (!/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: "Invalid email format." });
+
+    res.status(200).json({ message: "Guest login successful!" });
+});
+
+
+
+
 // API-Endpoint zum Abrufen und Speichern der IBAN
 app.get('/api/iban', async (req, res) => {
     const { email } = req.query;

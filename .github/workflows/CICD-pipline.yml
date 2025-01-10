@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean Droplet
+name: CICD Deploy to DigitalOcean Droplet
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: |
-            ${{ secrets.DIGITALOCEAN_ID_RSA_CICD_PRIVATE }}
+            ${{ secrets.DIGTIALOCEAN_ID_RSA_CICD_PRIVATE }}
 
       - name: Pull Code to Droplet
         run: |
@@ -32,7 +32,7 @@ jobs:
             git reset --hard origin/main
 
             # Optionally restart any services
-            sudo systemctl restart your-service-name
+            sudo systemctl restart nginx
           EOF
 
       - name: Success Notification

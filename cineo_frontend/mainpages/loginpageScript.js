@@ -75,6 +75,36 @@ showRegisterLink.addEventListener("click", () => {
     registerContainer.style.display = "block";
 });
 
+
+////Test
+
+function showNotification(message, type = "error") {
+    const notificationContainer = document.getElementById("notification-container");
+    const notification = document.createElement("div");
+    notification.classList.add("notification");
+    if (type === "success") {
+        notification.classList.add("success");
+    }
+
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">✖</button>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    // Automatisches Entfernen nach 5 Sekunden
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+
+
+
+
+
+
 // Registrierung
 // Registrierung
 // Registrierung
@@ -86,15 +116,26 @@ document.getElementById("registerButton").addEventListener("click", async () => 
 
     // Überprüfen, ob alle Felder ausgefüllt sind
     if (!email || !password || !confirmPassword) {
-        messageDiv.textContent = "Please fill out all fields.";
-        messageDiv.style.color = "red";
+        showNotification("Please fill out all fields.", "error");
+        //messageDiv.textContent = "Please fill out all fields.";
+        //messageDiv.style.color = "red";
+        return;
+    }
+
+    // E-Mail-Format validieren
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(guestEmail)) {
+        showNotification("Please enter a valid email address.", "error");
+        //messageDiv.textContent = "Please enter a valid email address.";
+        //.style.color = "red";
         return;
     }
 
     // Überprüfen, ob die Passwörter übereinstimmen
     if (password !== confirmPassword) {
-        messageDiv.textContent = "Passwords do not match. Please try again.";
-        messageDiv.style.color = "red";
+        showNotification("Passwords do not match. Please try again.", "error");
+        //messageDiv.textContent = "Passwords do not match. Please try again.";
+        //messageDiv.style.color = "red";
         return;
     }
 
@@ -109,15 +150,17 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         if (fetchError && fetchError.code !== "PGRST116") {
             // Fehler außer "Row not found"
             console.error("Error checking email:", fetchError);
-            messageDiv.textContent = "Unexpected error occurred while checking email.";
-            messageDiv.style.color = "red";
+            showNotification("Unexpected error occurred while checking email.", "error");
+            //messageDiv.textContent = "Unexpected error occurred while checking email.";
+            //messageDiv.style.color = "red";
             return;
         }
 
         if (existingUser) {
             // E-Mail existiert bereits
-            messageDiv.textContent = "This email is already registered. Please use a different email.";
-            messageDiv.style.color = "red";
+            showNotification("This email is already registered. Please use a different email.", "error");
+            //messageDiv.textContent = "This email is already registered. Please use a different email.";
+            //messageDiv.style.color = "red";
             return;
         }
 
@@ -130,16 +173,19 @@ document.getElementById("registerButton").addEventListener("click", async () => 
             .insert([{ email, password, role: isEmployee ? "employee" : "customer" }]);
 
         if (error) {
-            messageDiv.textContent = `Error: ${error.message}`;
-            messageDiv.style.color = "red";
+            showNotification(`Error: ${error.message}`, "error");
+            //messageDiv.textContent = `Error: ${error.message}`;
+            //messageDiv.style.color = "red";
         } else {
-            messageDiv.textContent = "Registration successful!";
-            messageDiv.style.color = "green";
+            showNotification("Registration successful!.", "success");
+            //messageDiv.textContent = "Registration successful! Please login.";
+            //messageDiv.style.color = "green";
         }
     } catch (err) {
         console.error("Unexpected error:", err);
-        messageDiv.textContent = "Unexpected error occurred.";
-        messageDiv.style.color = "red";
+        showNotification("Unexpected error occured.", "error");
+        //messageDiv.textContent = "Unexpected error occurred.";
+        //messageDiv.style.color = "red";
     }
 });
 
@@ -152,8 +198,9 @@ document.getElementById("loginButton").addEventListener("click", async () => {
     const messageDiv = document.getElementById("loginMessage");
 
     if (!email || !password) {
-        messageDiv.textContent = "Please fill out all fields.";
-        messageDiv.style.color = "red";
+        showNotification("Please fill out all fields.", "error");
+        //.textContent = "Please fill out all fields.";
+        //messageDiv.style.color = "red";
         return;
     }
 
@@ -166,8 +213,9 @@ document.getElementById("loginButton").addEventListener("click", async () => {
 
         if (error) {
             console.error("Error fetching user:", error);
-            messageDiv.textContent = `Error: ${error.message}`;
-            messageDiv.style.color = "red";
+            showNotification(`Error: ${error.message}`, "error");
+            //messageDiv.textContent = `Error: ${error.message}`;
+            //messageDiv.style.color = "red";
             return;
         }
 
@@ -179,26 +227,30 @@ document.getElementById("loginButton").addEventListener("click", async () => {
             const isEmployee = email.endsWith("@cineo.com");
 
             if (isEmployee) {
-                messageDiv.textContent = "Login successful! Redirecting to employee dashboard...";
-                messageDiv.style.color = "green";
+                showNotification("Login successful! Redirecting to employee dashboard...", "success");
+                //messageDiv.textContent = "Login successful! Redirecting to employee dashboard...";
+                //messageDiv.style.color = "green";
                 setTimeout(() => {
                     window.location.href = "mitarbeiterDashboardpageStructure.html"; // Weiterleitung zur Mitarbeiter-Seite
                 }, 2000);
             } else {
-                messageDiv.textContent = "Login successful! Redirecting to customer homepage...";
-                messageDiv.style.color = "green";
+                showNotification("Login successful! Redirecting to customer homepage...", "success");
+                //messageDiv.textContent = "Login successful! Redirecting to customer homepage...";
+                //messageDiv.style.color = "green";
                 setTimeout(() => {
                     window.location.href = "kundeDashboardpageStructure.html"; // Weiterleitung zur Kunden-Homepage
                 }, 2000);
             }
         } else {
-            messageDiv.textContent = "Invalid email or password.";
-            messageDiv.style.color = "red";
+            showNotification("Invalid email or password.", "error");
+            //messageDiv.textContent = "Invalid email or password.";
+            //messageDiv.style.color = "red";
         }
     } catch (err) {
         console.error("Unexpected error:", err);
-        messageDiv.textContent = "Unexpected error occurred.";
-        messageDiv.style.color = "red";
+        showNotification("Unexpected error occurred.", "error");
+        //messageDiv.textContent = "Unexpected error occurred.";
+        //messageDiv.style.color = "red";
     }
 });
 
@@ -214,16 +266,18 @@ document.getElementById("guestButton").addEventListener("click", () => {
 
     // Überprüfen, ob eine E-Mail-Adresse eingegeben wurde
     if (!guestEmail) {
-        messageDiv.textContent = "Please enter an email address.";
-        messageDiv.style.color = "red";
+        showNotification("Please enter an email address.", "error");
+        //messageDiv.textContent = "Please enter an email address.";
+        //messageDiv.style.color = "red";
         return;
     }
 
     // E-Mail-Format validieren
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(guestEmail)) {
-        messageDiv.textContent = "Please enter a valid email address.";
-        messageDiv.style.color = "red";
+        showNotification("Please enter a valid email address.", "error");
+        //messageDiv.textContent = "Please enter a valid email address.";
+        //messageDiv.style.color = "red";
         return;
     }
 
@@ -232,10 +286,15 @@ document.getElementById("guestButton").addEventListener("click", () => {
     localStorage.setItem("userRole", "guest");
 
     // Erfolgsmeldung und Weiterleitung
-    messageDiv.textContent = "Continuing as guest...";
-    messageDiv.style.color = "green";
+    showNotification("Continuing as guest...", "success");
+    //messageDiv.textContent = "Continuing as guest...";
+    //messageDiv.style.color = "green";
 
     setTimeout(() => {
         window.location.href = "kundeDashboardpageStructure.html"; // Kunden-Dashboard-Seite
     }, 2000);
 });
+
+
+
+

@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="/mainpages/mainStyle.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // Zugriffsschutz
+        const role = localStorage.getItem("userRole");
+    
+        if (role !== "employee") {
+            alert("Unauthorized access. Redirecting to login.");
+            window.location.href = "/mainpages/loginpageStructure.html";
+        }
+    </script>
     
 
 </head>

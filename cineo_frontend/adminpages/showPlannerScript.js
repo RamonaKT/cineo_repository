@@ -169,40 +169,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             movie_duration: movieDuration // Die Filmdauer wird auch übergeben
         };
 
+        let response;
         try {
-            const response = await fetch('/api/vorstellungen', {
+            const showResponse = await fetch('/api/vorstellungen', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(showData),
             });
-
-            const result = await response.json();
-
-            if (response.ok) {
+    
+            const result = await showResponse.json();
+    
+            if (showResponse.ok) {
                 responseMessage.textContent = 'Vorstellung erfolgreich hinzugefügt!';
                 responseMessage.style.color = '#5afff5';
                 form.reset();
                 roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
-
+    
                 // Sitzplätze erstellen für die neue Vorstellung
-                const createSeatsResponse = await fetch(`/api/sitzplaetzeErstellen/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ room_id: roomId, show_id: result.show_id }),
-                });
+                const seatCreationResult = await createSeats(roomId, result.show_id);
 
-                const seatResult = await createSeatsResponse.json();
-
-                if (createSeatsResponse.ok) {
-                    responseMessage.textContent += ' Sitzplätze erfolgreich erstellt!';
+                if (seatCreationResult.success) {
+                    responseMessage.textContent += ' ' + seatCreationResult.message;
                 } else {
-                    responseMessage.textContent += ` Fehler beim Erstellen der Sitzplätze: ${seatResult.message}`;
+                    responseMessage.textContent += ' ' + seatCreationResult.message;
                     responseMessage.style.color = 'red';
                 }
+                
 
             } else {
                 responseMessage.textContent = `Fehler: ${result.message}`;
@@ -410,5 +404,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateTimeDropdown();
     loadMovies();
 });
+
+
+
+/**
+ * Funktion zum Erstellen von Sitzplätzen durch API-Aufruf
+ * @param {string} roomId - Die ID des Raums
+ * @param {string} showId - Die ID der Vorstellung
+ * @returns {Promise<object>} - Erfolgsmeldung oder Fehlernachricht
+ */
+async function createSeats(roomId, showId) {
+    let response;
+    try {
+        const response = await fetch('/api/sitzplaetzeErstellen/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ room_id: roomId, show_id: showId })
+        });
+
+        if (!response.ok) {
+            const errorResult = await response.json();
+            return { success: false, message: `Fehler beim Erstellen der Sitzplätze: ${errorResult.message}` };
+        }
+
+        const result = await response.json();
+        return { success: true, message: 'Sitzplätze erfolgreich erstellt', data: result };
+
+    } catch (error) {
+        console.error('Fehler beim Erstellen der Sitzplätze.', error);
+        return { success: false, message: 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.' };
+    }
+}
 
 

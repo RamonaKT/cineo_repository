@@ -205,24 +205,32 @@ app.post("/api/register", async (req, res) => {
     }
 });
 
-// User login
 app.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) return res.status(400).json({ error: "All fields are required." });
 
     try {
-        const { data } = await supabase.from("users").select("*").eq("email", email).eq("password", password);
+        const { data } = await supabase
+            .from("users")
+            .select("*")
+            .eq("email", email)
+            .eq("password", password);
+
         if (data.length === 0) return res.status(401).json({ error: "Invalid credentials." });
+
+        const role = email.endsWith("@cineo.com") ? "employee" : "customer";
+        console.log(`User role: ${role}`); // Debug: Überprüfen, ob die Rolle korrekt ist
 
         res.status(200).json({
             message: "Login successful!",
-            role: email.endsWith("@cineo.com") ? "employee" : "customer",
+            role,
         });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 });
+
 
 // Guest login
 app.post("/api/guest", (req, res) => {

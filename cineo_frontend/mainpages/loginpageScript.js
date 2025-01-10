@@ -1,3 +1,6 @@
+
+/*
+
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const SUPABASE_URL = "https://bwtcquzpxgkrositnyrj.supabase.co"; // Dein Supabase-URL
@@ -296,5 +299,115 @@ document.getElementById("guestButton").addEventListener("click", () => {
 });
 
 
+*/
 
 
+
+// Utility function for notifications
+function showNotification(message, type = "error") {
+    const notificationContainer = document.getElementById("notification-container");
+    const notification = document.createElement("div");
+    notification.classList.add("notification", type);
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">✖</button>
+    `;
+    notificationContainer.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+}
+
+// Switching between forms
+const forms = {
+    register: document.getElementById("registerContainer"),
+    login: document.getElementById("loginContainer"),
+    guest: document.getElementById("guestContainer"),
+};
+
+function switchForm(target) {
+    Object.values(forms).forEach((form) => (form.style.display = "none"));
+    forms[target].style.display = "block";
+}
+
+document.getElementById("showLoginLink").addEventListener("click", () => switchForm("login"));
+document.getElementById("showRegisterLink").addEventListener("click", () => switchForm("register"));
+document.getElementById("showGuestLink").addEventListener("click", () => switchForm("guest"));
+document.getElementById("showLoginFromGuestLink").addEventListener("click", () => switchForm("login"));
+document.getElementById("showRegisterFromGuestLink").addEventListener("click", () => switchForm("register"));
+
+// Register User
+document.getElementById("registerButton").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (!email || !password || !confirmPassword) return showNotification("All fields are required.");
+    if (password !== confirmPassword) return showNotification("Passwords do not match.");
+    if (!/\S+@\S+\.\S+/.test(email)) return showNotification("Invalid email format.");
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+
+        showNotification("Registration successful!", "success");
+        switchForm("login");
+    } catch (err) {
+        showNotification(`Error: ${err.message}`);
+    }
+});
+
+// Login User
+document.getElementById("loginButton").addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) return showNotification("All fields are required.");
+
+    try {
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+
+        localStorage.setItem("userEmail", email);
+        const redirectPage = result.role === "employee" ? "mitarbeiterDashboardpageStructure.html" : "kundeDashboardpageStructure.html";
+        showNotification("Login successful!", "success");
+        setTimeout(() => (window.location.href = redirectPage), 2000);
+    } catch (err) {
+        showNotification(`Error: ${err.message}`);
+    }
+});
+
+// Guest Login
+document.getElementById("guestButton").addEventListener("click", async () => {
+    const guestEmail = document.getElementById("guestEmail").value;
+
+    if (!/\S+@\S+\.\S+/.test(guestEmail)) return showNotification("Invalid email format.");
+
+    try {
+        const response = await fetch("/api/guest", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: guestEmail }),
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+
+        localStorage.setItem("userEmail", guestEmail);
+        localStorage.setItem("userRole", "guest");
+        showNotification("Continuing as guest...", "success");
+        setTimeout(() => (window.location.href = "kundeDashboardpageStructure.html"), 2000);
+    } catch (err) {
+        showNotification(`Error: ${err.message}`);
+    }
+});

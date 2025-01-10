@@ -21,7 +21,7 @@ jobs:
 
       - name: Pull Code to Droplet
         run: |
-          ssh -o StrictHostKeyChecking=no root@46.101.251.202 << 'EOF'
+          ssh -o StrictHostKeyChecking=no root@ubuntu-s-1vcpu-1gb-fral-01:~# << 'EOF'
             cd /var/www/html/cineo_repository
 
             # Stash local changes (if any) to avoid conflicts

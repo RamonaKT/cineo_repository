@@ -302,6 +302,33 @@ document.getElementById("guestButton").addEventListener("click", () => {
 */
 
 
+// URL-Parameter auslesen
+const urlParams = new URLSearchParams(window.location.search);
+const showId = urlParams.get("show_id");
+const movieId = urlParams.get("movie_id");
+const ticketData = urlParams.get("ticket_data");
+
+// Spezielles Angebot anzeigen und den "Weiter als Gast"-Button aktivieren
+if (showId && movieId && ticketData) {
+    const ticketInfoContainer = document.getElementById("ticketInfoContainer");
+    const guestRedirectContainer = document.getElementById("guestRedirectContainer");
+
+    // Nachricht für Ticketinhaber anzeigen
+    ticketInfoContainer.style.display = "block";
+    ticketInfoContainer.innerHTML = `
+        <div class="ticket-info">
+            <p><strong>Spezielles Angebot:</strong> Wenn Sie sich anmelden, erhalten Sie ein gratis Popcorn! Bitte loggen Sie sich ein, registrieren Sie sich oder fahren Sie als Gast fort, um Ihre Buchung abzuschließen.</p>
+        </div>
+    `;
+
+    // "Weiter als Gast"-Button sichtbar machen
+    guestRedirectContainer.style.display = "block";
+
+    // Button-Event hinzufügen
+    document.getElementById("guestRedirectButton").addEventListener("click", () => {
+        toggleView("guest"); // Zur Guest-Eingabe wechseln
+    });
+}
 
 // Utility function for notifications
 function showNotification(message, type = "error") {

@@ -61,7 +61,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
         console.log('Zu erstellende Sitzplätze:', newSeats);
 
         // Sitzplätze einfügen oder aktualisieren
-        const { data, error: upsertError } = await supabase
+        const { data: upsertData, error: upsertError } = await supabase
             .from('seat')
             .upsert(newSeats, { onConflict: ['seat_id'] });
 

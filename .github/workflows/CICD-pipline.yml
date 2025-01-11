@@ -1,0 +1,40 @@
+name: CICD Deploy to DigitalOcean Droplet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: |
+            ${{ secrets.DIGTIALOCEAN_ID_RSA_CICD_PRIVATE }}
+
+      - name: Pull Code to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no root@46.101.251.202 << 'EOF'
+            cd /var/www/html/cineo_repository
+
+            # Stash local changes (if any) to avoid conflicts
+            git reset --hard HEAD
+
+            # Pull the latest changes, preferring the new code
+            git fetch --all
+            git reset --hard origin/main
+
+            # Optionally restart any services
+            sudo systemctl restart nginx
+          EOF
+
+      - name: Success Notification
+        if: success()
+        run: echo "Deployment to DigitalOcean Droplet successful."

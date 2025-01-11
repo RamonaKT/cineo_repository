@@ -186,12 +186,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 responseMessage.style.color = '#5afff5';
                 form.reset();
                 roomDropdown.innerHTML = '<option value="">Bitte wählen</option>';
+
+                //const showId = result.data?.show_id;
+                const showId = parseInt(result.data.show_id, 10); // show_id als Integer
+                const roomIdInt = parseInt(roomId, 10);  // room_id als Integer
     
-                const showId = result.show_id;  // show_id ist die ID der gerade erstellten Vorstellung
-                // Sitzplätze erstellen für die neue Vorstellung
+                // Payload-Daten mit sicherem Integer
                 const payloadData = {
-                    room_id: roomId,
-                    show_id: showId
+                    room_id: roomIdInt, // room_id als Integer gesetzt
+                    show_id: showId     // show_id als Integer gesetzt
                 };
 
                 try {
@@ -201,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const seatCreationResult = await createSeats(payloadData);
             
                     if (seatCreationResult && seatCreationResult.status === 'success') {
-                        console.log("SItzplätze erfolgreich gespeichert");
+                        console.log("Sitzplätze erfolgreich gespeichert");
                         responseMessage.textContent += ' ' + seatCreationResult.message;
                     } else {
                         alert(`Fehler: ${seatCreationResult.statusText || 'Unbekannter Fehler'}`);

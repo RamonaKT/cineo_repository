@@ -278,18 +278,20 @@ app.post('/api/vorstellungen', async (req, res) => {
                     room_id,
                     movie_duration
                 }
-            ]);
+            ])
+            .select('show_id')  
+            .single();
 
         if (error) {
             return res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error: error.message });
         }
-
         res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt', data });
     } catch (error) {
         console.error('Fehler beim Erstellen der Vorstellung:', error);
         res.status(500).json({ message: 'Serverfehler', error: error.message });
     }
 });
+
 
 app.get('/api/alleVorstellungen', async (req, res) => {
     try {

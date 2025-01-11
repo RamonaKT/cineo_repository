@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
                     const seatCreationResult = await createSeats(payloadData);
             
-                    if (seatCreationResult && seatCreationResult.status === 'success') {
+                    if (seatCreationResult || seatCreationResult.status === 'success') {
                         console.log("Sitzplätze erfolgreich gespeichert");
                         responseMessage.textContent += ' ' + seatCreationResult.message;
                     } else {

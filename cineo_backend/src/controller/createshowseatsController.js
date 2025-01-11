@@ -11,10 +11,19 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 const routerCreateShowSeats = express.Router();
 
 routerCreateShowSeats.post('/create', async (req, res) => {
-    const { room_id, show_id } = req.body;
+    let { room_id, show_id } = req.body;
+
+    // Sicherstellen, dass room_id und show_id als Zahlen verarbeitet werden
+    room_id = parseInt(room_id, 10);
+    show_id = parseInt(show_id, 10);
+
+    if (isNaN(room_id) || isNaN(show_id)) {
+        console.log(`Ungültige Eingaben - room_id: ${room_id}, show_id: ${show_id}`);
+        return res.status(400).json({ error: 'room_id und show_id müssen gültige Zahlen sein.' });
+    }
 
     try {
-        // Sitzplätze ohne zugewiesene Vorstellung abrufen
+        // Sitzplätze abrufen
         const { data: existingSeats, error: selectError } = await supabase
             .from('seat')
             .select('*')
@@ -23,35 +32,54 @@ routerCreateShowSeats.post('/create', async (req, res) => {
 
         if (selectError) {
             console.error('Fehler beim Abrufen der Sitzplätze:', selectError);
-            return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplätze.' });
+            return res.status(500).json({ error: 'Fehler beim Abrufen der Sitzplätze.', details: selectError.message });
         }
 
         if (!existingSeats || existingSeats.length === 0) {
+            console.log('Keine Sitzplätze zum Erstellen gefunden.');
             return res.status(404).json({ message: 'Keine Sitzplätze zum Erstellen gefunden.' });
         }
 
-        // Sitzplätze aktualisieren und einer Vorstellung zuweisen
-        const newSeats = existingSeats.map(seat => ({
-            ...seat,
-            show_id,
-            reserved_at: null, // Optional zurücksetzen
-        }));
+        // Sitzplätze vorbereiten
+        const newSeats = existingSeats.map(seat => {
+            const seatNumber = seat.seat_id.toString().slice(-3);
+            const newSeatId = show_id * 10000000 + seat.seat_id;
 
-        // Sitzplätze in der Datenbank aktualisieren
-        const { error: insertError } = await supabase.from('seat').upsert(newSeats, {
-            returning: 'minimal', // Nur zur Optimierung, falls keine Rückgabe erforderlich
+            return {
+                seat_id: newSeatId,
+                room_id: seat.room_id,
+                row_id: seat.row_id,
+                category: seat.category,
+                status: 0,
+                show_id: show_id,
+                seat_number: seatNumber,
+                reserved_at: null,
+                reserved_by: seat.reserved_by,
+            };
         });
 
-        if (insertError) {
-            console.error('Fehler beim Einfügen der Sitzplätze:', insertError);
-            return res.status(500).json({ message: 'Fehler beim Einfügen der Sitzplätze.' });
+        console.log('Zu erstellende Sitzplätze:', newSeats);
+
+        // Sitzplätze einfügen oder aktualisieren
+        const { data: upsertData, error: upsertError } = await supabase
+            .from('seat')
+            .upsert(newSeats, { onConflict: ['seat_id'] });
+
+        if (upsertError) {
+            console.error('Fehler beim Upsert der Sitzplätze:', upsertError);
+            return res.status(503).json({ error: 'Fehler beim Upsert der Sitzplätze.', details: upsertError.message });
         }
 
-        res.status(201).json({ message: 'Sitzplätze erfolgreich erstellt.' });
+        res.status(200).json({
+            message: 'Sitzplätze erfolgreich erstellt.',
+            data,
+        });
+
     } catch (error) {
         console.error('Fehler beim Erstellen der Sitzplätze:', error);
-        res.status(500).json({ message: 'Fehler beim Erstellen der Sitzplätze.' });
+        res.status(500).json({ error: 'Fehler beim Erstellen oder Updaten der Sitzplätze.', details: error.message });
     }
 });
 
 module.exports = routerCreateShowSeats;
+

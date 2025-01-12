@@ -17,7 +17,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: |
-            ${{ secrets.DIGTIALOCEAN_ID_RSA_CICD_PRIVATE }}
+            ${{ secrets.DIGitALOCEAN_ID_RSA_CICD_PRIVATE }}
 
       - name: Pull Code to Droplet
         run: |

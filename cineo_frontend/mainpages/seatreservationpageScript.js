@@ -29,8 +29,10 @@ async function loadSeats() {
     try {
         const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
         const seats = await response.json();
+        console.log(showId);
 
         if (response.ok) {
+            console.log(seats);
             renderSeats(seats);
         } else {
             console.error('Fehler beim Laden der Sitzplätze:', seats);
@@ -45,20 +47,57 @@ function renderSeats(seats) {
     const seatContainer = document.getElementById('seats-container');
     seatContainer.innerHTML = ''; // Clear container
 
-    seats.forEach(seat => {
-        const seatElement = document.createElement('div');
-        seatElement.classList.add('seat');
-        seatElement.style.backgroundColor = getSeatColor(seat);
+    console.log(seats);
 
-        if (seat.status === 1 || seat.status === 2) {
-            seatElement.classList.add('unavailable');
-        }
+    if (seats.length === 0) {
+        seatContainer.innerHTML = 'Keine Sitzplätze verfügbar.';
+        return;
+    }
 
-        seatElement.dataset.seatId = seat.seat_id;
-        seatElement.addEventListener('click', () => toggleSeatSelection(seatElement, seat));
+    
+    // Schritt 1: Nach Reihen gruppieren
+    const rows = groupSeatsByRow(seats);
 
-        seatContainer.appendChild(seatElement);
+    // Schritt 2: Sitzplätze für jede Reihe rendern
+    rows.forEach((seatsInRow, rowIndex) => {
+        const rowElement = document.createElement('div');
+        rowElement.classList.add('row'); // Für CSS Styling
+
+        seatsInRow.forEach(seat => {
+            const seatElement = document.createElement('div');
+            seatElement.classList.add('seat');
+            seatElement.style.backgroundColor = getSeatColor(seat);
+
+            console.log("Rendering seat element:", seatElement);
+
+            // Wenn der Sitzplatz reserviert ist, markieren wir ihn als nicht verfügbar
+            if (seat.status === 1 || seat.status === 2) {
+                seatElement.classList.add('unavailable');
+            }
+
+            seatElement.dataset.seatId = seat.seat_id;
+            seatElement.addEventListener('click', () => toggleSeatSelection(seatElement, seat));
+
+            rowElement.appendChild(seatElement);
+        });
+
+        seatContainer.appendChild(rowElement);
     });
+}
+
+// Hilfsfunktion zum Gruppieren der Sitzplätze nach Reihen
+function groupSeatsByRow(seats) {
+    const rows = {};
+
+    seats.forEach(seat => {
+        if (!rows[seat.row_id]) {
+            rows[seat.row_id] = [];
+        }
+        rows[seat.row_id].push(seat);
+    });
+
+    // Umwandeln des Objekts in ein Array von Reihen, sortiert nach `row_id`
+    return Object.keys(rows).sort((a, b) => a - b).map(rowId => rows[rowId]);
 }
 
 // Funktion zur Bestimmung der Sitzfarbe

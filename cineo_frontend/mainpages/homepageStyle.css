@@ -12,20 +12,43 @@
   top: 10vh;
   margin-right: 40vh;
 }
+/* Icons vor den Überschriften anpassen */
+.h2_homepage_oeffnungszeitenTitel,
+.h2_homepage_standort {
+  display: inline-flex;  /* Zeilenweise Anordnung von Icon und Text */
+  align-items: center;   /* Vertikale Ausrichtung des Icons mit dem Text */
+}
+
+.icon-before-text {
+  margin-right: 10px;     /* Abstand zwischen Icon und Text */
+  font-size: 3vh;         /* Größe des Icons anpassen */
+}
 
 .h2_homepage_oeffnungszeitenTitel {
   color: white;
   font-size: 3vh;
-  font-family: "Lato", sans-serif; /*Schriftart*/
+  font-family: "Lato", sans-serif;
   font-weight: lighter;
-  margin-bottom: 3vh;
+  margin-bottom: 1vh;
+  text-decoration-line: none;
 }
+
+.h2_homepage_standort {
+  margin-bottom: 1vh;
+  text-decoration-line: none;
+  color: white;
+  font-size: 3vh;
+  font-family: "Lato", sans-serif;
+  font-weight: lighter;
+}
+
 .div_homepage_oeffnungszeiten{
   font-size: 2vh;
   font-family: "Lato", sans-serif; /*Schriftart*/
   font-weight: lighter;
   color: white;
-  margin-bottom: 5vh;
+  margin-bottom: 3vh;
+
 }
 .div_homePage_oeffnungszeiten p {
   margin: 8px 0; /* Weniger Abstand zwischen den Öffnungszeiten */
@@ -39,13 +62,6 @@
   text-align: left;
 }
 
-.h2_homepage_standort {
-  margin-bottom: 3vh;
-  color: white;
-  font-size: 3vh;
-  font-family: "Lato", sans-serif; /*Schriftart*/
-  font-weight: lighter;
-}
 .div_homepage_standortAdresse {
   font-size: 2vh;
   font-family: "Lato", sans-serif;
@@ -59,11 +75,14 @@
 /* Karussel, Scrollbuttons */
 
 .container {
-  max-width: 1500px;
-  width: 60vw;
+  width: 100vw;  /* Sicherstellen, dass der Container 100% des ihm zugewiesenen Platzes nutzt */
   position: relative;
   height: 45vh;
   top: 10vh;
+  overflow: hidden;
+  margin-right: 5vw;
+
+
 }
 .sliding-wrapper .slide-button {
   height: 50px;
@@ -78,10 +97,11 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 10;
 
 }
 .slide-button {
-  position: relative;
+  position: absolute;
 }
 .sliding-wrapper .slide-button:hover{
   opacity: 1;
@@ -90,36 +110,37 @@
   left: -60px;
 
 }
-
 .sliding-wrapper .slide-button#next-slide{
   right: -60px;
 }
-
 .sliding-wrapper .image-list {
   display: grid;
-  gap: 18px;
+  gap: 1vw;
   grid-template-columns: repeat(10, 1fr);
   font-size: 0;
   overflow-x: auto;
   scrollbar-width: none;
+  height: 100%;
 }
-
 .sliding-wrapper .image-list .image-item{
-  width: 90vh;
+  width: 30vw;
   height: 45vh;
   object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid white;
 }
 
 .image-container {
   position: relative; /* Positionierung relativ zum übergeordneten Element */
   display: inline-block;
+
 }
 .play-button {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 40%; /* Größe des Playbuttons */
-  height: 80%;
+  width: 60%; /* Größe des Playbuttons */
+  height: 75%;
   transform: translate(-50%, -50%);
   opacity: 0; /* Unsichtbar, solange nicht gehovered */
   transition: opacity 0.3s ease; /* Weicher Übergang beim Hover */

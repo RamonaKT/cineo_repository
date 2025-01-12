@@ -1,14 +1,3 @@
-
-const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
-const bodyParser = require('body-parser');
-const app = express();
-app.use(express.json());
-app.use(bodyParser.json());
-
-// Supabase-Client initialisieren
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-
 const showId = new URLSearchParams(window.location.search).get('show_id');
 const movieId = new URLSearchParams(window.location.search).get('movie_id');
 
@@ -26,30 +15,29 @@ const seatColors = {
     2: 'lightblue'   // Loge
 };
 
-// Farben für Status
 const reservedColor = 'red';
 const selectedColor = 'orange';
 
 let selectedSeats = new Set();
-    
+
 document.addEventListener('DOMContentLoaded', async () => {
     await loadSeats();
-    setupRealtimeSubscription();
 });
 
-// Funktion zum Laden der Sitzplätze aus Supabase
+// Funktion zum Laden der Sitzplätze über das Backend
 async function loadSeats() {
-    const { data: seats, error } = await supabase
-        .from('seat')
-        .select('*')
-        .eq('show_id', showId);
+    try {
+        const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
+        const seats = await response.json();
 
-    if (error) {
+        if (response.ok) {
+            renderSeats(seats);
+        } else {
+            console.error('Fehler beim Laden der Sitzplätze:', seats);
+        }
+    } catch (error) {
         console.error('Fehler beim Laden der Sitzplätze:', error);
-        return;
     }
-
-    renderSeats(seats);
 }
 
 // Funktion zum Rendern der Sitzplätze
@@ -100,44 +88,40 @@ async function toggleSeatSelection(seatElement, seat) {
 
 // Funktion zum Reservieren eines Sitzplatzes
 async function reserveSeat(seatId) {
-    const reservedAt = new Date().toISOString();
+    const response = await fetch('/api/seatReservations/reserve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ seat_id: seatId, session_id: userId })
+    });
 
-    const { error } = await supabase
-        .from('seat')
-        .update({ status: 1, reserved_by: sessionId, reserved_at: reservedAt })
-        .eq('seat_id', seatId)
-        .eq('status', 0);
-
-    if (error) console.error('Fehler beim Reservieren:', error);
+    const result = await response.json();
+    if (response.ok) {
+        console.log(result.message);
+    } else {
+        console.error('Fehler beim Reservieren:', result.message);
+    }
 }
 
 // Funktion zum Freigeben eines Sitzplatzes
 async function releaseSeat(seatId) {
-    const { error } = await supabase
-        .from('seat')
-        .update({ status: 0, reserved_by: null, reserved_at: null })
-        .eq('seat_id', seatId)
-        .eq('reserved_by', sessionId);
+    const response = await fetch('/api/seatReservations/release', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ seat_id: seatId, session_id: userId })
+    });
 
-    if (error) console.error('Fehler beim Freigeben:', error);
-}
-
-// Echtzeit-Update für Sitzplatzänderungen
-function setupRealtimeSubscription() {
-    supabase
-        .from(`seat:show_id=eq.${showId}`)
-        .on('UPDATE', payload => {
-            loadSeats();
-        })
-        .subscribe();
+    const result = await response.json();
+    if (response.ok) {
+        console.log(result.message);
+    } else {
+        console.error('Fehler beim Freigeben:', result.message);
+    }
 }
 
 // Weiterleitung zur nächsten Seite mit ausgewählten Sitzplätzen
 document.getElementById('confirm-btn').addEventListener('click', () => {
     const seatIds = Array.from(selectedSeats).join(',');
-    const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${sessionId}&seat_id=${seatIds}`;
+    const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seat_id=${seatIds}`;
     window.location.href = nextPage;
 });
-
-setInterval(autoReleaseSeat, 10000); // Check 10 seconds
 

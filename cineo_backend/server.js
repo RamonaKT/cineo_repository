@@ -13,6 +13,7 @@ const axios = require('axios');
 // ** Router Import**
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
 const routerCreateShowSeats = require ('./src/controller/createshowseatsController');
+const routerSeatReservations = require ('./src/controller/seatReservationsController');
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use('/api/saveLayout', routerLayout);             // Registriere den Router in der App
 app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);        // Registriere den Router in der App
 
+app.use('/api/seatReservations', routerSeatReservations)
 
 app.use((err, req, res, next) => {
     console.error(err.stack); // Detaillierte Fehlerausgabe

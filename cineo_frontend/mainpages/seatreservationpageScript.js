@@ -1,4 +1,12 @@
 
+const express = require('express');
+const { createClient } = require('@supabase/supabase-js');
+const bodyParser = require('body-parser');
+const app = express();
+app.use(express.json());
+app.use(bodyParser.json());
+
+// Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 const showId = new URLSearchParams(window.location.search).get('show_id');

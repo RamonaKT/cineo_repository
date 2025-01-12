@@ -7,7 +7,7 @@
     text-align: center;
     line-height: 40px;
     cursor: pointer;
-    border: 1px solid black;
+    border: 1vw solid black;
 }
 .unavailable {
     cursor: not-allowed;
@@ -18,13 +18,18 @@
     justify-content: center;
     max-width: 800px;
     margin: 20px auto;
+    margin-top: 30px;
 }
 #confirm-btn {
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: blue;
-    color: white;
-    border: none;
+    background-color: #5afff5;
+    color: black;
+    border: 1vw;
     cursor: pointer;
+    left: 1vw;
+    margin-left: 1vw;
+    margin: 1vw;
+    border-color: #5afff5;
 }
   

@@ -1,25 +1,30 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-}
-
+#legend { margin-bottom: 10px; }
 .seat {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     margin: 5px;
     display: inline-block;
-    border: 1px solid #ccc;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    border: 1px solid black;
+}
+.unavailable {
+    cursor: not-allowed;
+}
+#seats-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 800px;
+    margin: 20px auto;
+}
+#confirm-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    border: none;
     cursor: pointer;
 }
-
-.reserved {
-    background-color: red;
-}
-
-.available {
-    background-color: green;
-}
-
-.selected {
-    background-color: yellow;
-}
+  

@@ -44,11 +44,12 @@ routerCreateShowSeats.post('/create', async (req, res) => {
         const newSeats = existingSeats.map(seat => {
             const seatNumber = seat.seat_id.toString().slice(-3);
             const newSeatId = show_id * 10000000 + seat.seat_id;
+            const rowNumber = seat.row_id.toString().slice(-3);
 
             return {
                 seat_id: newSeatId,
                 room_id: seat.room_id,
-                row_id: seat.row_id,
+                row_id: rowNumber,
                 category: seat.category,
                 status: 0,
                 show_id: show_id,

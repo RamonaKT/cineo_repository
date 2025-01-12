@@ -1,39 +1,64 @@
-#legend { margin-bottom: 10px; }
+#legend {
+    margin-bottom: 10px;
+}
+
+/* Stil für jeden Sitzplatz */
 .seat {
-    width: 40px;
-    height: 40px;
-    margin: 5px;
+    width: 40px;  /* Breite des Sitzplatzes */
+    height: 40px; /* Höhe des Sitzplatzes */
+    margin: 5px;  /* Abstand zwischen den Sitzplätzen */
     display: inline-block;
-    text-align: center;
-    line-height: 40px;
-    cursor: pointer;
-    border: 1vw solid black;
-    border-radius: 5px;
+    text-align: center; /* Text (z.B. Sitznummer) wird zentriert */
+    line-height: 40px; /* Text vertikal zentrieren */
+    cursor: pointer;  /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
+    border: 1vw solid black; /* Rand um den Sitzplatz */
+    border-radius: 5px; /* Abgerundete Ecken */
+    transition: background-color 0.3s ease; /* Sanfter Übergang der Hintergrundfarbe */
 }
+
+/* Stil für bereits reservierte Sitzplätze */
 .unavailable {
-    cursor: not-allowed;
-    background-color: gray;
+    cursor: not-allowed; /* Cursor zeigt an, dass der Platz nicht verfügbar ist */
+    background-color: gray; /* Graue Farbe für reservierte Plätze */
 }
+
+/* Container für Sitzplätze */
 #seats-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: wrap; /* Sitzplätze werden umgebrochen */
+    justify-content: center; /* Zentriert die Sitzplätze im Container */
     max-width: 1000px;
     margin: 20px auto;
     margin-top: 30px;
-    gap: 10px;
+    gap: 10px; /* Abstand zwischen den Sitzplätzen */
     flex-direction: column;
 }
 
+/* Jede Reihe von Sitzplätzen */
 .row {
     display: flex;
-    gap: 5px; /* Abstand zwischen den Sitzplätzen */
+    gap: 5px; /* Abstand zwischen den Sitzplätzen in der Reihe */
 }
 
+/* Stil für ausgewählte Sitzplätze */
 .selected {
-    background-color: purple;
+    background-color: purple; /* Farbe für ausgewählte Plätze */
 }
 
+/* Farben für Sitzplatzkategorien */
+.seat[data-category="0"] {
+    background-color: lightgreen; /* Parkett */
+}
+
+.seat[data-category="1"] {
+    background-color: gold; /* VIP */
+}
+
+.seat[data-category="2"] {
+    background-color: lightblue; /* Loge */
+}
+
+/* Stil für den Bestätigungsbutton */
 #confirm-btn {
     margin-top: 20px;
     padding: 10px 20px;
@@ -46,4 +71,8 @@
     margin: 1vw;
     border-color: #5afff5;
 }
-  
+
+/* Hover-Effekt für verfügbare Sitzplätze */
+.seat:hover:not(.unavailable) {
+    background-color: #ffeb3b; /* Leicht gelbe Hervorhebung bei Hover */
+}

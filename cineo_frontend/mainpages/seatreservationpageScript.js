@@ -81,6 +81,8 @@ function renderSeats(seats) {
             rowElement.appendChild(seatElement);
         });
 
+        console.log("Seat Container:", seatContainer);
+        
         seatContainer.appendChild(rowElement);
     });
 }
@@ -95,6 +97,8 @@ function groupSeatsByRow(seats) {
         }
         rows[seat.row_id].push(seat);
     });
+
+    console.log("Gruppierte Reihen:", rows);
 
     // Umwandeln des Objekts in ein Array von Reihen, sortiert nach `row_id`
     return Object.keys(rows).sort((a, b) => a - b).map(rowId => rows[rowId]);

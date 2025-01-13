@@ -26,11 +26,11 @@ jobs:
             cd /var/www/html/cineo_repository
 
             # Stash local changes (if any) to avoid conflicts
-            git reset --hard HEAD
+            git reset --hard
 
             # Pull the latest changes, preferring the new code
-            git fetch --all
-            git reset --hard origin/main
+            git fetch origin
+            git reset --hard main
 
             # Optionally restart any services
             sudo systemctl restart nginx

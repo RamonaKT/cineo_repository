@@ -45,9 +45,10 @@ routerSeatReservations.post('/reserve', async (req, res) => {
             .eq('seat_id', seat_id)      // Sitzplatz ID
             .eq('status', 0)             // Nur aktualisieren, wenn der Status 0 (verfügbar) ist
             .select();                  // Daten nach dem Update zurückgeben
+            //FUNKTIONIERT NICHT
 
         // Wenn der Sitzplatz nicht gefunden oder der Update nicht durchgeführt wurde
-        if (error || data.length === 0) {
+        if (error || data.length === 0 || !data) {
             return res.status(409).json({ message: 'Sitzplatz bereits reserviert oder nicht mehr verfügbar.' });
         }
 

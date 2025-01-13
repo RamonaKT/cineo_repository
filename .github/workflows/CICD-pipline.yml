@@ -23,6 +23,14 @@ jobs:
       - name: Pull Code to Droplet
         run: |
           ssh -o StrictHostKeyChecking=no root@46.101.251.202 << 'EOF'
+
+            eval "$(ssh-agent -s)"
+
+            ssh-add ~/.ssh/id_rsa_cicd
+
+            ssh-add ~/.ssh/id_rsa_deploy
+            
+                      
             cd /var/www/html/cineo_repository
 
             # Stash local changes (if any) to avoid conflicts
@@ -30,7 +38,8 @@ jobs:
 
             # Pull the latest changes, preferring the new code
             git fetch origin
-            git reset --hard main
+            git pull origin main
+
 
             # Optionally restart any services
             sudo systemctl restart nginx

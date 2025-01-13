@@ -34,17 +34,30 @@ routerSeatReservations.post('/reserve', async (req, res) => {
     const reservedAt = new Date().toISOString();
 
     try {
-        const { error } = await supabase
-            .from('seat')
-            .update({ status: 1, reserved_by: session_id, reserved_at: reservedAt })
-            .eq('seat_id', seat_id)
-            .eq('status', 0);
+        // Überprüfe zunächst den Status
+        const { data: seatData, error: seatError } = await supabase
+        .from('seat')
+        .select('seat_id, status')
+        .eq('seat_id', seat_id)
+        .eq('status', 0)
+        .single();
 
-        if (error) {
-            return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error });
+        if (seatError || !seatData) {
+        return res.status(409).json({ message: 'Sitzplatz bereits reserviert.' });
+        }
+
+        // Führe das Update nur aus, wenn der Platz verfügbar ist
+        const { error: updateError } = await supabase
+        .from('seat')
+        .update({ status: 1, reserved_by: session_id, reserved_at: reservedAt })
+        .eq('seat_id', seat_id);
+
+        if (updateError) {
+        return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error: updateError.message });
         }
 
         return res.json({ message: 'Sitzplatz erfolgreich reserviert' });
+
     } catch (error) {
         return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error: error.message });
     }

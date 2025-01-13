@@ -144,19 +144,26 @@ async function toggleSeatSelection(seatElement, seat) {
 
 // Funktion zum Reservieren eines Sitzplatzes
 async function reserveSeat(seatId) {
-    const response = await fetch('/api/seatReservations/reserve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ seat_id: seatId, session_id: userId })
-    });
+    try {
+        const response = await fetch('/api/seatReservations/reserve', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ seat_id: seatId, session_id: userId })
+        });
 
-    const result = await response.json();
-    if (response.ok) {
-        console.log(result.message);
-    } else {
-        console.error('Fehler beim Reservieren:', result.message);
+        const result = await response.json();
+        if (response.ok) {
+            console.log(result.message);
+        } else if (response.status === 409) {
+            alert('Sitzplatz bereits reserviert, bitte Seite neu laden.');
+        } else {
+            console.error('Fehler beim Reservieren:', result.message);
+        }
+    } catch (error) {
+        console.error('Netzwerkfehler beim Reservieren:', error);
     }
 }
+
 
 // Funktion zum Freigeben eines Sitzplatzes
 async function releaseSeat(seatId) {
@@ -181,3 +188,42 @@ document.getElementById('confirm-btn').addEventListener('click', () => {
     window.location.href = nextPage;
 });
 
+// Prüft und gibt abgelaufene Reservierungen frei
+async function checkAndReleaseExpiredSeats() {
+    try {
+        // Abrufen der reservierten Sitzplätze (status = 1)
+        const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
+        const seats = await response.json();
+
+        const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
+
+        for (const seat of seats) {
+            if (seat.status === 1) {  // Nur reservierte Sitzplätze prüfen
+                const reservedAtTimestamp = new Date(seat.reserved_at).getTime();
+
+                // Überprüfung, ob die Reservierung älter als 10 Minuten ist
+                if (reservedAtTimestamp < tenMinutesAgo) {
+                    // Setze Sitzplatzstatus im Backend auf verfügbar (0)
+                    await releaseSeat(seat.seat_id);
+
+                    // Aktualisierung des Sitzplatzes im DOM
+                    const seatElement = document.querySelector(`div[data-seat-id='${seat.seat_id}']`);
+                    if (seatElement) {
+                        seatElement.classList.remove('selected');  // Entfernt die ausgewählte Klasse
+                        seatElement.style.backgroundColor = seatColors[seat.category];  // Ursprungsfarbe setzen
+
+                        // Entferne den Sitzplatz aus der Menge der ausgewählten Sitzplätze
+                        selectedSeats.delete(seat.seat_id);
+                    }
+
+                    console.log(`Sitzplatz ${seat.seat_id} wurde wegen Ablauf freigegeben.`);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Fehler beim Überprüfen der abgelaufenen Sitzplätze:', error);
+    }
+}
+
+// Funktion alle 1 Minute ausführen
+setInterval(checkAndReleaseExpiredSeats, 60 * 1000);

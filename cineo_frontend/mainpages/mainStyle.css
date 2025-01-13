@@ -97,13 +97,19 @@ a {
 .div_mainStyle_navigationTop a {
     color: #ffffff;
     margin: 0 5vw;
-    font-size: 3vh;
+    /*______________________________________*/
+    font-size: 2.5vh;
+    /*______________________________________*/
     font-family: "Lato", sans-serif;
     font-weight: lighter;
+    transition: font-size 0.3s ease, color 0.3s ease;
 }
 
 .div_mainStyle_navigationTop a:hover {
     color: #5afff5;
+    /*______________________________________*/
+    font-size: 3vh;
+    /*______________________________________*/
 }
 
 /* Navigations-Balken unten */
@@ -137,10 +143,15 @@ a {
     font-size: 2vh;
     font-family: "Lato", sans-serif;
     font-weight: normal;
+    /*______________________________________*/
+    transition: font-size 0.3s ease, color 0.3s ease;
+    /*______________________________________*/
 }
 
 .div_mainStyle_navigationBottom a:hover {
-    text-decoration: underline;
+    /*______________________________________*/
+    font-size: 2.2vh;
+    /*______________________________________*/
 }
 
 .div_mainStyle_navigationBottom .a_mainStyle_highlightLinkBottom {

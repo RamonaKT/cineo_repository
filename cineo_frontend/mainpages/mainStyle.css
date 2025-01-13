@@ -21,6 +21,10 @@ body {
     background-color: #220537;
     color: white;
     overflow-x: hidden; /* Keine horizontale Scrollbar */
+    /*______________________________________*/
+    border: 3px solid white;
+    border-radius: 10px;
+    /*______________________________________*/
 }
 
 ::-webkit-scrollbar {

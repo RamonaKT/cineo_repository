@@ -3,22 +3,63 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+   /* justify-content: center;
+    align-items: center;*/
     height: 100vh;
-    background-color: #2a002e;
   }
+
+  .main {
+  display: flex;
+ flex-direction: column;
+ align-items: center;
+   justify-content: center;
+  }
+
+
+#ticketInfoContainer {
+  gap: 1vw;
+  text-align: center;
+  align-self: center;
+  /*background:linear-gradient(to right, rgba(90, 255, 244, 0.507), rgba(100, 255, 245, 0.112));*/
+  width: 50vw;
+  height: fit-content;
+  margin: 22vh 0 2vh 0;
+  padding: 10px;
+  border-radius: 15px;
+  font-family: "Lato", sans-serif;
+  font-size: 1.1rem;
+  color:rgba(90, 255, 244, 0.66);
+}
+
+
+
+.popcorn-picture {
+  width: 2.2vw;
+  height: auto;
+  margin-bottom: -1vh;
+  opacity: 0.6;
+}
+
+
   .form-container {
-    background: #2a002e;
+    align-self: center;
+    margin: 1vh 0 0 0;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 0.8));
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 40vw;
   }
+
+  .form-container.down {
+    margin-top: 25vh;
+  }
+
   .form-container h2 {
     margin-bottom: 20px;
     font-size: 1.5em;
-    color: #ff00ff;
+    color: white;
   }
   .form-container label {
     display: block;
@@ -33,21 +74,25 @@ body {
     border-radius: 4px;
     color: white;
     font-size: 1em;
-    background: #2a002e;
+    background: rgba(255, 255, 255, 0.427);
   }
   .form-container button {
     width: 100%;
     padding: 10px;
     border: none;
-    background: #5d009a;
+    background-color: /* #5d009a;*/ rgba(90, 255, 244, 0.586);
     color: #fff;
     font-size: 1em;
+    font-weight: bold;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
   }
+  
   .form-container button:hover {
-    background: #5d009a;
+    background-color: #3a0061;
   }
+
   .message {
     margin-top: 10px;
     font-size: 0.9em;
@@ -57,19 +102,17 @@ body {
 
  /* Stil für die anklickbaren Links */
 .switch-link {
-    color: #5d009a;
+    color: rgb(90, 255, 245, 0.6); 
     text-decoration: underline;
     cursor: pointer;
+    transition: color 0.3 ease;
 }
 
 /* Hover-Effekt für die Links */
 .switch-link:hover {
-    color: #3d006a;
+    color: rgb(90, 255, 245);
 }
 
-p {
-    color: #555; /* Hier kannst du die gewünschte Farbe einfügen */
-}
 
 
 #notification-container {
@@ -115,3 +158,34 @@ p {
     cursor: pointer;
 }
 
+#guestRedirectContainer {
+  margin: 5vh 0 0 0;
+  height: 30vh;
+  margin-bottom: 20vh;
+  align-self: center;
+}
+
+#guestRedirectButton {
+  background-color: rgb(90, 255, 245, 0.6);
+  color: rgba(255, 255, 255, 0.796);
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 10vw;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  bottom: 10vh;
+
+}
+
+#guestRedirectButton:hover {
+  background-color: rgb(90, 255, 245);
+  color:#560192;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}

@@ -38,64 +38,72 @@
 </div>
 
 
+   
+
+<div class ="main">
+
+
+    <div id="ticketInfoContainer" style="display: none;"></div>
 
 
 <div class="form-container" id="registerContainer" style="display: none;">
-    <h2>Register</h2>
-    <label for="email">Email:</label>
-    <input type="email" id="email" placeholder="Enter your email" required>
+    <h2>Registrieren</h2>
+    <label for="email">E-Mail:</label>
+    <input type="email" id="email" placeholder="E-Mail einfügen" required>
     
-    <label for="password">Password:</label>
-    <input type="password" id="password" placeholder="Enter your password" required>
+    <label for="password">Passwort:</label>
+    <input type="password" id="password" placeholder="Passwort einfügen" required>
     
-    <label for="confirmPassword">Confirm Password:</label>
-    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+    <label for="confirmPassword">Passwort bestätigen:</label>
+    <input type="password" id="confirmPassword" placeholder="Passwort bestätigen" required>
     
-    <button id="registerButton">Register</button>
+    <button id="registerButton">Registrieren</button>
     <div class="message" id="message"></div>
     <p>
-        Already have an account? 
+        Sie haben bereits einen Account? 
         <a href="#" id="showLoginLink" class="switch-link">Login</a><br>
-        Or continue as guest?
-        <a href="#" id="showGuestLink" class="switch-link">Continue as Guest</a>
+        Oder als Gast fortfahren?
+        <a href="#" id="showGuestLink" class="switch-link">Weiter als Gast</a>
     </p>
     
 
 </div>
 
-<div id="ticketInfoContainer" style="display: none;"></div>
+
 
 <div class="form-container" id="loginContainer" style="display: block;">
     <h2>Login</h2>
-    <label for="loginEmail">Email:</label>
-    <input type="email" id="loginEmail" placeholder="Enter your email" required>
-    <label for="loginPassword">Password:</label>
-    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+    <label for="loginEmail">E-Mail:</label>
+    <input type="email" id="loginEmail" placeholder="E-Mail einfügen" required>
+    <label for="loginPassword">Passwort:</label>
+    <input type="password" id="loginPassword" placeholder="Passwort einfügen" required>
     <button id="loginButton">Login</button>
     <div class="message" id="loginMessage"></div>
     <p>
-        Don't have an account? 
-        <a href="#" id="showRegisterLink" class="switch-link">Register</a>
+        Noch kein Account?
+        <a href="#" id="showRegisterLink" class="switch-link">Registrieren</a>
     </p>
 </div>
 
 <div class="form-container" id="guestContainer" style="display: none;">
     <h2>Continue as Guest</h2>
-    <label for="guestEmail">Email (required):</label>
-    <input type="email" id="guestEmail" placeholder="Enter your email" required>
-    <button id="guestButton">Continue as Guest</button>
+    <label for="guestEmail">E-Mail (benötigt):</label>
+    <input type="email" id="guestEmail" placeholder="E-Mail einfügen" required>
+    <button id="guestButton">Weiter als Gast</button>
     <div class="message" id="guestMessage"></div>
     <p>
-        Already have an account? 
+        Sie haben bereits einen Account 
         <a href="#" id="showLoginFromGuestLink" class="switch-link">Login</a><br>
-        Or want to register?
+        Oder Sie wollen sich registrieren?
         <a href="#" id="showRegisterFromGuestLink" class="switch-link">Register</a>
     </p>
 </div>
 
 
-<div id="guestRedirectContainer" style="display: none; margin-top: 20px;">
+<div id="guestRedirectContainer" style="display: none">
     <button id="guestRedirectButton" class="guest-redirect-btn">Weiter als Gast</button>
+</div>
+
 </div>
 
 <div class="div_mainStyle_navigationBeamBottom"> </div>

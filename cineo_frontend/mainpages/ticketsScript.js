@@ -229,6 +229,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             try {
+                /*
                 for (const ticket of ticketsToBook) {
                     const payload = {
                         show_id: showId,
@@ -250,8 +251,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
 
                 alert("Tickets erfolgreich gebucht!");
-                 // Weiterleitung zur Login-Seite mit Ticketdaten
-                 window.location.href = `/mainpages/loginpageStructure.html?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(JSON.stringify(ticketsToBook))}`;
+                 // Weiterleitung zur Login-Seite mit Ticketdaten*/
+                window.location.href = `/mainpages/loginpageStructure.html?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(JSON.stringify(ticketsToBook))}`;
+              
             } catch (error) {
                 alert(error.message === "Kapazität überschritten"
                     ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."

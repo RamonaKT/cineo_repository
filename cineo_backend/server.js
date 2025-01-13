@@ -557,7 +557,7 @@ app.post('/api/tickets', async (req, res) => {
 app.post("/api/register", async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) return res.status(400).json({ error: "All fields are required." });
+    if (!email || !password) return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
 
     try {
         const { data, error } = await supabase.from("users").insert([{ email, password }]);
@@ -572,11 +572,11 @@ app.post("/api/register", async (req, res) => {
 app.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) return res.status(400).json({ error: "All fields are required." });
+    if (!email || !password) return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
 
     try {
         const { data } = await supabase.from("users").select("*").eq("email", email).eq("password", password);
-        if (data.length === 0) return res.status(401).json({ error: "Invalid credentials." });
+        if (data.length === 0) return res.status(401).json({ error: "Ungültige Zugangsdaten." });
 
         res.status(200).json({
             message: "Login successful!",
@@ -591,7 +591,7 @@ app.post("/api/login", async (req, res) => {
 app.post("/api/guest", (req, res) => {
     const { email } = req.body;
 
-    if (!/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: "Invalid email format." });
+    if (!/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: "Ungültiges E-Mail Format." });
 
     res.status(200).json({ message: "Guest login successful!" });
 });

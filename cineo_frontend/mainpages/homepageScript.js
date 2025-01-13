@@ -1,7 +1,7 @@
 async function fetchMoviesForCarousel() {
     try {
         // API-Aufruf, um Filme zu holen
-        const response = await fetch('http://localhost:4000/api/filme');
+        const response = await fetch('/api/filme');
         const movies = await response.json();
 
         // Nur die ersten 10 Filme auswählen

@@ -1,35 +1,36 @@
-const initSlider = () => {
-    const imageList = document.querySelector(".sliding-wrapper .image-list");
-    const slideButtons = document.querySelectorAll(".sliding-wrapper .slide-button");
+async function fetchMoviesForCarousel() {
+    try {
+        // API-Aufruf, um Filme zu holen
+        const response = await fetch('http://localhost:4000/api/filme');
+        const movies = await response.json();
 
-    // Klone die Bilderliste, um eine Endlosschleife zu simulieren
-    const imageItems = imageList.innerHTML;
-    imageList.innerHTML += imageItems;  // Bildliste duplizieren
+        // Nur die ersten 10 Filme auswählen
+        const top10Movies = movies.slice(0, 10);
 
-    // Funktion zum Scrollen der Bildliste
-    const scrollImages = (direction) => {
-        const scrollAmount = imageList.clientWidth * direction;
-        imageList.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    };
+        renderCarouselItems(top10Movies);
+    } catch (error) {
+        console.error('Error fetching movies for carousel:', error);
+    }
+}
 
-    // Slide images according to the slide button clicks
-    slideButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const direction = button.id === "prev-slide" ? -1 : 1;
-            scrollImages(direction);
-        });
+function renderCarouselItems(movies) {
+    const slider = document.querySelector('.banner .slider');
+    slider.innerHTML = ''; // Bestehende Items löschen
+
+    movies.forEach((movie, index) => {
+        const item = document.createElement('div');
+        item.classList.add('item');
+        item.style.setProperty('--position', index + 1);
+        item.style.setProperty('--quantity', movies.length);
+
+        const img = document.createElement('img');
+        img.src = movie.image; // Erwartet, dass das Feld "image" die Bild-URL enthält
+        img.alt = movie.title || 'Filmplakat';
+
+        item.appendChild(img);
+        slider.appendChild(item);
     });
+}
 
-
-    // Reset scroll position to create endless loop effect
-    imageList.addEventListener("scroll", () => {
-        if (imageList.scrollRight >= imageList.scrollWidth / 2) {
-            imageList.scrollRight = 0;
-        } else if (imageList.scrollRight === 0) {
-            imageList.scrollRight = imageList.scrollWidth / 2;
-        }
-    });
-
-};
-
-window.addEventListener("load", initSlider);
+// Initialisierung
+fetchMoviesForCarousel();

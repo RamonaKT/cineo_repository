@@ -29,10 +29,12 @@
 
 .banner .slider .item{
   position: absolute;
-  inset: 0 0 0 0;
+  inset: 0;
   transform:
-          rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg ))
-          translate(500px);
+          rotateY(calc( (var(--position) - 1) * (360deg / var(--quantity)) ))
+          translateZ(550px);
+  transition: transform 0.5s ease; /* Für sanfte Übergänge */
+  opacity: 0.7;
 }
 .banner .slider .item img{
   width: 100%;
@@ -44,9 +46,12 @@
 
 
 
+
+
+
 .middle-Content{
   position: absolute;
-  bottom: 20%;
+  bottom: 0;
   left:50%;
   transform: translateX(-50%);
   z-index: 1;
@@ -62,7 +67,7 @@
   height: 2vh;
   width: auto;
   line-height: 1em;
-  margin-top: 7vh;
+  margin-top: 6vh;
   color: white;
 }
 

@@ -15,8 +15,8 @@ const seatColors = {
     2: 'lightblue'   // Loge
 };
 
-const reservedColor = 'red';
-const selectedColor = 'orange';
+const reservedColor = 'gray';
+const selectedColor = 'purple';
 
 let selectedSeats = new Set();
 
@@ -54,7 +54,6 @@ function renderSeats(seats) {
         return;
     }
 
-    
     // Schritt 1: Nach Reihen gruppieren
     const rows = groupSeatsByRow(seats);
 
@@ -65,15 +64,18 @@ function renderSeats(seats) {
 
         seatsInRow.forEach(seat => {
             const seatElement = document.createElement('div');
-            seatElement.classList.add('seat');
-            seatElement.style.backgroundColor = getSeatColor(seat);
+            seatElement.classList.add('seat'); // Grundklasse für alle Sitzplätze
 
-            console.log("Rendering seat element:", seatElement);
+            // Setze die Kategorie als data-Attribut
+            seatElement.dataset.category = seat.category;
+            seatElement.dataset.seatId = seat.seat_id;
 
-            // Wenn der Sitzplatz reserviert ist, markieren wir ihn als nicht verfügbar
+            // Markiere nicht verfügbare Sitzplätze
             if (seat.status === 1 || seat.status === 2) {
                 seatElement.classList.add('unavailable');
             }
+
+            console.log("Rendering seat element:", seatElement);
 
             seatElement.dataset.seatId = seat.seat_id;
             seatElement.addEventListener('click', () => toggleSeatSelection(seatElement, seat));
@@ -85,6 +87,8 @@ function renderSeats(seats) {
         
         seatContainer.appendChild(rowElement);
     });
+    console.log("Container nach dem Hinzufügen:", seatContainer.innerHTML);
+
 }
 
 // Hilfsfunktion zum Gruppieren der Sitzplätze nach Reihen
@@ -104,10 +108,18 @@ function groupSeatsByRow(seats) {
     return Object.keys(rows).sort((a, b) => a - b).map(rowId => rows[rowId]);
 }
 
-// Funktion zur Bestimmung der Sitzfarbe
-function getSeatColor(seat) {
-    if (seat.status === 1 || seat.status === 2) return reservedColor;
-    return seatColors[seat.category];
+// Funktion zur Bestimmung der Sitzkategorie und Rückgabe der entsprechenden CSS-Klasse
+function getSeatCategoryClass(seat) {
+    switch (seat.category) {
+        case 0:
+            return 'parkett'; // Parkett
+        case 1:
+            return 'vip';     // VIP
+        case 2:
+            return 'loge';    // Loge
+        default:
+            return '';        // Falls keine Kategorie vorhanden ist
+    }
 }
 
 // Sitzplatz auswählen oder abwählen
@@ -119,15 +131,16 @@ async function toggleSeatSelection(seatElement, seat) {
     if (selectedSeats.has(seatId)) {
         // Abwählen
         selectedSeats.delete(seatId);
-        seatElement.style.backgroundColor = getSeatColor(seat);
+        seatElement.classList.remove('selected'); // Entfernt die ausgewählte Klasse
         await releaseSeat(seatId);
     } else {
         // Auswählen
         selectedSeats.add(seatId);
-        seatElement.style.backgroundColor = selectedColor;
+        seatElement.classList.add('selected');
         await reserveSeat(seatId);
     }
 }
+
 
 // Funktion zum Reservieren eines Sitzplatzes
 async function reserveSeat(seatId) {

@@ -2,9 +2,10 @@
     margin-bottom: 10px;
 }
 
-.legend-item{
+.legend.item{
     display: inline-block;
-    border: 1vw solid black;
+    border: 2px solid black;
+    border-radius: 5px; /* Abgerundete Ecken */
 }
 
 .content-class{
@@ -19,8 +20,8 @@
 }
 
 .leinwand {
-    height: 5vh;
-    width: 50vw;
+    height: 40px;
+    width: 600px;
     background-color: #b089f2;
     text-align: center;
     justify-content: center;
@@ -29,8 +30,9 @@
     font-size: 18px;
     color: white;
     margin-top: 15px;
-    border: 0.5vw solid black;
+    border: 2px solid black;
     display: flex;
+    border-radius: 5px; /* Abgerundete Ecken */
 }
 
 /* Stil für jeden Sitzplatz */
@@ -42,7 +44,7 @@
     text-align: center; /* Text (z.B. Sitznummer) wird zentriert */
     line-height: 40px; /* Text vertikal zentrieren */
     cursor: pointer;  /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
-    border: 0.5vw solid black; /* Rand um den Sitzplatz */
+    border: 2px solid black; /* Rand um den Sitzplatz */
     border-radius: 5px; /* Abgerundete Ecken */
     transition: background-color 0.3s ease; /* Sanfter Übergang der Hintergrundfarbe */
     z-index: 20;
@@ -111,11 +113,10 @@
     margin-top: 10px;
     padding: 10px 20px;
     background-color: #5afff5 !important;
-    color: black;
-    border: 1vw solid #5afff5;
+    color: #220537;
     cursor: pointer;
-
-    border: 0.5vw solid black;
+    border-radius: 5px; /* Abgerundete Ecken */
+    border: 2px solid black;
 }
 
 /* Hover-Effekt für verfügbare Sitzplätze */

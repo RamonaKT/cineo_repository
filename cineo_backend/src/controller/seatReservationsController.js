@@ -34,34 +34,32 @@ routerSeatReservations.post('/reserve', async (req, res) => {
     const reservedAt = new Date().toISOString();
 
     try {
-        // Überprüfe zunächst den Status
-        const { data: seatData, error: seatError } = await supabase
-        .from('seat')
-        .select('seat_id, status')
-        .eq('seat_id', seat_id)
-        .eq('status', 0)
-        .single();
+        // Versuche den Sitzplatz zu aktualisieren, wenn er verfügbar ist (status = 0)
+        const { data, error } = await supabase
+            .from('seat')
+            .update({
+                status: 1,            // Status auf reserviert setzen
+                reserved_by: session_id,  // Session-ID als Reservierer
+                reserved_at: reservedAt  // Zeitpunkt der Reservierung
+            })
+            .eq('seat_id', seat_id)      // Sitzplatz ID
+            .eq('status', 0)             // Nur aktualisieren, wenn der Status 0 (verfügbar) ist
+            .select();                  // Daten nach dem Update zurückgeben
 
-        if (seatError || !seatData) {
-        return res.status(409).json({ message: 'Sitzplatz bereits reserviert.' });
+        // Wenn der Sitzplatz nicht gefunden oder der Update nicht durchgeführt wurde
+        if (error || data.length === 0) {
+            return res.status(409).json({ message: 'Sitzplatz bereits reserviert oder nicht mehr verfügbar.' });
         }
 
-        // Führe das Update nur aus, wenn der Platz verfügbar ist
-        const { error: updateError } = await supabase
-        .from('seat')
-        .update({ status: 1, reserved_by: session_id, reserved_at: reservedAt })
-        .eq('seat_id', seat_id);
-
-        if (updateError) {
-        return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error: updateError.message });
-        }
-
+        // Erfolgreiche Reservierung
         return res.json({ message: 'Sitzplatz erfolgreich reserviert' });
 
     } catch (error) {
+        console.error("Fehler beim Reservieren:", error);
         return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error: error.message });
     }
 });
+
 
 // API-Endpunkt zum Freigeben eines Sitzplatzes
 routerSeatReservations.post('/release', async (req, res) => {

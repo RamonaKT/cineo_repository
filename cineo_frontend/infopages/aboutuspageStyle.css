@@ -8,6 +8,8 @@
     border-radius: 10px; /* Abgerundete Ecken */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Tieferer Schatten */
     text-align: left;
+    background-color: transparent;
+    border: 2px solid #6f00b0;
 }
 
 /* Titel */

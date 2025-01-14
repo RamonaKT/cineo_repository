@@ -2,10 +2,20 @@ const showId = new URLSearchParams(window.location.search).get('show_id');
 const movieId = new URLSearchParams(window.location.search).get('movie_id');
 
 // Session-ID als Benutzer-ID verwenden
+// Funktion zur Generierung einer UUID
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
+
+// Überprüfen und Erstellen einer Benutzer-ID
 let userId = sessionStorage.getItem('session_id');
 if (!userId) {
-  userId = `session-${crypto.randomUUID()}`;
-  sessionStorage.setItem('session_id', userId);
+    userId = `session-${generateUUID()}`; // Verwendung der benutzerdefinierten UUID-Funktion
+    sessionStorage.setItem('session_id', userId);
 }
 
 // Farben für Sitzplatzkategorien

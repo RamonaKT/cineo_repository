@@ -123,3 +123,14 @@
 .seat:hover:not(.unavailable) {
     background-color: pink; /* Leicht gelbe Hervorhebung bei Hover */
 }
+
+#tooltip {
+    position: absolute;
+    display: none;
+    background-color: #220537;
+    color: slateblue;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+}

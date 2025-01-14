@@ -89,7 +89,7 @@ function renderShowtimes(showtimes) {
         button.addEventListener("click", (event) => {
             const showId = event.target.getAttribute("data-show-id");
             const movieId = new URLSearchParams(window.location.search).get("movie_id");
-            window.location.href = `/mainpages/ticketsStructure.html?show_id=${showId}&movie_id=${movieId}`;
+            window.location.href = `/mainpages/seatreservationpageStructure.html?show_id=${showId}&movie_id=${movieId}`;
         });
     });
 }

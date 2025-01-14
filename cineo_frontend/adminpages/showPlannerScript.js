@@ -446,7 +446,7 @@ async function createSeats(payloadData) {
 
         if (!response.ok) {
             const errorResult = await response.json();
-            return { success: false, message: `Fehler beim Erstellen der Sitzplätze: ${errorResult.message}` };
+            return { success: false, message: `` };
         }
 
         const result = await response.json();

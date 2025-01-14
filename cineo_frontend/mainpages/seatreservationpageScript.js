@@ -108,7 +108,9 @@ function groupSeatsByRow(seats) {
     console.log("Gruppierte Reihen:", rows);
 
     // Umwandeln des Objekts in ein Array von Reihen, sortiert nach `row_id`
-    return Object.keys(rows).sort((a, b) => a - b).map(rowId => rows[rowId]);
+    return Object.keys(rows)
+        .sort((a, b) => a - b) // Reihen sortieren
+        .map(rowId => rows[rowId].sort((a, b) => a.seat_number - b.seat_number)); // Sitzplätze in jeder Reihe sortieren
 }
 
 // Funktion zur Bestimmung der Sitzkategorie und Rückgabe der entsprechenden CSS-Klasse
@@ -277,7 +279,7 @@ function handleSeatHover(seatElement, seat) {
     seatElement.addEventListener('mouseover', () => {
         // Setze einen Timer, der nach 3 Sekunden die Details anzeigt
         timeoutId = setTimeout(() => {
-            const rowIdStr = String(seat.row_id).slice(-3);
+            const rowIdStr = parseInt(String(seat.row_id).slice(-3), 10);
             const seatNumber = seat.seat_number;    // Die Zimmernummer (Achtung: Dies muss im seat-Objekt vorhanden sein)
 
             // Tooltip-Inhalt aktualisieren
@@ -286,7 +288,7 @@ function handleSeatHover(seatElement, seat) {
 
             tooltip.style.left = `${seatElement.getBoundingClientRect().left + window.scrollX}px`;
             tooltip.style.top = `${seatElement.getBoundingClientRect().top + seatElement.offsetHeight + 5 + window.scrollY}px`;
-        }, 3000);
+        }, 1500);
     });
 
     // Wenn der Benutzer den Hover vor den 3 Sekunden verlässt, brechen wir den Timer ab

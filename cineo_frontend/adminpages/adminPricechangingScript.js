@@ -34,18 +34,27 @@ async function fetchPreiseUndRabatte() {
     }
 }
 
-// Grundpreise rendern
+// Grundpreise rendern (mit Sortierung)
 function renderGrundpreise() {
     const liste = document.getElementById('preisListe');
     liste.innerHTML = '';
 
-    for (let [kategorie, preis] of Object.entries(grundpreise)) {
+    const reihenfolge = ["Parkett", "VIP", "Loge"];
+
+    // Sortiere die Preise basierend auf der gewünschten Reihenfolge
+    const sortiertePreise = Object.entries(grundpreise).sort((a, b) => {
+        return reihenfolge.indexOf(a[0]) - reihenfolge.indexOf(b[0]);
+    });
+
+    // Erstelle die Listenelemente in der richtigen Reihenfolge
+    sortiertePreise.forEach(([kategorie, preis]) => {
         const li = document.createElement('li');
         li.innerHTML = `<div>${kategorie}: <strong>${preis.toFixed(2)} €</strong></div> 
         <button onclick="editGrundpreis('${kategorie}', ${preis})">\u00c4ndern</button>`;
         liste.appendChild(li);
-    }
+    });
 }
+
 
 // Rabatte rendern
 function renderRabatte() {

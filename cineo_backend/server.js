@@ -10,10 +10,29 @@ const { createClient } = require('@supabase/supabase-js');
 // Für TMDB Verbindung
 const axios = require('axios');
 
+// ** Router Import**
+const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
+const routerCreateShowSeats = require ('./src/controller/createshowseatsController');
+const routerSeatReservations = require ('./src/controller/seatReservationsController');
 
-app.use(cors());
+app.use(cors({
+    origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
+}));
 
 app.use(express.json());
+
+// ** Router verwenden**
+//app.use(showLayoutController); 
+app.use('/api/saveLayout', routerLayout);             // Registriere den Router in der App
+app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);        // Registriere den Router in der App
+
+app.use('/api/seatReservations', routerSeatReservations)
+
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Detaillierte Fehlerausgabe
+    res.status(500).send('Etwas ist schief gelaufen!');
+});
+
 
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -261,18 +280,20 @@ app.post('/api/vorstellungen', async (req, res) => {
                     room_id,
                     movie_duration
                 }
-            ]);
+            ])
+            .select('show_id')  
+            .single();
 
         if (error) {
             return res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error: error.message });
         }
-
         res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt', data });
     } catch (error) {
         console.error('Fehler beim Erstellen der Vorstellung:', error);
         res.status(500).json({ message: 'Serverfehler', error: error.message });
     }
 });
+
 
 app.get('/api/alleVorstellungen', async (req, res) => {
     try {

@@ -1,0 +1,124 @@
+#legend {
+    margin-bottom: 10px;
+}
+
+.legend-item{
+    display: inline-block;
+    border: 1vw solid black;
+}
+
+.content-class{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Passt die Breite der Untercontainer an */
+    gap: 10px; /* Optional: Abstand zwischen den Untercontainern */
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+}
+
+.leinwand {
+    height: 5vh;
+    width: 50vw;
+    background-color: #b089f2;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    font-size: 18px;
+    color: white;
+    margin-top: 15px;
+    border: 0.5vw solid black;
+    display: flex;
+}
+
+/* Stil für jeden Sitzplatz */
+.seat {
+    width: 40px;  /* Breite des Sitzplatzes */
+    height: 40px; /* Höhe des Sitzplatzes */
+    margin: 5px;  /* Abstand zwischen den Sitzplätzen */
+    display: inline-block;
+    text-align: center; /* Text (z.B. Sitznummer) wird zentriert */
+    line-height: 40px; /* Text vertikal zentrieren */
+    cursor: pointer;  /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
+    border: 0.5vw solid black; /* Rand um den Sitzplatz */
+    border-radius: 5px; /* Abgerundete Ecken */
+    transition: background-color 0.3s ease; /* Sanfter Übergang der Hintergrundfarbe */
+    z-index: 20;
+    position: relative;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.seat.unavailable {
+    cursor: not-allowed;
+    background-color: gray;
+}
+
+/* Stil für bereits reservierte Sitzplätze */
+.unavailable {
+    cursor: not-allowed; /* Cursor zeigt an, dass der Platz nicht verfügbar ist */
+    background-color: gray !important; /* Graue Farbe für reservierte Plätze */
+}
+
+/* Container für Sitzplätze */
+#seats-container {
+    display: flex;
+    flex-wrap: wrap; /* Sitzplätze werden umgebrochen */
+    justify-content: center; /* Zentriert die Sitzplätze im Container */
+    max-width: 1000px;
+    margin: 20px auto;
+    margin-top: 10px;
+    gap: 10px; /* Abstand zwischen den Sitzplätzen */
+    flex-direction: column;
+}
+
+/* Jede Reihe von Sitzplätzen */
+.row {
+    display: flex;
+    gap: 5px; /* Abstand zwischen den Sitzplätzen in der Reihe */
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+/* Stil für ausgewählte Sitzplätze */
+.selected {
+    background-color: purple !important; /* Farbe für ausgewählte Plätze */
+}
+
+.seat.selected{
+    background-color: purple!important;
+}
+
+/* Farben für Sitzplatzkategorien */
+.seat[data-category="0"] {
+    background-color: lightgreen; /* Parkett */
+}
+
+.seat[data-category="1"] {
+    background-color: gold; /* VIP */
+}
+
+.seat[data-category="2"] {
+    background-color: lightblue; /* Loge */
+}
+
+/* Stil für den Bestätigungsbutton */
+#confirm-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #5afff5 !important;
+    color: black;
+    border: 1vw solid #5afff5;
+    cursor: pointer;
+
+    border: 0.5vw solid black;
+}
+
+/* Hover-Effekt für verfügbare Sitzplätze */
+.seat:hover:not(.unavailable) {
+    background-color: pink; /* Leicht gelbe Hervorhebung bei Hover */
+}

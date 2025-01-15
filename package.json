@@ -7,8 +7,8 @@
     "start": "node cineo_backend/server.js",
     "dev": "nodemon server.js",
     "test": "jest --coverage",
-    "test:frontend": "jest --testEnvironment=jsdom",
-    "test:backend": "jest --testEnvironment=node"
+    "test:frontend": "jest --testEnvironment=jsdom --testMatch='**/cineo_tests/frontend**/*.test.js'",
+    "test:backend": "jest --testEnvironment=node --testMatch='**/cineo_tests/backend**/*.test.js'"
   },
   "jest": {
     "collectCoverage": true,
@@ -19,7 +19,8 @@
     ],
     "testEnvironment": "node",
     "testMatch": [
-      "**/cineo_tests/**/*.test.js"
+      "**/cineo_tests/backend**/*.test.js",
+      "**/cineo_test/frontend**/*.test.js"
     ],
     "verbose": true
   },

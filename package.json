@@ -24,8 +24,8 @@
     ],
     "verbose": true,
     "moduleNameMapper": {
-    "^@supabase/supabase-js$": "<rootDir>/cineo_tests/__mocks__/supabase.js"
-  }
+      "^@supabase/supabase-js$": "<rootDir>/cineo_tests/__mocks__/supabase.js"
+    }
   },
   "keywords": [],
   "author": "",
@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "msw": "^2.7.0",
     "nock": "^13.5.6",
     "nodemon": "^2.0.22",
     "supertest": "^7.0.0"

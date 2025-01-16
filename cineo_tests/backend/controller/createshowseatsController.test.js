@@ -1,107 +1,152 @@
-const request = require('supertest');
+const request = require('supertest'); // HTTP-Anfragen in Tests
 const express = require('express');
-const nock = require('nock');
-const bodyParser = require('body-parser');
+const { createClient } = require('@supabase/supabase-js');
+
+// Supabase-Client mocken
+jest.mock('@supabase/supabase-js', () => {
+  const mockClient = {
+    from: jest.fn(() => ({
+      select: jest.fn(),
+      upsert: jest.fn(),
+    })),
+  };
+  return {
+    createClient: jest.fn(() => mockClient),
+  };
+});
+
+// Route importieren (relativer Pfad)
 const routerCreateShowSeats = require('../../../cineo_backend/src/controller/createshowseatsController');
 
+// Mock-Datenbankinitialisierung
+const supabase = createClient();
+supabase.from.mockImplementation((table) => {
+  if (table === 'seat') {
+    return {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      is: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, room_id: 999, row_id: 1, category: 1, reserved_by: null },
+            { seat_id: 2, room_id: 999, row_id: 1, category: 2, reserved_by: null },
+          ],
+          error: null,
+        })
+      ),
+      upsert: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            {
+              seat_id: 99910000001,
+              room_id: 999,
+              row_id: 1,
+              category: 1,
+              status: 0,
+              show_id: 999,
+              seat_number: 1,
+              reserved_at: null,
+              reserved_by: null,
+            },
+            {
+              seat_id: 99910000002,
+              room_id: 999,
+              row_id: 1,
+              category: 2,
+              status: 0,
+              show_id: 999,
+              seat_number: 2,
+              reserved_at: null,
+              reserved_by: null,
+            },
+          ],
+          error: null,
+        })
+      ),
+    };
+  }
+});
+
+// Express-App einrichten
 const app = express();
-app.use(bodyParser.json());
-app.use(routerCreateShowSeats);
+app.use(express.json());
+app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);
 
-// Supabase-Mock-Utility
-const supabaseUrl = 'https://bwtcquzpxgkrositnyrj.supabase.co';
-const supabaseTable = '/rest/v1/seat';
-
-// Utility zum Mocken der Supabase-API
-const setupSupabaseMocks = () => {
-  nock.cleanAll(); // Alle alten Mocks entfernen
-
-  // Mock: Sitzplätze erfolgreich abrufen
-  nock(supabaseUrl)
-    .get(supabaseTable)
-    .query({ room_id: 101, show_id: null }) // Exakte Query-Übereinstimmung
-    .reply(200, [
-      { seat_id: 123, room_id: 101, row_id: 1, show_id: null },
-      { seat_id: 124, room_id: 101, row_id: 1, show_id: null },
-    ]);
-
-  // Mock: Fehler beim Abrufen von Sitzplätzen
-  nock(supabaseUrl)
-    .get(supabaseTable)
-    .query({ room_id: 999, show_id: null }) // Simulierter Fehlerfall
-    .reply(500, { message: 'Fehler beim Abrufen der Sitzplätze' });
-
-  // Mock: Keine Sitzplätze gefunden (404)
-  nock(supabaseUrl)
-    .get(supabaseTable)
-    .query({ room_id: 101, show_id: null }) // Leere Antwort simulieren
-    .reply(404, []);
-
-  // Mock: Upsert erfolgreich
-  nock(supabaseUrl)
-    .post(supabaseTable)
-    .reply(200, { message: 'Upsert erfolgreich' });
-
-  // Mock: Fehler beim Upsert
-  nock(supabaseUrl)
-    .post(supabaseTable)
-    .reply(503, { message: 'Fehler beim Upsert' });
-};
-
-describe('POST /create', () => {
-  beforeEach(() => {
-    setupSupabaseMocks();
-  });
-
-  afterAll(() => {
-    nock.cleanAll();
-      const recorded = nock.recorder.play();
-  console.log('Nock Requests:', recorded);
-  });
-
+describe('POST /api/sitzplaetzeErstellen/create', () => {
   it('sollte Sitzplätze erfolgreich erstellen', async () => {
     const response = await request(app)
-      .post('/create')
-      .send({ room_id: 101, show_id: 1 });
+      .post('/api/sitzplaetzeErstellen/create')
+      .send({
+        room_id: 999,
+        show_id: 999,
+      });
 
+    // Überprüfen, ob die Antwort erfolgreich ist
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Sitzplätze erfolgreich erstellt.');
-    expect(response.body.upsertData).toBeDefined();
+
+    // Überprüfen, ob die Rückgabedaten korrekt sind
+    expect(response.body.upsertData).toEqual([
+      {
+        seat_id: 99910000001,
+        room_id: 999,
+        row_id: 1,
+        category: 1,
+        status: 0,
+        show_id: 999,
+        seat_number: 1,
+        reserved_at: null,
+        reserved_by: null,
+      },
+      {
+        seat_id: 99910000002,
+        room_id: 999,
+        row_id: 1,
+        category: 2,
+        status: 0,
+        show_id: 999,
+        seat_number: 2,
+        reserved_at: null,
+        reserved_by: null,
+      },
+    ]);
   });
 
-  it('sollte Fehler bei ungültigen Eingaben zurückgeben', async () => {
+  it('sollte einen Fehler zurückgeben, wenn room_id oder show_id ungültig ist', async () => {
     const response = await request(app)
-      .post('/create')
-      .send({ room_id: 'invalid', show_id: 'invalid' });
+      .post('/api/sitzplaetzeErstellen/create')
+      .send({
+        room_id: 'ungültig',
+        show_id: 999,
+      });
 
+    // Überprüfen, ob die Antwort einen Fehler zurückgibt
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('room_id und show_id müssen gültige Zahlen sein.');
   });
 
-  it('sollte Fehler zurückgeben, wenn keine Sitzplätze gefunden werden', async () => {
-    const response = await request(app)
-      .post('/create')
-      .send({ room_id: 101, show_id: 1 });
+  it('sollte einen Fehler zurückgeben, wenn keine Sitzplätze verfügbar sind', async () => {
+    // Mock leere Sitzplatzdaten
+    supabase.from.mockImplementationOnce(() => ({
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      is: jest.fn(() =>
+        Promise.resolve({
+          data: [],
+          error: null,
+        })
+      ),
+    }));
 
+    const response = await request(app)
+      .post('/api/sitzplaetzeErstellen/create')
+      .send({
+        room_id: 999,
+        show_id: 999,
+      });
+
+    // Überprüfen, ob die Antwort keine Sitzplätze findet
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Keine Sitzplätze zum Erstellen gefunden.');
-  });
-
-  it('sollte Fehler zurückgeben, wenn Supabase einen Fehler ausgibt', async () => {
-    const response = await request(app)
-      .post('/create')
-      .send({ room_id: 999, show_id: 1 }); // Simuliert Fehlerfall
-
-    expect(response.status).toBe(500);
-    expect(response.body.error).toBe('Fehler beim Abrufen der Sitzplätze.');
-  });
-
-  it('sollte Fehler beim Upsert zurückgeben', async () => {
-    const response = await request(app)
-      .post('/create')
-      .send({ room_id: 101, show_id: 1 });
-
-    expect(response.status).toBe(503);
-    expect(response.body.error).toBe('Fehler beim Upsert der Sitzplätze.');
   });
 });

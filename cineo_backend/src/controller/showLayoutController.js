@@ -25,7 +25,7 @@ async function saveLayout(layoutData) {
 
         // Logge die Antwort von Supabase (Raum)
         if (roomError) {
-            console.error("Fehler beim Speichern des Raums:", roomError);
+           
             throw new Error(roomError.message);
         } else {
 
@@ -47,7 +47,7 @@ async function saveLayout(layoutData) {
 
             // Logge die Antwort von Supabase (Reihe)
             if (rowError) {
-                console.error("Fehler beim Speichern der Reihe:", rowError);
+                
                 throw new Error(rowError.message);
             } else {
                 
@@ -76,7 +76,7 @@ async function saveLayout(layoutData) {
 
                 // Logge die Antwort von Supabase (Sitzplatz)
                 if (seatError) {
-                    console.error("Fehler beim Speichern eines Sitzplatzes:", seatError);
+                    
                     throw new Error(seatError.message);
                 } else {
                     
@@ -87,7 +87,7 @@ async function saveLayout(layoutData) {
         
         return { message: 'Layout erfolgreich gespeichert', status: 'success' };
     } catch (err) {
-        console.error("Fehler in saveLayout:", err.message, err.stack);
+        
         return { error: err.message, status: 'error' };  // Gib die Fehlernachricht zurück
     }
 }
@@ -99,17 +99,17 @@ routerLayout.post('/save', async (req, res) => {
 
     // Validierung der Eingaben
     if (!Number.isInteger(roomNumber) || roomNumber <= 0) {
-        console.error("Ungültige Raumnummer:", roomNumber);
+        
         return res.status(400).json({ error: 'Ungültige Raumnummer.' });
     }
 
     if (!Array.isArray(seatCounts) || seatCounts.length === 0) {
-        console.error("Ungültige Sitzanzahl:", seatCounts);
+        
         return res.status(400).json({ error: 'Ungültige Sitzanzahl.' });
     }
 
     if (!Array.isArray(seatsData) || seatsData.length !== seatCounts.length) {
-        console.error("Ungültige Sitzdaten:", seatsData);
+        
         return res.status(400).json({ error: 'Ungültige Sitzdaten.' });
     }
 
@@ -124,7 +124,7 @@ routerLayout.post('/save', async (req, res) => {
         // Rückgabe der erfolgreichen Antwort
         return res.status(200).json(result); 
     } catch (err) {
-        console.error("Fehler beim Speichern des Layouts:", err.message, err.stack); // Detaillierte Fehlerausgabe
+        
         return res.status(500).json({ error: err.message });
     }
 });

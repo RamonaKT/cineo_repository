@@ -31,7 +31,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
             .is('show_id', null);
 
         if (selectError) {
-            console.error('Fehler beim Abrufen der Sitzplätze:', selectError);
+            
             return res.status(500).json({ error: 'Fehler beim Abrufen der Sitzplätze.', details: selectError.message });
         }
 
@@ -65,7 +65,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
             .upsert(newSeats, { onConflict: ['seat_id'] });
 
         if (upsertError) {
-            console.error('Fehler beim Upsert der Sitzplätze:', upsertError);
+            
             return res.status(503).json({ error: 'Fehler beim Upsert der Sitzplätze.', details: upsertError.message });
         }
 
@@ -75,7 +75,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Fehler beim Erstellen der Sitzplätze:', error);
+        
         res.status(500).json({ error: 'Fehler beim Erstellen oder Updaten der Sitzplätze.', details: error.message });
     }
 });

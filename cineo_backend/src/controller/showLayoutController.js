@@ -9,47 +9,6 @@ app.use(bodyParser.json());
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-// Beispiel: Async-Funktion deklarieren
-async function getRoomData() {
-    const { data: roomData, error: roomCheckError } = await supabase.from('room').select('*');
-    if (roomCheckError) {
-        throw new Error(roomCheckError.message);
-    }
-    return roomData;
-}
-
-// Aufruf der Funktion
-getRoomData().then(roomData => {
-    
-}).catch(error => {
-    console.error(error);
-});
-
-async function fetchRoomAndSeatsData() {
-    try {
-        // Abrufen der Reihen-Daten
-        const { data: rowData, error: rowCheckError } = await supabase.from('rows').select('*');
-        if (rowCheckError) {
-            console.error('Fehler beim Abrufen der Reihen:', rowCheckError);
-        } else {
-            
-        }
-
-        // Abrufen der Sitzplätze-Daten
-        const { data: seatData, error: seatCheckError } = await supabase.from('seat').select('*');
-        if (seatCheckError) {
-            console.error('Fehler beim Abrufen der Sitzplätze:', seatCheckError);
-        } else {
-            
-        }
-    } catch (error) {
-        console.error('Fehler beim Abrufen von Reihen und Sitzplätzen:', error);
-    }
-}
-
-// Aufruf der Async-Funktion
-fetchRoomAndSeatsData();
-
 // Funktion zum Speichern des Layouts in Supabase
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts, seatsData } = layoutData;
@@ -173,8 +132,6 @@ routerLayout.post('/save', async (req, res) => {
 
 module.exports = {
     saveLayout,
-    fetchRoomAndSeatsData,
-    getRoomData,
     routerLayout,
 };
 

@@ -197,4 +197,4 @@ describe('POST /api/saveLayout/save', () => {
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Fehler beim Speichern des Layouts');
     });
-  });
+});

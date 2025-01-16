@@ -18,7 +18,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
     show_id = parseInt(show_id, 10);
 
     if (isNaN(room_id) || isNaN(show_id)) {
-        console.log(`Ungültige Eingaben - room_id: ${room_id}, show_id: ${show_id}`);
+        
         return res.status(400).json({ error: 'room_id und show_id müssen gültige Zahlen sein.' });
     }
 
@@ -36,7 +36,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
         }
 
         if (!existingSeats || existingSeats.length === 0) {
-            console.log('Keine Sitzplätze zum Erstellen gefunden.');
+            
             return res.status(404).json({ message: 'Keine Sitzplätze zum Erstellen gefunden.' });
         }
 
@@ -58,8 +58,6 @@ routerCreateShowSeats.post('/create', async (req, res) => {
                 reserved_by: seat.reserved_by,
             };
         });
-
-        console.log('Zu erstellende Sitzplätze:', newSeats);
 
         // Sitzplätze einfügen oder aktualisieren
         const { data: upsertData, error: upsertError } = await supabase

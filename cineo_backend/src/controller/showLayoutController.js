@@ -20,7 +20,7 @@ async function getRoomData() {
 
 // Aufruf der Funktion
 getRoomData().then(roomData => {
-    console.log(roomData);
+    
 }).catch(error => {
     console.error(error);
 });
@@ -32,7 +32,7 @@ async function fetchRoomAndSeatsData() {
         if (rowCheckError) {
             console.error('Fehler beim Abrufen der Reihen:', rowCheckError);
         } else {
-            console.log("Aktuelle Reihen:", rowData);
+            
         }
 
         // Abrufen der Sitzplätze-Daten
@@ -40,7 +40,7 @@ async function fetchRoomAndSeatsData() {
         if (seatCheckError) {
             console.error('Fehler beim Abrufen der Sitzplätze:', seatCheckError);
         } else {
-            console.log("Aktuelle Sitzplätze:", seatData);
+            
         }
     } catch (error) {
         console.error('Fehler beim Abrufen von Reihen und Sitzplätzen:', error);
@@ -54,10 +54,8 @@ fetchRoomAndSeatsData();
 async function saveLayout(layoutData) {
     const { roomNumber, seatCounts, seatsData } = layoutData;
     const now = new Date().toISOString();
-    console.log("Route /api/saveLayout erreicht.");
 
     try {
-        console.log("Speichere Raum:", { roomNumber, seatCounts });
         const { data: roomData, error: roomError } = await supabase
             .from('rooms')
             .upsert([{
@@ -71,11 +69,11 @@ async function saveLayout(layoutData) {
             console.error("Fehler beim Speichern des Raums:", roomError);
             throw new Error(roomError.message);
         } else {
-            console.log("Antwort beim Speichern des Raums:", roomData); // Logge das Ergebnis
+
         }
 
         // Logge und speichere Reihen
-        console.log("Speichere Reihen:");
+        
         const rows = seatCounts.map((seat_count, index) => ({
             row_id: roomNumber * 1000 + (index + 1),
             created_at: now,
@@ -93,12 +91,12 @@ async function saveLayout(layoutData) {
                 console.error("Fehler beim Speichern der Reihe:", rowError);
                 throw new Error(rowError.message);
             } else {
-                console.log("Antwort beim Speichern der Reihe:", rowData); // Logge das Ergebnis
+                
             }
         }
 
         // Logge und speichere Sitzplätze
-        console.log("Speichere Sitzplätze:");
+        
         for (const [rowIndex, row] of seatsData.entries()) {
             for (const [seatIndex, seat] of row.entries()) {
                 const seatData = {
@@ -122,12 +120,12 @@ async function saveLayout(layoutData) {
                     console.error("Fehler beim Speichern eines Sitzplatzes:", seatError);
                     throw new Error(seatError.message);
                 } else {
-                    console.log("Antwort beim Speichern des Sitzplatzes:", seatDataResponse); // Logge das Ergebnis
+                    
                 }
             }
         }
 
-        console.log("Layout erfolgreich gespeichert!");
+        
         return { message: 'Layout erfolgreich gespeichert', status: 'success' };
     } catch (err) {
         console.error("Fehler in saveLayout:", err.message, err.stack);
@@ -137,7 +135,7 @@ async function saveLayout(layoutData) {
 
 // Endpunkt zum Speichern des Layouts
 routerLayout.post('/save', async (req, res) => {
-    console.log("Empfangene Daten:", req.body); // Logge die empfangenen Daten
+    
     const { roomNumber, seatCounts, seatsData } = req.body;
 
     // Validierung der Eingaben
@@ -158,7 +156,6 @@ routerLayout.post('/save', async (req, res) => {
 
     try {
         const result = await saveLayout({ roomNumber, seatCounts, seatsData });
-        console.log("Erfolgreiches Ergebnis:", result); // Logge das Ergebnis
 
         // Wenn das Ergebnis einen Fehler enthält, gebe ihn zurück
         if (result.error) {

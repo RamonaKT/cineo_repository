@@ -22,10 +22,7 @@
       "**/cineo_tests/backend/**/*.test.js",
       "**/cineo_test/frontend/**/*.test.js"
     ],
-    "verbose": true,
-    "moduleNameMapper": {
-      "^@supabase/supabase-js$": "<rootDir>/cineo_tests/__mocks__/supabase.js"
-    }
+    "verbose": true
   },
   "keywords": [],
   "author": "",

@@ -73,7 +73,7 @@ routerCreateShowSeats.post('/create', async (req, res) => {
 
         res.status(200).json({
             message: 'Sitzplätze erfolgreich erstellt.',
-            data,
+            upsertData,
         });
 
     } catch (error) {

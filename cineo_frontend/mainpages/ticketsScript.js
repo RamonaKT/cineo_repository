@@ -507,6 +507,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+
+    // Show- und Filmdaten abrufen und anzeigen
+    try {
+        // Abruf der Filmdetails
+        const movieResponse = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+        const movie = await movieResponse.json();
+
+        const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+        const showtimes = await showResponse.json();
+        const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
+
+        if (!selectedShow) {
+            alert("Vorstellung nicht gefunden.");
+            return;
+        }
+
+        // Titel und Show-Details anzeigen
+        document.getElementById("movie-title").textContent = movie.title;
+
+        const showDateTime = new Date(`${selectedShow.date}T${selectedShow.time}`);
+        const formatter = new Intl.DateTimeFormat('de-DE', {
+            dateStyle: 'long',
+            timeStyle: 'short'
+        });
+        document.getElementById("show-details").textContent = `Datum: ${formatter.format(showDateTime)}, Kinosaal: ${selectedShow.room_id}`;
+
+    } catch (error) {
+        console.error("Fehler beim Abrufen der Show-Daten:", error);
+        alert("Fehler beim Laden der Show-Daten. Bitte versuchen Sie es später erneut.");
+        return;
+    }
+
     // Sitzplatzdaten dekodieren
     const selectedSeats = JSON.parse(decodeURIComponent(seatsParam));
 
@@ -582,7 +614,7 @@ function calculateTotalPriceWithDiscounts(selectedSeats, ticketpreise, rabatte) 
 
 
 function renderTickets(selectedSeats, ticketpreise, rabatte) {
-    const ticketContainer = document.getElementById("ticket-options");
+    const ticketContainer = document.getElementById("selected-tickets");
     const totalPriceElement = document.getElementById("total-price");
 
     const categoryMapping = {
@@ -607,9 +639,10 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
         let ticketPrice = ticketInfo?.ticket_price || 0;
 
         // Element für den Ticketpreis
-        const ticketPriceElement = document.createElement("span");
+        const ticketPriceElement = document.createElement("div");
         ticketPriceElement.className = "ticket-price";
         ticketPriceElement.textContent = `Preis: ${ticketPrice.toFixed(2)}€`;
+
 
         // Rabatt auswählen (falls vorhanden)
         const discountContainer = document.createElement("div");
@@ -651,9 +684,11 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
         discountContainer.appendChild(discountSelect);
 
         // Ticket-Elemente zusammenfügen
+    const ticketInformation = document.createElement("div");
+    ticketInformation.className="ticket-info";
         ticketItem.innerHTML = `
             <div class="ticket-info">
-                Sitzplatz: ${seatId} - Kategorie: ${categoryName}
+                Sitzplatz: ${seatId} <br><br> Bereich: ${categoryName}
             </div>
         `;
         ticketItem.appendChild(ticketPriceElement);
@@ -668,93 +703,9 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
     totalPriceElement.textContent = `Gesamtpreis: ${totalPrice.toFixed(2)}€`;
 }
 
-
-
-/*
 document.getElementById("book-tickets-button").addEventListener("click", async () => {
     const ticketsToBook = [];
-    const ticketOptionsContainer = document.getElementById("ticket-options");
-
-    const ticketItems = ticketOptionsContainer.querySelectorAll(".selected-ticket-item");
-console.log("Gefundene Tickets:", ticketItems.length);
-
-
-    ticketItems.forEach(ticketItem => {
-        const ticketInfo = ticketItem.querySelector(".ticket-info");
-        console.log("Ticket-Element:", ticketItem.innerHTML);
-        if (!ticketInfo) {
-            console.error("Fehler: .ticket-info fehlt für ein Ticket.");
-            return;
-        }
-
-        const seatMatch = ticketInfo.textContent.match(/Sitzplatz: (\S+)/);
-        const categoryMatch = ticketInfo.textContent.match(/Kategorie: (\S+)/);
-
-        if (!seatMatch || !categoryMatch) {
-            console.error("Fehler: Sitzplatz oder Kategorie konnte nicht extrahiert werden.", ticketInfo.textContent);
-            return;
-        }
-
-        const seatId = seatMatch[1];
-        const category = categoryMatch[1];
-
-        const priceText = ticketItem.querySelector(".ticket-price")?.textContent;
-        if (!priceText) {
-            console.error("Fehler: .ticket-price fehlt für Sitzplatz", seatId);
-            return;
-        }
-
-        const priceMatch = priceText.match(/Preis: (\d+.\d+)/);
-        if (!priceMatch) {
-            console.error("Fehler: Preis konnte nicht extrahiert werden.", priceText);
-            return;
-        }
-
-        const originalPrice = parseFloat(priceMatch[1].replace(",", "."));
-
-        const discountSelect = ticketItem.querySelector("select");
-        const selectedDiscount = discountSelect?.value || null;
-
-        let discountedPrice = originalPrice;
-        if (selectedDiscount) {
-            const discountObj = rabatte.find(d => d.name === selectedDiscount);
-            if (discountObj) {
-                if (discountObj.type === "prozent") {
-                    discountedPrice *= (1 - discountObj.value / 100);
-                } else if (discountObj.type === "euro") {
-                    discountedPrice = Math.max(0, originalPrice - discountObj.value);
-                }
-            } else {
-                console.warn("Rabatt nicht gefunden:", selectedDiscount);
-            }
-        }
-
-        ticketsToBook.push({
-            seat_id: seatId,
-            category: category,
-            price: discountedPrice.toFixed(2),
-            discount_name: selectedDiscount || null,
-        });
-    });
-
-    if (ticketsToBook.length === 0) {
-        alert("Bitte wählen Sie mindestens ein Ticket aus.");
-        return;
-    }
-
-    try {
-        console.log("Weiterleitung mit Daten:", ticketsToBook);
-        window.location.href = `/mainpages/loginpageStructure.html?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(JSON.stringify(ticketsToBook))}`;
-    } catch (error) {
-        alert(error.message === "Kapazität überschritten"
-            ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."
-            : "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
-    }
-});
-*/
-document.getElementById("book-tickets-button").addEventListener("click", async () => {
-    const ticketsToBook = [];
-    const ticketOptionsContainer = document.getElementById("ticket-options");
+    const ticketOptionsContainer = document.getElementById("selected-tickets");
 
     const urlParams = new URLSearchParams(window.location.search);
     const showId = urlParams.get("show_id");
@@ -779,7 +730,7 @@ document.getElementById("book-tickets-button").addEventListener("click", async (
 
     ticketItems.forEach(ticketItem => {
         const seatId = ticketItem.querySelector(".ticket-info").textContent.match(/Sitzplatz: (\S+)/)[1];
-        const category = ticketItem.querySelector(".ticket-info").textContent.match(/Kategorie: (\S+)/)[1];
+        const category = ticketItem.querySelector(".ticket-info").textContent.match(/Bereich: (\S+)/)[1];
 
         const priceText = ticketItem.querySelector(".ticket-price").textContent;
         const priceMatch = priceText.match(/Preis: (\d+\.\d+)/);
@@ -829,5 +780,5 @@ document.getElementById("book-tickets-button").addEventListener("click", async (
             ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."
             : `Es gab einen Fehler bei der Buchung: ${error.message}. Bitte versuchen Sie es erneut.`);
     }
-    
+
 });

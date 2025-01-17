@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const tickets = JSON.parse(decodeURIComponent(ticketData));
 
         tickets.forEach(ticket => {
-            console.log(`Ticket-Typ: ${ticket.type}, Preis: ${ticket.price}, Rabatt: ${ticket.discount_name || 'Kein Rabatt'}`);
+            console.log(`Bereich: ${ticket.category}, Preis: ${ticket.price}, Rabatt: ${ticket.discount_name || 'Kein Rabatt'}`);
         });
     }
 
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
          tickets.forEach(ticket => {
             const listItem = document.createElement("li");
-            listItem.innerHTML = `<strong>Sitzplatz:</strong> ${ticket.seat || 'Nicht angegeben'} <strong>Tickettyp:</strong> ${ticket.type} <br>
+            listItem.innerHTML = `<strong>Sitzplatz:</strong> ${ticket.seat_id || 'Nicht angegeben'} <strong>Bereich:</strong> ${ticket.category}  <br>
             <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€`;
             ticketList.appendChild(listItem);
         });
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 for (const ticket of tickets) {
                     const payload = {
                         show_id: showId,
-                        ticket_type: ticket.type,
+                        ticket_type: ticket.category,
                         price: ticket.price,
                         discount_name: ticket.discount_name
                     };

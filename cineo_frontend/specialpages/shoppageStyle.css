@@ -10,9 +10,10 @@
 
 /* Einzelne Shop-Elemente */
 .shop-item {
-    background-color: #2a002e; /* Dunkles Lila */
+    background: linear-gradient(90deg, rgba(140, 82, 255, 0.6), rgba(92, 225, 230, 0.6));
     color: #ffffff; /* Weißer Text */
     border-radius: 10px; /* Abgerundete Ecken */
+    border: 2px solid white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Schatten für Tiefe */
     max-width: 300px; /* Maximale Breite der Boxen */
     text-align: center; /* Inhalt zentrieren */
@@ -28,15 +29,17 @@
 /* Produktbilder */
 .shop-item-img {
     width: 100%; /* Bild nimmt volle Breite ein */
-    height: auto;
+    height: 50%;
+    object-fit: cover;
     border-radius: 10px 10px 0 0; /* Abrunden nur oben */
+    border: 2px solid white;
 }
 
 /* Titel der Shop-Boxen */
 .shop-item-title {
     font-size: 1.5rem;
     margin: 15px 0;
-    color: #ff00ff; /* Magentafarbener Titel */
+    color: #3e006a; /* Magentafarbener Titel */
 }
 
 /* Beschreibung der Produkte */

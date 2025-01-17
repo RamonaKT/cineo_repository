@@ -34,31 +34,26 @@ routerSeatReservations.post('/reserve', async (req, res) => {
     const reservedAt = new Date().toISOString();
 
     try {
-        // Überprüfe zunächst den Status
-        const { data: seatData, error: seatError } = await supabase
-        .from('seat')
-        .select('seat_id, status')
-        .eq('seat_id', seat_id)
-        .eq('status', 0)
-        .single();
+        // Update des Sitzplatzes nur, wenn er verfügbar ist (status 0)
+        const { error, status } = await supabase
+            .from('seat')
+            .update({
+                status: 1,
+                reserved_by: session_id,
+                reserved_at: reservedAt
+            })
+            .eq('seat_id', seat_id)
+            .eq('status', 0);
 
-        if (seatError || !seatData) {
-        return res.status(409).json({ message: 'Sitzplatz bereits reserviert.' });
-        }
-
-        // Führe das Update nur aus, wenn der Platz verfügbar ist
-        const { error: updateError } = await supabase
-        .from('seat')
-        .update({ status: 1, reserved_by: session_id, reserved_at: reservedAt })
-        .eq('seat_id', seat_id);
-
-        if (updateError) {
-        return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error: updateError.message });
+        // Überprüfen, ob der Update-Vorgang fehlgeschlagen ist oder nichts aktualisiert wurde
+        if (error || status !== 204) {
+            return res.status(409).json({ message: 'Sitzplatz bereits reserviert oder nicht mehr verfügbar.' });
         }
 
         return res.json({ message: 'Sitzplatz erfolgreich reserviert' });
 
     } catch (error) {
+        console.error("Fehler beim Reservieren:", error);
         return res.status(500).json({ message: 'Fehler beim Reservieren des Sitzplatzes', error: error.message });
     }
 });
@@ -81,6 +76,38 @@ routerSeatReservations.post('/release', async (req, res) => {
         return res.json({ message: 'Sitzplatz erfolgreich freigegeben' });
     } catch (error) {
         return res.status(500).json({ message: 'Fehler beim Freigeben des Sitzplatzes', error: error.message });
+    }
+});
+
+// API-Endpunkt zum Freigeben eines Sitzplatzes
+routerSeatReservations.post('/check', async (req, res) => {
+    const { selectedSeats, sessionId } = req.body;
+
+    try {
+        // Überprüfen, ob `selectedSeats` ein Array ist und Elemente enthält
+        if (!Array.isArray(selectedSeats) || selectedSeats.length === 0) {
+            return res.status(400).json({ message: 'Ungültige Sitzplatzauswahl' });
+        }
+
+        // Hole alle Sitzplätze mit den angegebenen IDs
+        const { data, error } = await supabase
+            .from('seat')
+            .select('seat_id, reserved_by')
+            .in('seat_id', selectedSeats);
+
+        if (error) {
+            console.error("Fehler beim Abrufen der Sitzplätze:", error);
+            return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplatzdaten' });
+        }
+
+        // Prüfen, ob jeder Sitz von der gegebenen sessionId reserviert wurde
+        const allReservedBySession = data.every(seat => seat.reserved_by === sessionId);
+
+        return res.json({ allReserved: allReservedBySession });
+
+    } catch (error) {
+        console.error("Fehler beim Überprüfen der Sitzplatzreservierungen:", error);
+        return res.status(500).json({ message: 'Fehler beim Überprüfen der Sitzplatzreservierungen' });
     }
 });
 

@@ -2,21 +2,29 @@
 .specials-container {
     display: flex;
     flex-wrap: wrap;
+    white-space: nowrap;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
+    gap: 10px;
+    overflow-y: auto ;
+    padding: 10px;
     margin: 20px auto;
-    max-width: 1200px;
+    max-width: 90%;
+    max-height: 45vh;
+
 }
 
 /* Einzelne Angebote */
 .special-offer {
-    background-color: #40004e;
+    display: flex; /* Flexbox für horizontale Anordnung */
+    align-items: center;
+    background: linear-gradient(90deg, rgba(140, 82, 255, 0.6), rgba(92, 225, 230, 0.6));
     border-radius: 10px;
+    border: 1px solid white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    text-align: center;
     padding: 15px;
-    width: 300px;
+    width: 45%;
+    height: 40vh;
+    overflow: hidden;
     transition: transform 0.3s ease-in-out;
 }
 
@@ -26,25 +34,37 @@
 
 /* Bilder */
 .special-offer img {
-    width: 100%;
-    height: 180px;
+    width: 40%;
+    height: 90%;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-right: 15px;
 }
 
+.special-offer h3,
+.special-offer p,
+.special-date {
+    margin: 1%; /* Entfernt unnötige Standardabstände */
+}
+.special-text {
+    display: flex;
+    flex-direction: column; /* Elemente im Textcontainer vertikal anordnen */
+    justify-content: flex-start; /* Elemente oben ausrichten */
+    gap: 10px; /* Abstand zwischen Textbereichen */
+    width: 100%; /* Füllt den verfügbaren Platz aus */
+}
 /* Titel */
 .special-offer h3 {
     font-size: 1.5em;
     color: #ffa1ff;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 /* Beschreibung */
 .special-offer p {
     font-size: 1em;
     color: #ffffff;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     line-height: 1.4;
 }
 

@@ -5,11 +5,11 @@
     white-space: nowrap;
     justify-content: center;
     gap: 10px;
-    overflow-y: auto ;
     padding: 10px;
     margin: 20px auto;
     max-width: 90%;
     max-height: 45vh;
+    font-family: "Lato", sans-serif;
 
 }
 

@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-
+    
     // Show- und Filmdaten abrufen und anzeigen
     try {
         // Abruf der Filmdetails

@@ -2,10 +2,20 @@ const showId = new URLSearchParams(window.location.search).get('show_id');
 const movieId = new URLSearchParams(window.location.search).get('movie_id');
 
 // Session-ID als Benutzer-ID verwenden
+// Funktion zur Generierung einer UUID
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
+
+// Überprüfen und Erstellen einer Benutzer-ID
 let userId = sessionStorage.getItem('session_id');
 if (!userId) {
-  userId = `session-${crypto.randomUUID()}`;
-  sessionStorage.setItem('session_id', userId);
+    userId = `session-${generateUUID()}`; // Verwendung der benutzerdefinierten UUID-Funktion
+    sessionStorage.setItem('session_id', userId);
 }
 
 // Farben für Sitzplatzkategorien
@@ -80,6 +90,9 @@ function renderSeats(seats) {
             seatElement.dataset.seatId = seat.seat_id;
             seatElement.addEventListener('click', () => toggleSeatSelection(seatElement, seat));
 
+            // Füge Event Listener für Hover hinzu
+            handleSeatHover(seatElement, seat);
+
             rowElement.appendChild(seatElement);
         });
 
@@ -105,7 +118,9 @@ function groupSeatsByRow(seats) {
     console.log("Gruppierte Reihen:", rows);
 
     // Umwandeln des Objekts in ein Array von Reihen, sortiert nach `row_id`
-    return Object.keys(rows).sort((a, b) => a - b).map(rowId => rows[rowId]);
+    return Object.keys(rows)
+        .sort((a, b) => a - b) // Reihen sortieren
+        .map(rowId => rows[rowId].sort((a, b) => a.seat_number - b.seat_number)); // Sitzplätze in jeder Reihe sortieren
 }
 
 // Funktion zur Bestimmung der Sitzkategorie und Rückgabe der entsprechenden CSS-Klasse
@@ -129,38 +144,51 @@ async function toggleSeatSelection(seatElement, seat) {
     const seatId = seat.seat_id;
 
     if (selectedSeats.has(seatId)) {
-        // Abwählen
-        selectedSeats.delete(seatId);
-        seatElement.classList.remove('selected'); // Entfernt die ausgewählte Klasse
-        await releaseSeat(seatId);
+        // Abwählen des Sitzplatzes
+        const releaseSuccess = await releaseSeat(seatId);
+        if (releaseSuccess) {
+            selectedSeats.delete(seatId);
+            seatElement.classList.remove('selected');
+        } else {
+            alert('Fehler beim Freigeben des Sitzplatzes.');
+        }
     } else {
-        // Auswählen
-        selectedSeats.add(seatId);
-        seatElement.classList.add('selected');
-        await reserveSeat(seatId);
+        // Reservieren des Sitzplatzes
+        const reserveSuccess = await reserveSeat(seatId);
+        if (reserveSuccess) {
+            selectedSeats.add(seatId);
+            seatElement.classList.add('selected');
+        } else {
+            alert('Sitzplatz konnte nicht reserviert werden. Bitte laden Sie die Seite neu.');
+        }
     }
 }
+
 
 
 // Funktion zum Reservieren eines Sitzplatzes
 async function reserveSeat(seatId) {
     try {
-        const response = await fetch('/api/seatReservations/reserve', {
+        const responseD = await fetch('/api/seatReservations/reserve', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ seat_id: seatId, session_id: userId })
         });
 
-        const result = await response.json();
-        if (response.ok) {
+        const result = await responseD.json();
+        if (responseD.ok) {
             console.log(result.message);
-        } else if (response.status === 409) {
+            return true;
+        } else if (responseD.status === 409) {
             alert('Sitzplatz bereits reserviert, bitte Seite neu laden.');
+            return false;
         } else {
             console.error('Fehler beim Reservieren:', result.message);
+            return false;
         }
     } catch (error) {
         console.error('Netzwerkfehler beim Reservieren:', error);
+        return false;
     }
 }
 
@@ -176,16 +204,42 @@ async function releaseSeat(seatId) {
     const result = await response.json();
     if (response.ok) {
         console.log(result.message);
+        return response.ok;
     } else {
         console.error('Fehler beim Freigeben:', result.message);
+        return false;
     }
 }
 
 // Weiterleitung zur nächsten Seite mit ausgewählten Sitzplätzen
-document.getElementById('confirm-btn').addEventListener('click', () => {
-    const seatIds = Array.from(selectedSeats).join(',');
-    const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seat_id=${seatIds}`;
-    window.location.href = nextPage;
+document.getElementById('confirm-btn').addEventListener('click', async function () {
+    try {
+        const selectedSeatsIds = Array.from(selectedSeats);
+        console.log("Selected seats:", selectedSeats);
+        console.log("Session ID:", userId);
+        const response = await fetch('/api/seatReservations/check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({selectedSeats: selectedSeatsIds, sessionId: userId })
+        });
+
+        const result = await response.json();
+        const allReserved = result.allReserved === true;
+
+        if (allReserved) {
+            const seatIds = Array.from(selectedSeats).join(',');
+            const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seat_id=${seatIds}`;
+            window.location.href = nextPage;
+        } else {
+            alert("Fehler bei der Datenübertragung. Bitte Seite neuladen");
+            location.reload(true);
+        }
+    } catch (error) {
+        console.error('API-Aufruf fehlgeschlagen:', error);
+    }
+    
 });
 
 // Prüft und gibt abgelaufene Reservierungen frei
@@ -227,3 +281,30 @@ async function checkAndReleaseExpiredSeats() {
 
 // Funktion alle 1 Minute ausführen
 setInterval(checkAndReleaseExpiredSeats, 60 * 1000);
+
+// Diese Funktion wird aufgerufen, wenn ein Sitzplatz länger als 3 Sekunden gehovt wird
+function handleSeatHover(seatElement, seat) {
+    let timeoutId;
+
+    seatElement.addEventListener('mouseover', () => {
+        // Setze einen Timer, der nach 3 Sekunden die Details anzeigt
+        timeoutId = setTimeout(() => {
+            const rowIdStr = parseInt(String(seat.row_id).slice(-3), 10);
+            const seatNumber = seat.seat_number;    // Die Zimmernummer (Achtung: Dies muss im seat-Objekt vorhanden sein)
+
+            // Tooltip-Inhalt aktualisieren
+            tooltipContent.textContent = `Reihe: ${rowIdStr}, Platz: ${seatNumber}`;
+            tooltip.style.display = 'block';
+
+            tooltip.style.left = `${seatElement.getBoundingClientRect().left + window.scrollX}px`;
+            tooltip.style.top = `${seatElement.getBoundingClientRect().top + seatElement.offsetHeight + 5 + window.scrollY}px`;
+        }, 1500);
+    });
+
+    // Wenn der Benutzer den Hover vor den 3 Sekunden verlässt, brechen wir den Timer ab
+    seatElement.addEventListener('mouseout', () => {
+        clearTimeout(timeoutId);
+        tooltip.style.display = 'none';  // Verstecke das Tooltip
+    });
+}
+

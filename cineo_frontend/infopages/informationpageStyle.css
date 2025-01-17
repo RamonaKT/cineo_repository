@@ -12,16 +12,18 @@ body {
     max-width: 900px;
     margin: 40px auto;
     padding: 20px;
-    background-color: #2a002e; /* Dunkles Lila */
+    background-color: transparent; /* Dunkles Lila */
     color: #e0d7e5; /* Helles Grau-Lila für Texte */
     border-radius: 10px;
+    border: 2px solid #6f00b0;
+    font-family: "Lato", sans-serif;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Tieferer Schatten */
 }
 
 /* Überschrift */
 .information-container h2 {
     font-size: 2rem;
-    color: #ff00ff; /* Magenta-Highlight */
+    color: #ffffff; /* Magenta-Highlight */
     margin-bottom: 20px;
     text-align: center;
     font-weight: bold;
@@ -34,9 +36,9 @@ body {
 
 .info-section h3 {
     font-size: 1.5rem;
-    color: #ff00ff; /* Magenta für Unterüberschriften */
+    color: #ffffff; /* Magenta für Unterüberschriften */
     margin-bottom: 10px;
-    border-bottom: 2px solid #ff00ff;
+    border-bottom: 2px solid #ffffff;
     padding-bottom: 5px;
 }
 
@@ -57,7 +59,7 @@ body {
 }
 
 .info-section ul li strong {
-    color: #ff00ff; /* Magenta-Highlights für Hervorhebungen */
+    color: #ffffff; /* Magenta-Highlights für Hervorhebungen */
     font-size: 1.1rem;
 }
 
@@ -69,7 +71,7 @@ body {
 
 /* Link-Stil für die Kontaktseite */
 .link-contact-page {
-    color: #ff00ff; /* Magenta für Links */
+    color: #ffffff; /* Magenta für Links */
     font-weight: bold;
     text-decoration: none;
     transition: color 0.3s;

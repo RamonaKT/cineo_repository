@@ -181,12 +181,32 @@ async function releaseSeat(seatId) {
     }
 }
 
+/*
 // Weiterleitung zur nächsten Seite mit ausgewählten Sitzplätzen
 document.getElementById('confirm-btn').addEventListener('click', () => {
     const seatIds = Array.from(selectedSeats).join(',');
     const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seat_id=${seatIds}`;
     window.location.href = nextPage;
+});*/
+
+
+document.getElementById('confirm-btn').addEventListener('click', () => {
+    // Erstellen eines Arrays mit Sitzplatzinformationen (ID + Kategorie)
+    const selectedSeatsArray = Array.from(selectedSeats).map(seatId => {
+        const seatElement = document.querySelector(`div[data-seat-id='${seatId}']`);
+        return {
+            seatId,
+            category: seatElement?.dataset.category || null, // Kategorie des Sitzplatzes
+        };
+    });
+
+    // Kodieren der Daten in einem Query-Parameter
+    const encodedSeats = encodeURIComponent(JSON.stringify(selectedSeatsArray));
+
+    const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seats=${encodedSeats}`;
+    window.location.href = nextPage;
 });
+
 
 // Prüft und gibt abgelaufene Reservierungen frei
 async function checkAndReleaseExpiredSeats() {

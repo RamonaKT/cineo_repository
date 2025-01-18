@@ -6,6 +6,8 @@ const axios = require('axios');
 
 jest.setTimeout(60000); // Timeout auf 60 Sekunden erhöhen
 
+const routeServer = require ('../../cineo_backend/server');
+
 jest.mock('@supabase/supabase-js', () => {
     const mockClient = {
       from: jest.fn(() => ({
@@ -31,10 +33,10 @@ const mockSupabase = {
   })),
 };
 
+let app;
 beforeEach(() => {
   jest.clearAllMocks();
   jest.resetAllMocks();
-  server = app.listen(0);
   process.env.SUPABASE_URL = 'https://bwtcquzpxgkrositnyrj.supabase.co';
   process.env.SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o';
   // Mocken der process.exit-Methode, um den Test nicht zu unterbrechen
@@ -43,12 +45,9 @@ beforeEach(() => {
       throw new Error('Testabbruch wegen fehlender Supabase-URL oder Schlüssel');
     }
   });
-  const app = require('../../cineo_backend/server');
-});
-
-afterAll(() => {
-    // Hier stoppen wir den Express-Server
-    server.close();
+  app = express();
+  app.use(express.json());
+  app.use(routeServer);
 });
  
 

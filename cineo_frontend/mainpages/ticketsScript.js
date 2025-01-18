@@ -145,7 +145,7 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
 
     ticketContainer.innerHTML = ""; // Vorherige Inhalte löschen
 
-    selectedSeats.forEach(({ seatId, category }) => {
+    selectedSeats.forEach(({ seatId, category, rowId, seatNumber }) => {
         const ticketItem = document.createElement("div");
         ticketItem.className = "selected-ticket-item";
 
@@ -212,7 +212,8 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
         ticketInformation.className="ticket-info";
             ticketItem.innerHTML = ` 
             <div class="ticket-info">
-                Sitzplatz: ${seatId} <br><br> Bereich: ${categoryName}
+                 Platz: ${seatNumber} <br>
+            Reihe: ${rowId} <br> <br><br> Bereich: ${categoryName}
             </div>
         `;
        
@@ -347,9 +348,12 @@ document.getElementById("book-tickets-button").addEventListener("click", async (
 
     ticketItems.forEach(ticketItem => {
         // Extrahiere Sitzplatz-ID und Kategorie
-        const seatId = ticketItem.querySelector(".ticket-info").textContent.match(/Sitzplatz: (\S+)/)[1];
+       /* const seatId = ticketItem.querySelector(".ticket-info").textContent.match(/Platz: (\S+)/)[1];*/
+       const seatId = ticketItem.querySelector("select").dataset.seatId; 
+       const seatNumber = ticketItem.querySelector(".ticket-info").textContent.match(/Platz: (\S+)/)[1];
+        const rowId = ticketItem.querySelector(".ticket-info").textContent.match(/Reihe: (\S+)/)[1];
         const category = ticketItem.querySelector(".ticket-info").textContent.match(/Bereich: (\S+)/)[1];
-    
+        
         // Extrahiere den rabattierten Preis
         const priceText = ticketItem.querySelector(".ticket-price").textContent;
         const priceMatch = priceText.match(/Preis: (\d+\.\d+)/);
@@ -371,6 +375,8 @@ document.getElementById("book-tickets-button").addEventListener("click", async (
             category: category,
             price: discountedPrice.toFixed(2),  // Rabattierter Preis wird hier gespeichert
             discount_name: selectedDiscount || null,  // Rabattname oder null
+            row_id: rowId,    // Reihe hinzufügen
+            seat_number: seatNumber,  // Sitznummer hinzufügen
         });
     });
 

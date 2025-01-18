@@ -713,13 +713,14 @@ document.getElementById("guestButton").addEventListener("click", async () => {
             const showId = urlParams.get("show_id");
             const movieId = urlParams.get("movie_id");
             const ticketData = urlParams.get("ticket_data");
-    
+
             const redirectUrl = `kundeDashboardpageStructure.html${
                 showId && movieId && ticketData
-                    ? `?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(ticketData)}`
+                    ? `?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&ticket_data=${encodeURIComponent(ticketData)}`
                     : ""
             }`;
-
+            
+    
            /* showNotification(result.message, "success");
             setTimeout(() => {
                 window.location.href = "kundeDashboardpageStructure.html";

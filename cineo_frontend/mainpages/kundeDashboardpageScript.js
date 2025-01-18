@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const popcornInfo = document.getElementById('popcornInfo'); // Der Container für die Gratis-Popcorn-Info
 
     const email = localStorage.getItem('userEmail');
+    
 
     // URL-Parameter auslesen
     const urlParams = new URLSearchParams(window.location.search);
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const tickets = JSON.parse(decodeURIComponent(ticketData));
 
         tickets.forEach(ticket => {
-            console.log(`Bereich: ${ticket.category}, Preis: ${ticket.price}, Rabatt: ${ticket.discount_name || 'Kein Rabatt'}`);
+            console.log(`Sitzplatz: ${ticket.seat_number} Reihe: ${ticket.row_id} Bereich: ${ticket.category}, Preis: ${ticket.price}, Rabatt: ${ticket.discount_name || 'Kein Rabatt'}`);
         });
     }
 
@@ -129,16 +130,31 @@ document.addEventListener('DOMContentLoaded', async function () {
 
          tickets.forEach(ticket => {
             const listItem = document.createElement("li");
-            listItem.innerHTML = `<strong>Sitzplatz:</strong> ${ticket.seat_id || 'Nicht angegeben'} <strong>Bereich:</strong> ${ticket.category}  <br>
+            listItem.innerHTML = `<strong>Platznummer:</strong> ${ticket.seat_number} <strong>Reihe:</strong> ${ticket.row_id || 'Nicht angegeben'} <strong>Bereich:</strong> ${ticket.category}  <br>  <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} <!-- Rabatt anzeigen -->
             <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€`;
             ticketList.appendChild(listItem);
         });
         
 
        
-document.getElementById("bookTicketsButton").addEventListener("click", async () => {
+/*document.getElementById("bookTicketsButton").addEventListener("click", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("session_id");
+*/
+
+ // Tickets buchen, wenn IBAN vorhanden
+ document.getElementById("bookTicketsButton").addEventListener("click", async () => {
+
+ 
+
+    // IBAN überprüfen, bevor Tickets gebucht werden
+
+  
+
+    if (ibanText.textContent == "Keine IBAN hinterlegt" || ibanText.textContent == "Fügen Sie Ihre IBAN ein") {
+        alert('Bitte hinterlegen Sie zuerst eine IBAN, um Tickets zu buchen.');
+        return; // Stoppe die Buchung, wenn keine IBAN vorhanden ist
+    }
 
     // Alle Sitzplatz-IDs aus den Tickets sammeln
     const selectedSeats = tickets.map(ticket => ticket.seat_id);
@@ -212,9 +228,6 @@ document.getElementById("bookTicketsButton").addEventListener("click", async () 
         alert(error.message || "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
     }
 });
-
-
-
     }
 
     if (!email) {

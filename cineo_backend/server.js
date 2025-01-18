@@ -35,6 +35,21 @@ app.use((err, req, res, next) => {
 
 
 
+// Alle 1 Minute abgelaufene Sitzplatzreservierungen bereinigen
+setInterval(async () => {
+    try {
+        const response = await fetch('http://localhost:4000/api/seatReservations/expire', { 
+            method: 'POST' 
+        });
+        const result = await response.json();
+        console.log('Abgelaufene Reservierungen geprüft:', result.message);
+    } catch (error) {
+        console.error('Fehler beim Bereinigen abgelaufener Reservierungen:', error.message);
+    }
+}, 60 * 1000); // Alle 1 Minute prüfen
+
+
+
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 

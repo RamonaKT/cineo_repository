@@ -459,7 +459,24 @@ const guestButton =  document.getElementById("guestRedirectButton");
 const urlParams = new URLSearchParams(window.location.search);
 const showId = urlParams.get("show_id");
 const movieId = urlParams.get("movie_id");
-const ticketData = urlParams.get("ticket_data");
+const ticketDataParam = urlParams.get("ticket_data");
+
+if (ticketDataParam) {
+    try {
+        const ticketData = JSON.parse(decodeURIComponent(ticketDataParam));
+
+        ticketData.forEach(ticket => {
+            console.log(`Sitzplatz: ${ticket.seat_id}, Preis: ${ticket.price}€, Rabatt: ${ticket.discount_name}`);
+        });
+
+    } catch (error) {
+        console.error("Fehler beim Decodieren der Ticket-Daten:", error);
+    }
+}
+
+
+
+const userId = urlParams.get("session_id");
 
 // Umschalten zu Login
 showLoginLink.addEventListener("click", () => {
@@ -499,8 +516,28 @@ function toggleView(view) {
 }
 
 
+
+
+
+
+/*
+// Angenommen, Sie möchten die Preise für jedes Ticket aus ticketData anzeigen
+ticketData.forEach(ticket => {
+    // Ticket-ID und rabattierter Preis extrahieren
+    const seatId = ticket.seat_id;
+    const discountedPrice = ticket.price; // Dieser Preis sollte der rabattierte Preis sein
+
+    console.log(seatId, discountedPrice);
+}
+)*/
+
+
+
+
+
+
 // Spezielles Angebot anzeigen und den "Weiter als Gast"-Button aktivieren
-if (showId && movieId && ticketData) {
+if (showId && movieId && ticketDataParam) {
     const ticketInfoContainer = document.getElementById("ticketInfoContainer");
     const guestRedirectContainer = document.getElementById("guestRedirectContainer");
 
@@ -512,8 +549,8 @@ if (showId && movieId && ticketData) {
         </div>
     `;
 
-    
 
+  
     // "Weiter als Gast"-Button sichtbar machen
     guestRedirectContainer.style.display = "block";
 
@@ -620,7 +657,7 @@ document.getElementById("loginButton").addEventListener("click", async () => {
 
             const redirectUrl = `kundeDashboardpageStructure.html${
                 showId && movieId && ticketData
-                    ? `?show_id=${showId}&movie_id=${movieId}&ticket_data=${encodeURIComponent(ticketData)}`
+                    ? `?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&ticket_data=${encodeURIComponent(ticketData)}`
                     : ""
             }`;
             

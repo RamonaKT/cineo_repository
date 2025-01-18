@@ -103,6 +103,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const showId = urlParams.get("show_id");
     const movieId = urlParams.get("movie_id");
     const ticketData = urlParams.get("ticket_data");
+    const userId = urlParams.get("session_id");
+
 
     
     if (ticketData) {
@@ -123,11 +125,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         ticketList.style.display= "flex";
 
 
-        /* tickets.forEach(ticket => {
-             const listItem = document.createElement("li");
-             listItem.textContent = `Sitzplatz: ${ticket.seat}, Preis: ${ticket.price}€`;
-             ticketList.appendChild(listItem);
-         });*/
+     
 
          tickets.forEach(ticket => {
             const listItem = document.createElement("li");
@@ -137,53 +135,86 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
         
 
-        // Event-Listener für "Tickets buchen"
-        document.getElementById("bookTicketsButton").addEventListener("click", async () => {
+       
+document.getElementById("bookTicketsButton").addEventListener("click", async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("session_id");
 
-            try {
-                for (const ticket of tickets) {
-                    const payload = {
-                        show_id: showId,
-                        ticket_type: ticket.category,
-                        price: ticket.price,
-                        discount_name: ticket.discount_name
-                    };
+    // Alle Sitzplatz-IDs aus den Tickets sammeln
+    const selectedSeats = tickets.map(ticket => ticket.seat_id);
 
-                    const response = await fetch("http://localhost:4000/api/tickets", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload),
-                    });
-
-                    if (response.status !== 201) {
-                        const result = await response.json();
-                        throw new Error(result.error || "Unbekannter Fehler");
-                    }
-                }
-
-                alert("Tickets erfolgreich gebucht!");
-                // Weiterleitung zur Login-Seite mit Ticketdaten
-                window.location.href = `/mainpages/confirmationpageStructure.html`;
-
-            } catch (error) {
-                alert(error.message === "Kapazität überschritten"
-                    ? "Es tut uns leid, die maximale Anzahl an Tickets für diese Vorstellung wurde erreicht."
-                    : "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
-            }
+    try {
+        // Überprüfung der Sitzplatzreservierungen mit dem `/check`-Endpunkt
+        const checkResponse = await fetch("http://localhost:4000/api/seatReservations/check", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ selectedSeats, sessionId: userId }),
         });
-        /*  const result = await response.json();
 
-          if (response.ok) {
-              alert("Tickets erfolgreich gebucht!");
-              ticketOverviewContainer.style.display = "none"; // Versteckt die Tickets nach der Buchung
-          } else {
-              alert(`Fehler bei der Buchung: ${result.error}`);
-          }
-      } catch (err) {
-          console.error("Fehler beim Buchen der Tickets:", err);
-          alert("Ein unerwarteter Fehler ist aufgetreten.");
-      }
-  });*/
+        if (!checkResponse.ok) {
+            const result = await checkResponse.json();
+            throw new Error(`Fehler bei der Sitzplatzüberprüfung: ${result.message || 'Unbekannter Fehler'}`);
+        }
+
+        const checkResult = await checkResponse.json();
+
+        if (!checkResult.allReserved) {
+            alert("Usain Bolt im Ticketbuchen sind Sie jetzt nicht... Ein oder mehrere Sitzplätze sind nicht mehr reserviert. Bitte starten Sie den Buchungsprozess erneut.");
+            return; // Abbrechen, wenn Sitzplätze nicht mehr verfügbar sind
+        }
+
+        // Wenn die Prüfung erfolgreich war, fahre mit der Buchung fort
+        for (const ticket of tickets) {
+            const payload = {
+                show_id: showId,
+                ticket_type: ticket.category,
+                price: ticket.price,
+                discount_name: ticket.discount_name,
+            };
+
+            // Buchung des Tickets
+            const response = await fetch("http://localhost:4000/api/tickets", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.status !== 201) {
+                const result = await response.json();
+                throw new Error(`Fehler bei der Buchung des Tickets: ${result.error || 'Unbekannter Fehler'}`);
+            }
+
+            // Sitzplatzstatus auf "gebucht" setzen
+            const seatPayload = {
+                seat_id: ticket.seat_id,  // Sitzplatz ID aus dem Ticket
+                user_id: userId,  // Benutzer-ID
+            };
+
+            const seatResponse = await fetch("/api/seatReservations/book", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(seatPayload),
+            });
+
+            if (!seatResponse.ok) {
+                const result = await seatResponse.json();
+                throw new Error(`Fehler beim Aktualisieren des Sitzplatzes: ${result.message || 'Unbekannter Fehler'}`);
+            }
+        }
+
+        alert("Tickets erfolgreich gebucht!");
+        // Weiterleitung zur Bestätigungsseite
+        window.location.href = `/mainpages/confirmationpageStructure.html`;
+
+    } catch (error) {
+        // Detaillierte Fehlerbehandlung
+        console.error('Fehler bei der Ticketbuchung:', error);
+        alert(error.message || "Es gab einen Fehler bei der Buchung. Bitte versuchen Sie es erneut.");
+    }
+});
+
+
+
     }
 
     if (!email) {

@@ -12,8 +12,8 @@ const axios = require('axios');
 
 // ** Router Import**
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
-const routerCreateShowSeats = require ('./src/controller/createshowseatsController');
-const routerSeatReservations = require ('./src/controller/seatReservationsController');
+const routerCreateShowSeats = require('./src/controller/createshowseatsController');
+const routerSeatReservations = require('./src/controller/seatReservationsController');
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
@@ -38,8 +38,8 @@ app.use((err, req, res, next) => {
 // Alle 1 Minute abgelaufene Sitzplatzreservierungen bereinigen
 setInterval(async () => {
     try {
-        const response = await fetch('http://localhost:4000/api/seatReservations/expire', { 
-            method: 'POST' 
+        const response = await fetch('http://localhost:4000/api/seatReservations/expire', {
+            method: 'POST'
         });
         const result = await response.json();
         console.log('Abgelaufene Reservierungen geprüft:', result.message);
@@ -204,7 +204,7 @@ async function insertMoviesIntoDatabase(movies) {
 async function main() {
     try {
         const movies = await fetchMovies();
-       // console.log('Filme mit Details:', movies);
+        // console.log('Filme mit Details:', movies);
         await insertMoviesIntoDatabase(movies);
     } catch (error) {
         console.error('Fehler im Hauptablauf:', error);
@@ -296,7 +296,7 @@ app.post('/api/vorstellungen', async (req, res) => {
                     movie_duration
                 }
             ])
-            .select('show_id')  
+            .select('show_id')
             .single();
 
         if (error) {
@@ -386,7 +386,7 @@ app.get('/api/filme', async (req, res) => {
         .from('shows')
         .select('movie_id')
         .gte('date', now);
-      //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
+    //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
 
     if (showsError) {
         return res.status(500).json({ error: showsError.message });
@@ -497,7 +497,7 @@ function calculateEndTime(startTime, duration) {
 
 
 app.post('/api/tickets', async (req, res) => {
-    const { show_id, ticket_type, price, discount_name } = req.body;
+    const { show_id, ticket_type, price, discount_name, user_mail } = req.body;
     console.log(req.body);
 
     if (!show_id || !ticket_type || !price) {
@@ -570,7 +570,7 @@ app.post('/api/tickets', async (req, res) => {
         // Schritt 5: Füge das Ticket hinzu
         const { data: newTicket, error: insertError } = await supabase
             .from('tickets')
-            .insert([{ show_id, ticket_type, price, discount_name }])
+            .insert([{ show_id, ticket_type, price, discount_name, user_mail }])
             .single();
 
         if (insertError) {
@@ -585,6 +585,69 @@ app.post('/api/tickets', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/tickets', async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        console.error("Fehlende E-Mail in der Anfrage");
+        return res.status(400).json({ error: 'E-Mail wird benötigt' });
+    }
+
+    try {
+        // Schritt 1: Hole alle Tickets des Benutzers
+        const { data: ticketsData, error: ticketsError } = await supabase
+            .from('tickets')
+            .select('ticket_id, show_id, ticket_type, price, discount_name')
+            .eq('user_mail', email);
+
+        if (ticketsError) {
+            throw new Error('Fehler beim Abrufen der Tickets: ' + ticketsError.message);
+        }
+
+        if (!ticketsData || ticketsData.length === 0) {
+            console.log("Keine Tickets gefunden für:", email);
+            return res.status(200).json([]); // Leere Liste zurückgeben
+        }
+
+        // Debugging
+        console.log("Gefundene Tickets:", ticketsData);
+
+        // Schritt 2: Hole die Details zu den Shows
+        const showIds = ticketsData.map(ticket => ticket.show_id);
+
+        const { data: showsData, error: showsError } = await supabase
+            .from('shows')
+            .select('show_id, movie_title, date, time')
+            .in('show_id', showIds); // Nutze die Liste der `show_id`
+
+        if (showsError) {
+            throw new Error('Fehler beim Abrufen der Show-Daten: ' + showsError.message);
+        }
+
+        // Debugging
+        console.log("Gefundene Shows:", showsData);
+
+        // Schritt 3: Verknüpfe die Daten
+        const ticketsWithShowDetails = ticketsData.map(ticket => {
+            const showDetails = showsData.find(show => show.show_id === ticket.show_id);
+            return {
+                ...ticket,
+                movie_title: showDetails?.movie_title || 'Unbekannt',
+                date: showDetails?.date || 'Unbekannt',
+                time: showDetails?.time || 'Unbekannt'
+            };
+        });
+
+        // Debugging
+        console.log("Tickets mit Show-Details:", ticketsWithShowDetails);
+
+        res.status(200).json(ticketsWithShowDetails);
+    } catch (err) {
+        console.error("Serverfehler:", err.message);
+        res.status(500).json({ error: 'Fehler beim Abrufen der Tickets: ' + err.message });
     }
 });
 

@@ -460,6 +460,12 @@ const urlParams = new URLSearchParams(window.location.search);
 const showId = urlParams.get("show_id");
 const movieId = urlParams.get("movie_id");
 const ticketDataParam = urlParams.get("ticket_data");
+const guestSection = document.getElementById("guest-section");
+
+// Sichtbarkeit des Gast-Abschnitts basierend auf den URL-Parametern einstellen
+if (!showId || !movieId || !ticketDataParam) {
+    guestSection.style.display = 'none'; // Versteckt den gesamten Abschnitt
+}
 
 if (ticketDataParam) {
     try {
@@ -473,8 +479,6 @@ if (ticketDataParam) {
         console.error("Fehler beim Decodieren der Ticket-Daten:", error);
     }
 }
-
-
 
 const userId = urlParams.get("session_id");
 

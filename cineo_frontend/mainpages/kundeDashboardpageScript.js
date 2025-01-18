@@ -19,6 +19,56 @@ document.addEventListener('DOMContentLoaded', async function () {
     const userId = urlParams.get("session_id");
 
 
+        // Überprüfung, ob die URL-Parameter für die Ticketbuchung vorhanden sind
+const isFromTicketPage = showId && movieId && ticketData;
+
+if (!isFromTicketPage) {
+    // Benutzer ist direkt auf das Dashboard gekommen, zeige die bereits gebuchten Tickets an
+    const email = localStorage.getItem('userEmail');
+
+    if (!email) {
+        alert('Sie sind nicht eingeloggt. Bitte melden Sie sich an.');
+        window.location.href = '/mainpages/loginpageStructure.html';
+        return;
+    }
+
+    try {
+        // Anfrage an den Server senden, um die gebuchten Tickets abzurufen
+        const response = await fetch(`/api/tickets?email=${encodeURIComponent(email)}`);
+        const tickets = await response.json();
+        if (response.ok) {
+            const bookedTicketsContainer = document.getElementById('bookedTicketsContainer');
+            bookedTicketsContainer.style.display = 'block';
+        
+            if (tickets.length > 0) {
+                tickets.forEach(ticket => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>Film:</strong> ${ticket.movie_title} <br>
+                        <strong>Datum:</strong> ${ticket.date} <br>
+                        <strong>Uhrzeit:</strong> ${ticket.time} <br>
+                        <strong>Sitzplatz:</strong> ${ticket.seat_number} <br>
+                        <strong>Reihe:</strong> ${ticket.row_id || 'Nicht angegeben'} <br>
+                        <strong>Bereich:</strong> ${ticket.ticket_type} <br>
+                        <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€ <br>
+                        <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'}
+                    `;
+                    bookedTicketsContainer.appendChild(listItem);
+                });
+            } else {
+                const message = document.createElement('p');
+                message.textContent = 'Sie haben noch keine Tickets gebucht.';
+                bookedTicketsContainer.appendChild(message);
+            }
+        }
+        
+        
+    } catch (error) {
+        console.error('Netzwerkfehler beim Abrufen der gebuchten Tickets:', error);
+        alert('Netzwerkfehler beim Laden der gebuchten Tickets.');
+    }
+}
+
 
     if (ticketData) {
         const tickets = JSON.parse(decodeURIComponent(ticketData));
@@ -28,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+
     // Tickets anzeigen, wenn vorhanden
     if (showId && movieId && ticketData) {
         const ticketOverviewContainer = document.getElementById("ticketOverviewContainer");
@@ -36,8 +87,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         ticketOverviewContainer.style.display = "flex";
         ticketList.style.display = "flex";
-
-
 
 
         tickets.forEach(ticket => {
@@ -98,6 +147,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                         ticket_type: ticket.category,
                         price: ticket.price,
                         discount_name: ticket.discount_name,
+                        user_mail: localStorage.getItem("userRole") === "guest" 
+            ? "Gastnutzer"  // Falls der Benutzer ein Gast ist, speichere "Gastnutzer"
+            : localStorage.getItem("userEmail")  // Ansonsten speichere die E-Mail aus dem localStorage
                     };
 
                     // Buchung des Tickets

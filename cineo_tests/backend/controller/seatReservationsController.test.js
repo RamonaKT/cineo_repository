@@ -1,204 +1,227 @@
 const request = require('supertest');
-const express = require('express');  // Stelle sicher, dass express korrekt importiert wird
-const bodyParser = require('body-parser');
+const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
-const routerSeatReservations = require('../../../cineo_backend/src/controller/seatReservationsController'); // Stelle sicher, dass der Pfad korrekt ist
 
-jest.mock('@supabase/supabase-js', () => ({
-    createClient: jest.fn().mockReturnValue({
-        from: jest.fn().mockReturnThis(),
-        select: jest.fn(),
-        update: jest.fn(),
-    })
-}));
+// Supabase-Client mocken
+jest.mock('@supabase/supabase-js', () => {
+  const mockClient = {
+    from: jest.fn(() => ({
+      select: jest.fn(),
+      update: jest.fn(),
+      eq: jest.fn(),
+      in: jest.fn(),
+    })),
+  };
+  return {
+    createClient: jest.fn(() => mockClient),
+  };
+});
 
+// Route importieren (relativer Pfad)
+const routerSeatReservations = require('../../../cineo_backend/src/controller/seatReservationsController');
+
+// Mock-Datenbankinitialisierung
 const supabase = createClient();
 supabase.from.mockImplementation((table) => {
-    if (table === 'seat') {
-      return {
+  if (table === 'seat') {
+    return {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+          ],
+          error: null,
+        })
+        ),
+      update: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+          ],
+          error: null,
+        })
+        ),
+      in: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+          ],
+          error: null,
+        })
+      ),
+    };
+  }
+  return {};
+});
+
+let app;
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.resetAllMocks()
+  app = express();
+  app.use(express.json());
+  app.use('/api/seatReservations', routerSeatReservations);
+});
+
+// Tests
+describe('GET /api/seatReservations/seats', () => {
+  it('sollte Sitzplätze für eine gegebene show_id zurückgeben', async () => {
+    supabase.from.mockImplementationOnce(() => ({
         select: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
-        is: jest.fn(() =>
-          Promise.resolve({
+        eq: jest.fn(() =>
+            Promise.resolve({
             data: [
-              { seat_id: 1, room_id: 999, row_id: 1, category: 1, reserved_by: null },
-              { seat_id: 2, room_id: 999, row_id: 1, category: 2, reserved_by: null },
+                { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+                { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+                { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
             ],
             error: null,
-          })
+            })
         ),
-        upsert: jest.fn(() =>
-          Promise.resolve({
-            data: [
-              {
-                seat_id: 99910000001,
-                room_id: 999,
-                row_id: 1,
-                category: 1,
-                status: 0,
-                show_id: 999,
-                seat_number: 1,
-                reserved_at: null,
-                reserved_by: null,
-              },
-              {
-                seat_id: 99910000002,
-                room_id: 999,
-                row_id: 1,
-                category: 2,
-                status: 0,
-                show_id: 999,
-                seat_number: 2,
-                reserved_at: null,
-                reserved_by: null,
-              },
-            ],
-            error: null,
-          })
-        ),
-      };
-    }
+    }));
+    
+    const response = await request(app).get('/api/seatReservations/seats').query({ show_id: 999 });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+        { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+        { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+        { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+    ]);
   });
 
-describe('Seat Reservations Controller', () => {
-    let app;
-    let supabase;
+  it('sollte eine 404 zurückgeben, wenn keine Sitzplätze gefunden werden', async () => {
+    supabase.from.mockImplementationOnce(() => ({
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      is: jest.fn(() =>
+        Promise.resolve({
+          data: [],
+          error: null,
+        })
+      ),
+    }));
 
-    beforeEach(() => {
-        app = express();
-        app.use(bodyParser.json());
-        app.use('/api/seatReservations', routerSeatReservations);
+    const response = await request(app).get('/api/seatReservations/seats').query({ show_id: 99 });
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Keine Sitzplätze gefunden');
+  });
+});
 
-        // Mock Supabase-Client
-        supabase = createClient();
-    });
+describe('POST /api/seatReservations/reserve', () => {
+  it('sollte einen Sitzplatz erfolgreich reservieren', async () => {
+    supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
+            Promise.resolve({
+            status: 204,
+            error: null,
+            })
+        ),
+    }));
+    
+    const response = await request(app)
+      .post('/api/seatReservations/reserve')
+      .send({ seat_id: 3, session_id: 1234 });
 
-    describe('GET /api/seatReservations/seats', () => {
-        it('sollte Sitzplatzdaten für eine Show abrufen', async () => {
-            // Mock Supabase antwortet mit Sitzplatzdaten
-            supabase.from.mockImplementationOnce(() => ({
-                select: jest.fn().mockResolvedValue({
-                    data: [{ seat_id: 1, reserved_by: null }],
-                    error: null,
-                })
-            }));
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Sitzplatz erfolgreich reserviert');
+  });
 
-            const response = await request(app).get('/api/seatReservations/seats').query({ show_id: '123' });
-            expect(response.status).toBe(200);
-        });
+  it('sollte eine 409 zurückgeben, wenn der Sitzplatz bereits reserviert ist', async () => {
+    supabase.from.mockImplementationOnce(() => ({
+      update: jest.fn(() =>
+        Promise.resolve({
+          data: null,
+          error: { message: 'Sitzplatz bereits reserviert oder nicht mehr verfügbar.' },
+        })
+      ),
+    }));
 
-        it('sollte einen Fehler zurückgeben, wenn keine Sitzplätze gefunden wurden', async () => {
-            // Mock Supabase gibt keine Daten zurück
-            supabase.from.mockImplementationOnce(() => ({
-                select: jest.fn().mockResolvedValue({
-                    data: [],
-                    error: null,
-                })
-            }));
+    const response = await request(app)
+      .post('/api/seatReservations/reserve')
+      .send({ seat_id: 1, session_id: 1234 });
 
-            const response = await request(app).get('/api/seatReservations/seats').query({ show_id: '999' });
-            expect(response.status).toBe(404);
-        });
-    });
+    expect(response.status).toBe(409);
+    expect(response.body.message).toBe('Sitzplatz bereits reserviert oder nicht mehr verfügbar.');
+  });
+});
 
-    describe('POST /api/seatReservations/reserve', () => {
-        it('sollte einen Sitzplatz erfolgreich reservieren', async () => {
-            // Mock Supabase gibt eine erfolgreiche Antwort zurück
-            supabase.from.mockImplementationOnce(() => ({
-                update: jest.fn().mockResolvedValue({
-                    status: 204,
-                    error: null,
-                })
-            }));
+describe('POST /api/seatReservations/release', () => {
+  it('sollte einen Sitzplatz erfolgreich freigeben', async () => {
+    supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
+            Promise.resolve({
+            status: 204,
+            error: null,
+            })
+        ),
+    }));
+    
+    const response = await request(app)
+      .post('/api/seatReservations/release')
+      .send({ seat_id: 1, session_id: 1234 });
 
-            const requestData = { seat_id: 1, session_id: 123 };
-            const response = await request(app).post('/api/seatReservations/reserve').send(requestData);
-            expect(response.status).toBe(200);
-        });
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Sitzplatz erfolgreich freigegeben');
+  });
 
-        it('sollte einen Fehler zurückgeben, wenn der Sitzplatz bereits reserviert ist', async () => {
-            // Mock Supabase gibt einen Fehler zurück
-            supabase.from.mockImplementationOnce(() => ({
-                update: jest.fn().mockResolvedValue({
-                    status: 409,
-                    error: null,
-                })
-            }));
+  it('sollte eine 404 zurückgeben, wenn der Sitzplatz nicht gefunden wurde', async () => {
+    supabase.from.mockImplementationOnce(() => ({
+      update: jest.fn(() =>
+        Promise.resolve({
+          data: null,
+          error: { message: 'Sitzplatz nicht gefunden' },
+        })
+      ),
+    }));
 
-            const requestData = { seat_id: 1, session_id: 123 };
-            const response = await request(app).post('/api/seatReservations/reserve').send(requestData);
-            expect(response.status).toBe(409);
-        });
+    const response = await request(app)
+      .post('/api/seatReservations/release')
+      .send({ seat_id: 1, session_id: 1234 });
 
-        it('sollte einen Fehler zurückgeben, wenn der Sitzplatz nicht verfügbar ist', async () => {
-            // Mock Supabase gibt einen Fehler zurück
-            supabase.from.mockImplementationOnce(() => ({
-                update: jest.fn().mockResolvedValue({
-                    status: 409,
-                    error: null,
-                })
-            }));
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Sitzplatz nicht gefunden');
+  });
+});
 
-            const requestData = { seat_id: 1, session_id: 123 };
-            const response = await request(app).post('/api/seatReservations/reserve').send(requestData);
-            expect(response.status).toBe(409);
-        });
-    });
+describe('POST /api/seatReservations/check', () => {
+  it('sollte überprüfen, ob alle Sitzplätze von einer Sitzung reserviert wurden', async () => {
+    supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        update: jest.fn().mockReturnThis(),
+        in: jest.fn(() =>
+            Promise.resolve({
+            data: [
+                { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: 1234 },
+                { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: 1234 },
+            ],
+            error: null,
+            })
+        ),
+    }));
+    
+    const response = await request(app)
+      .post('/api/seatReservations/check')
+      .send({ selectedSeats: [1, 2], sessionId: 1234 });
 
-    describe('POST /api/seatReservations/release', () => {
-        it('sollte einen Sitzplatz erfolgreich freigeben', async () => {
-            // Mock Supabase gibt eine erfolgreiche Antwort zurück
-            supabase.from.mockImplementationOnce(() => ({
-                update: jest.fn().mockResolvedValue({
-                    status: 200,
-                    error: null,
-                })
-            }));
+    expect(response.status).toBe(200);
+    expect(response.body.allReserved).toBe(true);
+  });
 
-            const requestData = { seat_id: 1, session_id: 123 };
-            const response = await request(app).post('/api/seatReservations/release').send(requestData);
-            expect(response.status).toBe(200);
-        });
-
-        it('sollte einen Fehler zurückgeben, wenn beim Freigeben des Sitzplatzes ein Fehler auftritt', async () => {
-            // Mock Supabase gibt einen Fehler zurück
-            supabase.from.mockImplementationOnce(() => ({
-                update: jest.fn().mockResolvedValue({
-                    status: 500,
-                    error: 'Datenbankfehler',
-                })
-            }));
-
-            const requestData = { seat_id: 1, session_id: 123 };
-            const response = await request(app).post('/api/seatReservations/release').send(requestData);
-            expect(response.status).toBe(500);
-        });
-    });
-
-    describe('POST /api/seatReservations/check', () => {
-        it('sollte die Reservierungen für mehrere Sitzplätze überprüfen', async () => {
-            // Mock Supabase gibt eine erfolgreiche Antwort zurück
-            supabase.from.mockImplementationOnce(() => ({
-                select: jest.fn().mockResolvedValue({
-                    data: [
-                        { seat_id: 1, reserved_by: 'sess-123' },
-                        { seat_id: 2, reserved_by: 'sess-123' }
-                    ],
-                    error: null,
-                })
-            }));
-
-            const requestData = { selectedSeats: [1, 2], sessionId: 'sess-123' };
-            const response = await request(app).post('/api/seatReservations/check').send(requestData);
-            expect(response.status).toBe(200);
-            expect(response.body.allReserved).toBe(true);
-        });
-
-        it('sollte einen Fehler zurückgeben, wenn eine ungültige Sitzplatzauswahl übergeben wird', async () => {
-            const requestData = { selectedSeats: [], sessionId: 123 };
-            const response = await request(app).post('/api/seatReservations/check').send(requestData);
-            expect(response.status).toBe(400);
-            expect(response.body.message).toBe('Ungültige Sitzplatzauswahl');
-        });
-    });
+  it('sollte eine 400 zurückgeben, wenn keine Sitzplätze ausgewählt wurden', async () => {
+    const response = await request(app).post('/api/seatReservations/check').send({ selectedSeats: [], sessionId: 1234 });
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('Ungültige Sitzplatzauswahl');
+  });
 });

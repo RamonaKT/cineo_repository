@@ -55,7 +55,7 @@ routerSeatReservations.post('/reserve', async (req, res) => {
               
 
         // Überprüfen, ob der Update-Vorgang fehlgeschlagen ist oder nichts aktualisiert wurde
-        if (error || status !== 204) {
+        if (error ||  status !== (201||204)) {
             return res.status(409).json({ message: 'Sitzplatz bereits reserviert oder nicht mehr verfügbar.' });
         }
 

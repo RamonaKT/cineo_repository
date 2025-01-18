@@ -81,7 +81,13 @@ button:hover {
     color:#560192;
 }
 
-#confirmationMessage {
+#confirmationMessage-account {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #4caf50;
+}
+
+#confirmationMessage-guest {
     margin-top: 20px;
     font-size: 1.1rem;
     color: #4caf50;

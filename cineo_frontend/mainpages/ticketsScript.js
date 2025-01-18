@@ -154,11 +154,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         // Abruf der Filmdetails
-        const movieResponse = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+        const movieResponse = await fetch(`/api/filme/${movieId}`);
         const movie = await movieResponse.json();
 
         // Abruf der Vorstellungen
-        const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+        const showResponse = await fetch(`/api/vorstellungen/${movieId}`);
         const showtimes = await showResponse.json();
         const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
 
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     };
 
                     // Sende die Buchungsanfrage an den Server
-                    const response = await fetch("http://localhost:4000/api/tickets", {
+                    const response = await fetch("/api/tickets", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload),

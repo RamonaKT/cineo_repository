@@ -1,7 +1,7 @@
 // Fetch movies from the backend and render them in the grid
 async function fetchMovies() {
   try {
-    const response = await fetch('http://localhost:4000/api/filme');
+    const response = await fetch('/api/filme');
     const movies = await response.json();
     renderMovies(movies);
   } catch (error) {

@@ -22,7 +22,23 @@
       "**/cineo_tests/backend/**/*.test.js",
       "**/cineo_test/frontend/**/*.test.js"
     ],
-    "verbose": true
+    "verbose": true,
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": "commonjs"
+        }
+      ]
+    ]
   },
   "keywords": [],
   "author": "",
@@ -38,6 +54,10 @@
     "safer-buffer": "^2.1.2"
   },
   "devDependencies": {
+    "@babel/core": "7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-typescript": "^7.26.0",
+    "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "msw": "^2.7.0",
     "nock": "^13.5.6",

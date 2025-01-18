@@ -64,7 +64,7 @@ supabase.from.mockImplementation((table) => {
 let app;
 beforeEach(() => {
   jest.clearAllMocks();
-  jest.resetAllMocks()
+  jest.resetAllMocks();
   app = express();
   app.use(express.json());
   app.use('/api/seatReservations', routerSeatReservations);

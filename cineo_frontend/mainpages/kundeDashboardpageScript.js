@@ -108,21 +108,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 
 
-
-        /*document.getElementById("bookTicketsButton").addEventListener("click", async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get("session_id");
-        */
-
         // Tickets buchen, wenn IBAN vorhanden
         document.getElementById("bookTicketsButton").addEventListener("click", async () => {
 
-
-
             // IBAN überprüfen, bevor Tickets gebucht werden
-
-
-
             if (ibanText.textContent == "Keine IBAN hinterlegt" || ibanText.textContent == "Fügen Sie Ihre IBAN ein") {
                 alert('Bitte hinterlegen Sie zuerst eine IBAN, um Tickets zu buchen.');
                 return; // Stoppe die Buchung, wenn keine IBAN vorhanden ist

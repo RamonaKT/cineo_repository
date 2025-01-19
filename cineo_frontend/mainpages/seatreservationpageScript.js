@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Benutzer navigiert weiter, keine Freigabe erforderlich.');
             return;
         }
-    
-        if (selectedSeats.size > 0) { 
+
+        if (selectedSeats.size > 0) {
             try {
                 const releasePromises = Array.from(selectedSeats).map(seatId =>
                     fetch('http://localhost:4000/api/seatReservations/release', {
@@ -330,10 +330,8 @@ document.getElementById('confirm-btn').addEventListener('click', () => {
             rowId: seatElement?.dataset.rowId ? String(seatElement.dataset.rowId).slice(2) : null, // Entfernt die ersten 3 Ziffern
             seatNumber: seatElement?.dataset.seatNumber || null // Platznummer 
         };
-        
-    });
 
-    
+    });
 
     // Kodieren der Daten in einem Query-Parameter
     const encodedSeats = encodeURIComponent(JSON.stringify(selectedSeatsArray));
@@ -342,7 +340,6 @@ document.getElementById('confirm-btn').addEventListener('click', () => {
     window.location.href = nextPage;
 
 });
-
 
 
 // Prüft und gibt abgelaufene Reservierungen frei

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showId = urlParams.get("show_id");
     const movieId = urlParams.get("movie_id");
     const seatsParam = urlParams.get("seats");
-  
+
     const userId = urlParams.get("session_id");
 
     if (!showId || !movieId || !seatsParam || !userId) {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    
+
     // Show- und Filmdaten abrufen und anzeigen
     try {
         // Abruf der Filmdetails
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 function calculateDiscountedPrice(originalPrice, discountName, rabatte) {
     const discount = rabatte.find(r => r.name === discountName);
     console.log("Rabatt gefunden:", discount); // Log, um den Rabatt zu überprüfen
-    
+
     if (!discount) {
         console.log("Kein Rabatt gefunden, Originalpreis:", originalPrice);
         return originalPrice;
@@ -209,14 +209,14 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
         discountContainer.appendChild(discountSelect);
 
         const ticketInformation = document.createElement("div");
-        ticketInformation.className="ticket-info";
-            ticketItem.innerHTML = ` 
+        ticketInformation.className = "ticket-info";
+        ticketItem.innerHTML = ` 
             <div class="ticket-info">
                  Platz: ${seatNumber} <br>
             Reihe: ${rowId} <br> <br> Bereich: ${categoryName}
             </div>
         `;
-       
+
 
         ticketItem.appendChild(ticketPriceElement);
         ticketItem.appendChild(discountContainer);
@@ -229,97 +229,6 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
     totalPriceElement.textContent = `Gesamtpreis: ${totalPrice.toFixed(2)}€`;
 }
 
-
-/*
-function renderTickets(selectedSeats, ticketpreise, rabatte) {
-    const ticketContainer = document.getElementById("selected-tickets");
-    const totalPriceElement = document.getElementById("total-price");
-
-    const categoryMapping = {
-        0: "Parkett",
-        1: "VIP",
-        2: "Loge"
-    };
-
-    let totalPrice = 0;
-
-    ticketContainer.innerHTML = ""; // Vorherige Inhalte löschen
-
-    selectedSeats.forEach(({ seatId, category }) => {
-        const ticketItem = document.createElement("div");
-        ticketItem.className = "selected-ticket-item";
-
-        // Kategorie-Name aus der Zahl ermitteln
-        const categoryName = categoryMapping[category] || "Unbekannt";
-
-        // Ticketpreis anhand der Kategorie finden
-        const ticketInfo = ticketpreise.find(tp => tp.ticket_name.toLowerCase() === categoryName.toLowerCase());
-        let ticketPrice = ticketInfo?.ticket_price || 0;
-
-        // Element für den Ticketpreis
-        const ticketPriceElement = document.createElement("div");
-        ticketPriceElement.className = "ticket-price";
-        ticketPriceElement.textContent = `Preis: ${ticketPrice.toFixed(2)}€`;
-
-
-        // Rabatt auswählen (falls vorhanden)
-        const discountContainer = document.createElement("div");
-        discountContainer.className = "discount-container";
-
-        const discountSelect = document.createElement("select");
-        discountSelect.dataset.seatId = seatId;
-
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Rabatt wählen";
-        discountSelect.appendChild(defaultOption);
-
-        rabatte.forEach(discount => {
-            const option = document.createElement("option");
-            option.value = discount.name;
-            option.textContent = discount.name;
-            discountSelect.appendChild(option);
-        });
-
-        discountSelect.addEventListener("change", () => {
-            const selectedDiscount = discountSelect.value;
-            console.log(`Rabatt geändert für Sitzplatz ${seatId}: ${selectedDiscount}`);
-
-            // Rabattierter Preis für diesen Sitz berechnen
-            const discountedPrice = calculateDiscountedPrice(ticketPrice, selectedDiscount, rabatte);
-            console.log(`Originalpreis: ${ticketPrice}, Rabattierter Preis: ${discountedPrice}`);
-
-            // Aktualisiere den Preis für das einzelne Ticket
-            ticketPriceElement.textContent = `Preis: ${discountedPrice.toFixed(2)}€`;
-
-            // Gesamtpreis neu berechnen und aktualisieren
-            const totalPrice = calculateTotalPriceWithDiscounts(selectedSeats, ticketpreise, rabatte);
-            console.log(`Neuer Gesamtpreis: ${totalPrice}`);
-            totalPriceElement.textContent = `Gesamtpreis: ${totalPrice.toFixed(2)}€`;
-        });
-
-
-        discountContainer.appendChild(discountSelect);
-
-        // Ticket-Elemente zusammenfügen
-    const ticketInformation = document.createElement("div");
-    ticketInformation.className="ticket-info";
-        ticketItem.innerHTML = `
-            <div class="ticket-info">
-                Sitzplatz: ${seatId} <br><br> Bereich: ${categoryName}
-            </div>
-        `;
-        ticketItem.appendChild(ticketPriceElement);
-        ticketItem.appendChild(discountContainer);
-        ticketContainer.appendChild(ticketItem);
-
-        // Initialen Preis zum Gesamtpreis addieren
-        totalPrice += ticketPrice;
-    });
-
-    // Gesamtpreis im DOM aktualisieren
-    totalPriceElement.textContent = `Gesamtpreis: ${totalPrice.toFixed(2)}€`;
-}*/
 
 document.getElementById("book-tickets-button").addEventListener("click", async () => {
     const ticketsToBook = [];
@@ -348,12 +257,12 @@ document.getElementById("book-tickets-button").addEventListener("click", async (
 
     ticketItems.forEach(ticketItem => {
         // Extrahiere Sitzplatz-ID und Kategorie
-       /* const seatId = ticketItem.querySelector(".ticket-info").textContent.match(/Platz: (\S+)/)[1];*/
-       const seatId = ticketItem.querySelector("select").dataset.seatId; 
-       const seatNumber = ticketItem.querySelector(".ticket-info").textContent.match(/Platz: (\S+)/)[1];
+        /* const seatId = ticketItem.querySelector(".ticket-info").textContent.match(/Platz: (\S+)/)[1];*/
+        const seatId = ticketItem.querySelector("select").dataset.seatId;
+        const seatNumber = ticketItem.querySelector(".ticket-info").textContent.match(/Platz: (\S+)/)[1];
         const rowId = ticketItem.querySelector(".ticket-info").textContent.match(/Reihe: (\S+)/)[1];
         const category = ticketItem.querySelector(".ticket-info").textContent.match(/Bereich: (\S+)/)[1];
-        
+
         // Extrahiere den rabattierten Preis
         const priceText = ticketItem.querySelector(".ticket-price").textContent;
         const priceMatch = priceText.match(/Preis: (\d+\.\d+)/);
@@ -362,13 +271,13 @@ document.getElementById("book-tickets-button").addEventListener("click", async (
             return;
         }
         const discountedPrice = parseFloat(priceMatch[1]);  // Den rabattierten Preis hier speichern
-    
+
         // Extrahiere den Rabatt (falls vorhanden)
         const discountSelect = ticketItem.querySelector("select");
         const selectedDiscount = discountSelect ? discountSelect.value : null;  // Sicherstellen, dass discountSelect existiert
-    
+
         console.log(`Rabatt für Sitzplatz ${seatId}:`, selectedDiscount);  // Debugging-Ausgabe
-    
+
         // Füge das Ticket zu ticketsToBook hinzu
         ticketsToBook.push({
             seat_id: seatId,

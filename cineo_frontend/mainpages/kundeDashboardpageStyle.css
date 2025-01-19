@@ -37,11 +37,13 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
     font-family: "Lato", sans-serif;
+    font-weight: bold;
 }
 
 h1 {
     color: #ffffff;
     margin-bottom: 20px;
+    -webkit-text-stroke: 0.6px white;
 }
 
 form {
@@ -168,7 +170,7 @@ button:hover {
 #show-data {
     line-height: 2rem;
     font-weight: lighter;
-    
+    -webkit-text-stroke: 0.5px white;
 }
 
 #ticketOverviewContainer {
@@ -176,13 +178,13 @@ button:hover {
     width: 30vw;
     flex-direction: column;
     justify-content: flex-start; 
-    
+    font-weight: bold;
     align-items: center;
     text-align: center;
     gap: 2vh;
     margin-top: 5vh;
     line-height: 1.5rem;
-   
+  
 }
 
 #ticketList {
@@ -213,6 +215,10 @@ button:hover {
     padding: 2% 1%;
     line-height: 1.5rem;
 
+}
+
+.info-point {
+    -webkit-text-stroke: 0.2px white;
 }
 
 #popcornInfo {

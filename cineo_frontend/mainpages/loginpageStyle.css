@@ -29,10 +29,13 @@ body {
   border-radius: 15px;
   font-family: "Lato", sans-serif;
   font-size: 1.1rem;
+  font-weight: bold;
   color:rgba(90, 255, 244, 0.66);
 }
 
-
+.popcorn-intro {
+  -webkit-text-stroke: 0.5px rgba(90, 255, 244, 0.66); 
+}
 
 .popcorn-picture {
   width: 2.2vw;

@@ -162,8 +162,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         tickets.forEach(ticket => {
             const listItem = document.createElement("li");
-            listItem.innerHTML = `<strong>Platznummer:</strong> ${ticket.seat_number}&nbsp;&nbsp; <strong>Reihe:</strong> ${ticket.row_id || 'Nicht angegeben'}&nbsp;&nbsp; <strong>Bereich:</strong> ${ticket.category}  <br>
-              <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} &nbsp;&nbsp; <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€`;
+            listItem.innerHTML = `<strong class="info-point">Platznummer:</strong> ${ticket.seat_number}&nbsp;&nbsp; <strong class="info-point">Reihe:</strong> ${ticket.row_id || 'Nicht angegeben'}&nbsp;&nbsp; <strong class="info-point">Bereich:</strong> ${ticket.category}  <br>
+              <strong class="info-point">Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} &nbsp;&nbsp; <strong class="info-point">Preis:</strong> ${Number(ticket.price).toFixed(2)}€`;
             ticketList.appendChild(listItem);
         });
 

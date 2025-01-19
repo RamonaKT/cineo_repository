@@ -84,7 +84,7 @@ if (showId && movieId && ticketDataParam) {
     ticketInfoContainer.style.display = "block";
     ticketInfoContainer.innerHTML = `
         <div class="ticket-info">
-          <p><img src= "../images/popcorn.svg" class="popcorn-picture"/><strong> SPECIAL: </strong>Melden Sie sich an und genießen Sie ein gratis Popcorn! <br> <br>  Sie können sich einloggen, neu registrieren oder als Gast fortfahren, um Ihre Buchung zu abzuschließen.</p>
+          <p><img src= "../images/popcorn.svg" class="popcorn-picture"/><strong class="popcorn-intro"> SPECIAL : </strong>Melden Sie sich an und genießen Sie ein gratis Popcorn! <br> <br>  Sie können sich einloggen, neu registrieren oder als Gast fortfahren, um Ihre Buchung zu abzuschließen.</p>
         </div>
     `;
 

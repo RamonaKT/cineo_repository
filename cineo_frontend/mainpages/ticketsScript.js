@@ -213,7 +213,7 @@ function renderTickets(selectedSeats, ticketpreise, rabatte) {
             ticketItem.innerHTML = ` 
             <div class="ticket-info">
                  Platz: ${seatNumber} <br>
-            Reihe: ${rowId} <br> <br><br> Bereich: ${categoryName}
+            Reihe: ${rowId} <br> <br> Bereich: ${categoryName}
             </div>
         `;
        

@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cineo_Mannheim</title>
+    <title>Cineo Mannheim - Mitarbeiter</title>
 
-    <link rel="stylesheet" href="/mainpages/seatreservationpageStyle.css" />
+    <link rel="stylesheet" href="/mainpages/mitarbeiterDashboardpageStyle.css" />
     <link rel="stylesheet" href="/mainpages/mainStyle.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // Zugriffsschutz
+        const role = localStorage.getItem("userRole");
     
-    <script type="module" src="/mainpages/seatreservationpageScript.js" ></script>
+        if (role !== "employee") {
+            alert("Unauthorized access. Redirecting to login.");
+            window.location.href = "/mainpages/loginpageStructure.html";
+        }
+    </script>
+    
 
 </head>
-
 <body>
 
-<!-- mainStyle: Logo - Überschrift - Login -->
+
+    <!-- mainStyle: Logo - Überschrift - Login -->
 <a href="/mainpages/homepageStructure.html">
     <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
 </a>
 
 <h1 class="h1_mainStyle_headingTopMiddle">
-    Sitzplatzauswahl
+    Mitarbeiter
 </h1>
 
 <a href="/mainpages/loginpageStructure.html">
@@ -29,7 +38,7 @@
 </a>
 
 <div class="div_mainStyle_navigationTop">
-    <a href="/mainpages/homepageStructure.html" class="a_mainStyle_highlightLink">Startseite</a>
+    <a href="/mainpages/homepageStructure.html">Startseite</a>
     <a href="/mainpages/programpageStructure.html">Programm</a>
     <a href="/specialpages/specialpageStructure.html">Specials</a>
     <a href="/specialpages/offerpageStructure.html">Angebote</a>
@@ -38,30 +47,37 @@
 </div>
 
 
+
 <div class="main-content">
-    
-    <div id="modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; z-index: 1000; border: 1px solid black;">
-        <p>Ihre Reservierung ist abgelaufen.</p>
-        <button id="modal-ok-button">OK</button>
-    </div>
-
-    <div class="content-class">
-        <div id="legend">
-            <strong>Legende:</strong> 
-            <span style="background-color: lightgreen; padding: 5px;">Parkett</span>
-            <span style="background-color: gold; padding: 5px;">VIP</span>
-            <span style="background-color: lightblue; padding: 5px;">Loge</span>
-            <span style="background-color: gray; padding: 5px;">Belegt</span>
-            <span style="background-color: purple; padding: 5px;">Ausgewählt</span>
+    <div class="div_admin_overview">
+        <div class="admin_card">
+            <a href="/adminpages/preisplaner.html">
+                <h2>Preisplaner</h2>
+                <p>Verwalten und aktualisieren Sie die Ticketpreise.</p>
+            </a>
         </div>
-        <div class="leinwand"><strong>Leinwand</strong></div>
-        <div id="seats-container"></div>
-        <button id="confirm-btn"><strong>Auswahl bestätigen</strong></button>
-    </div>
-
+    
+        <div class="admin_card">
+            <a href="/adminpages/saalplaner.html">
+                <h2>Saalplaner</h2>
+                <p>Erstellen und ändern Sie die Sitzpläne der Kinosäle.</p>
+            </a>
+        </div>
+    
+        <div class="admin_card">
+            <a href="/adminpages/vorstellungsplaner.html">
+                <h2>Vorstellungsplaner</h2>
+                <p>Planen Sie Filmvorstellungen und Zeitpläne.</p>
+            </a>
+        </div>
+    </div>    
 </div>
 
+
+  
+
 <!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
+
 <div class="div_mainStyle_navigationBeamBottom"> </div>
 
 <div class="div_mainStyle_navigationBottom">
@@ -73,7 +89,8 @@
     <a href="/infopages/legalpageStructure.html">Impressum</a>
 </div>
 
-<div id="tooltip"><p id="tooltipContent"></p></div>
+
+<script src="/mainpages/mitarbeiterDashboardpageScript.js"></script>
 
 </body>
 </html>

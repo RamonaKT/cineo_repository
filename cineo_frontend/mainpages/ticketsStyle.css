@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 
 
-.body{
+.body {
     font-family: "Lato", sans-serif;
 }
 
-.arrow{
+.arrow {
     width: 1.3em;
     margin-left: -10vw;
     margin-top: 0.5vh;
@@ -13,16 +13,20 @@
 
 /* Container für den gesamten Inhalt */
 .ticket-container {
-   
-    width: 80%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 80vw;
+   /* max-width: 1200px;*/
+    margin: 5vh 0 5vh 0;
+    padding: 20px 20px 25vh 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
+  
 }
 
-/* Jede Ticket-Option */
+
+/* Jede Ticket-Option 
 .ticket-option {
     display: flex;
     justify-content: space-between;
@@ -33,27 +37,68 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-top: 1vh;
-    margin-bottom: 10px; /* Abstand zwischen den einzelnen Optionen */
+    margin-bottom: 10px;
+    /* Abstand zwischen den einzelnen Optionen 
 }
 
-/* Sicherstellen, dass die Ticket-Informationen und Buttons gleichmäßig verteilt sind */
+/* Sicherstellen, dass die Ticket-Informationen und Buttons gleichmäßig verteilt sind 
 .ticket-option span {
     font-size: 1.2em;
     font-family: "Lato", sans-serif;
     font-weight: bold;
     color: white;
-    text-align: left; /* Text links ausrichten */
-    flex-grow: 1; /* Textbereich kann wachsen, während Buttons fix bleiben */
+    text-align: left; 
+    flex-grow: 1; // Textbereich kann wachsen, während Buttons fix bleiben 
 }
+*/
 
-/* Die Anzahl zwischen den Buttons */
-.ticket-option span[id^="quantity-"] {
+/*
+.ticket-type-container {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-left: 1vw;
+    width: 20%;
+    text-align: center;
+    font-size: 1.4rem;
+    font-family: "Lato", sans-serif;
     font-weight: bold;
-    margin: 0 10px; /* Gleicher Abstand zwischen den Buttons */
+    color: white;
+
 }
 
-/* Buttons für Plus und Minus */
-.ticket-option .decrease, .ticket-option .increase {
+.ticket-price-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    color: white;
+
+    width: 20%;
+}
+
+.ticket-count-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    gap: 5vw;
+    font-size: 1.2rem;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+}
+
+/* Die Anzahl zwischen den Buttons 
+.ticket-option .ticket-count-container span[id^="quantity-"] {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Buttons für Plus und Minus 
+.ticket-option .decrease,
+.ticket-option .increase {
     background-color: #560192;
     color: white;
     border: none;
@@ -61,28 +106,111 @@
     cursor: pointer;
     border-radius: 4px;
     display: inline-block;
-    width: 3vw; /* Feste Breite für die Buttons */
-    height: 5vh; /* Feste Höhe für die Buttons */
+    width: 3vw;
+    /* Feste Breite für die Buttons 
+    height: 5vh;
+    /* Feste Höhe für die Buttons 
     text-align: center;
-    line-height: 20px; /* Vertikale Zentrierung des Textes im Button */
-    margin: 0 5px; /* Abstand zwischen Buttons */
+    line-height: 20px;
+    /* Vertikale Zentrierung des Textes im Button 
+    margin: 0 5px;
+    /* Abstand zwischen Buttons 
     font-size: 1em;
 }
 
-/* Buttons Hover-Effekte */
-.ticket-option .decrease:hover, .ticket-option .increase:hover {
-    background-color:  rgb(124, 59, 218);
+/* Buttons Hover-Effekte 
+.ticket-option .decrease:hover,
+.ticket-option .increase:hover {
+    background-color: rgb(124, 59, 218);
 }
 
-/* Zusätzliche Stile für die Anzahl (0, 1, etc.) */
+/* Zusätzliche Stile für die Anzahl (0, 1, etc.) 
 .ticket-option span[id^="quantity-"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px; /* Feste Breite für die Anzahl */
-    height: 30px; /* Gleiche Höhe wie die Buttons */
+    width: 40px;
+    /* Feste Breite für die Anzahl 
+    height: 30px;
+    /* Gleiche Höhe wie die Buttons 
     text-align: center;
 }
+*/
+
+#selected-tickets {
+    margin-top: 2vh;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    gap: 1vw;
+}
+
+.selected-ticket-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 0.8));
+    border-radius: 10px;
+    font-family: "Lato", sans-serif;
+    /* font-size: 1.2rem;
+    font-weight: bold;*/
+    gap: 5%;
+}
+
+.ticket-info {
+    align-self: left;
+    text-align: left;
+    margin-left: 5%;
+    /* white-space: nowrap;*/
+    width: 10vw;
+    
+    font-size: 0.9rem;
+    font-weight: bold;
+    max-height: 100%;
+    line-height: 1rem;
+}
+
+.ticket-price {
+    position: relative;
+    display: flex;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.discount-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 12vw;
+    height: 100%;
+
+}
+
+.discount-container option {
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    color: white;
+    -webkit-text-stroke: 2px solid white;
+    background-color: rgb(0, 208, 208);
+    font-size: 1rem;
+    text-align: center;
+}
+
+.discount-container option:hover {
+    background-color: #560192;
+}
+
+.selected-ticket-item select {
+    width: 80%;
+    height: 50%;
+    align-self: right;
+    border-radius: 10px;
+    background-color: rgba(0, 255, 255, 0.453);
+    color: white;
+    text-align: center;
+}
+
 
 /* Gesamtpreis-Anzeige */
 #total-price {
@@ -110,11 +238,12 @@
     max-width: 300px;
     margin-left: auto;
     margin-right: auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #book-tickets-button:hover {
     background-color: rgb(90, 255, 245);
-    color:#560192;
+    color: #560192;
     font-weight: bold;
 }
 
@@ -122,7 +251,7 @@
 /* Show-Details */
 #show-details {
     display: flex;
-    align-self: center;
+    align-self: flex-start;
     font-family: "Lato", sans-serif;
     color: white;
     font-size: 2em;

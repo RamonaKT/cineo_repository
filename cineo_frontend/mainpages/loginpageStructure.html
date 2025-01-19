@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cineo_Mannheim</title>
+    <title>Cineo Mannheim - Login</title>
 
     <link rel="stylesheet" href="/mainpages/loginpageStyle.css" />
     <link rel="stylesheet" href="/mainpages/mainStyle.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <script src="/mainpages/loginpageScript.js" defer></script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    
+    <script type="module" src="/mainpages/loginpageScript.js"></script>
 </head>
-
 <body>
 
-<!-- mainStyle: Logo - Überschrift - Login -->
+
+  
 <a href="/mainpages/homepageStructure.html">
     <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
 </a>
@@ -38,30 +38,73 @@
 </div>
 
 
-<div class="main-content">
-<div class="login-container">
-    <form action="loginHandler.php" method="POST" class="login-form">
-        <h2 class="login-title">Willkommen zurück!</h2>
-        <div class="form-group">
-            <label for="username">Benutzername:</label>
-            <input type="text" id="username" name="username" placeholder="Geben Sie Ihren Benutzernamen ein" required />
-        </div>
-        <div class="form-group">
-            <label for="password">Passwort:</label>
-            <input type="password" id="password" name="password" placeholder="Geben Sie Ihr Passwort ein" required />
-        </div>
-        <button type="submit" class="login-button">Einloggen</button>
-        <p class="login-footer">
-            Noch kein Konto? <a href="/mainpages/registerpageStructure.html">Jetzt registrieren</a>.
+   
+
+<div class ="main">
+
+
+    <div id="ticketInfoContainer" style="display: none;"></div>
+
+<div class="form-container" id="registerContainer" style="display: none;">
+    <h2>Registrieren</h2>
+    <label for="email">E-Mail:</label>
+    <input type="email" id="email" placeholder="E-Mail einfügen" required>
+    
+    <label for="password">Passwort:</label>
+    <input type="password" id="password" placeholder="Passwort einfügen" required>
+    
+    <label for="confirmPassword">Passwort bestätigen:</label>
+    <input type="password" id="confirmPassword" placeholder="Passwort bestätigen" required>
+    
+    <button id="registerButton">Registrieren</button>
+    <div class="message" id="message"></div>
+    <p>
+        Sie haben bereits einen Account? 
+        <a href="#" id="showLoginLink" class="switch-link">Login</a><br>
         </p>
-    </form>
+        <p id="guest-section">
+        Oder als Gast fortfahren?
+        <a href="#" id="showGuestLink" class="switch-link">Weiter als Gast</a>
+    </p>
+    
 </div>
+
+
+
+<div class="form-container" id="loginContainer" style="display: block;">
+    <h2>Login</h2>
+    <label for="loginEmail">E-Mail:</label>
+    <input type="email" id="loginEmail" placeholder="E-Mail einfügen" required>
+    <label for="loginPassword">Passwort:</label>
+    <input type="password" id="loginPassword" placeholder="Passwort einfügen" required>
+    <button id="loginButton">Login</button>
+    <div class="message" id="loginMessage"></div>
+    <p>
+        Noch kein Account?
+        <a href="#" id="showRegisterLink" class="switch-link">Registrieren</a>
+    </p>
+</div>
+
+<div class="form-container" id="guestContainer" style="display: none;">
+    <h2>Als Gast fortfahren</h2>
+    <label for="guestEmail">E-Mail (benötigt):</label>
+    <input type="email" id="guestEmail" placeholder="E-Mail einfügen" required>
+    <button id="guestButton">Weiter als Gast</button>
+    <div class="message" id="guestMessage"></div>
+    <p>
+        Sie haben bereits einen Account 
+        <a href="#" id="showLoginFromGuestLink" class="switch-link">Login</a><br>
+        Oder Sie wollen sich registrieren?
+        <a href="#" id="showRegisterFromGuestLink" class="switch-link">Register</a>
+    </p>
 </div>
 
 
+<div id="guestRedirectContainer" style="display: none">
+    <button id="guestRedirectButton" class="guest-redirect-btn">Weiter als Gast</button>
+</div>
 
-
-<!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
+</div>
 
 <div class="div_mainStyle_navigationBeamBottom"> </div>
 
@@ -74,7 +117,8 @@
     <a href="/infopages/legalpageStructure.html">Impressum</a>
 </div>
 
-
+<div id="notification-container"></div>
 
 </body>
 </html>
+

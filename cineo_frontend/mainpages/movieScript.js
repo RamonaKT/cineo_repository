@@ -147,6 +147,14 @@ function renderShowtimes(showtimes) {
       return;
   }
 
+  // Sortiere die Vorstellungen nach Datum und Uhrzeit
+  showtimes.sort((a, b) => {
+    const dateA = new Date(`${a.date}T${a.time}`);
+    const dateB = new Date(`${b.date}T${b.time}`);
+    return dateA - dateB; // Älteres Datum zuerst
+});
+
+
   showtimes.forEach(showtime => {
       const datetime = new Date(`${showtime.date}T${showtime.time}`);
       if (isNaN(datetime)) {

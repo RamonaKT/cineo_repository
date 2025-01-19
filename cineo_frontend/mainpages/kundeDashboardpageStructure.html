@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cineo Mannheim - Kunde</title>
+
+    <link rel="stylesheet" href="/mainpages/kundeDashboardpageStyle.css" />
+    <link rel="stylesheet" href="/mainpages/mainStyle.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    
+</head>
+<body>
+
+
+    <!-- mainStyle: Logo - Überschrift - Login -->
+<a href="/mainpages/homepageStructure.html">
+    <img src="../images/LogoCineoMainstyle.png" alt="CINeoLogo" class="img_mainStyle_cineoLogo" />
+</a>
+
+<h1 class="h1_mainStyle_headingTopMiddle">
+    Kunde
+</h1>
+
+<a href="/mainpages/loginpageStructure.html">
+    <img src="../images/IconAccountMainstyle.png" alt="Account" class="img_mainStyle_accountLogin" />
+</a>
+
+<div class="div_mainStyle_navigationTop">
+    <a href="/mainpages/homepageStructure.html">Startseite</a>
+    <a href="/mainpages/programpageStructure.html">Programm</a>
+    <a href="/specialpages/specialpageStructure.html">Specials</a>
+    <a href="/specialpages/offerpageStructure.html">Angebote</a>
+    <a href="/specialpages/gastropageStructure.html">Gastro</a>
+    <a href="/specialpages/shoppageStructure.html">Shop</a>
+</div>
+
+
+<div class ="main">
+    <div class="container">
+        <h1>Ihre Zahlungsinformationen</h1>
+        
+        <form id="ibanForm">
+            <label for="iban">IBAN hinterlegen:</label>
+            <input type="text" id="iban" 
+            pattern="[A-Z]{2}[0-9]{2}(?:[ ]?[0-9A-Z]{4}){3,7}[ ]?[0-9A-Z]{2}(?:[0-9A-Z]{0,2})?"
+                   required placeholder="DE89 3704 0044 0532 0130 0000" />
+            
+                   <button type="submit" id="ibanButton">IBAN speichern</button>
+        </form>                     
+        
+        
+        <div id="ibanAnzeige" class="iban-display">
+            <h2>Hinterlegte IBAN:</h2>
+            <p id="ibanText">Keine IBAN hinterlegt</p>
+        </div>
+        
+        <p id="confirmationMessage-account" style="display: none;">Ihre IBAN wurde erfolgreich gespeichert.</p>
+        <p id="confirmationMessage-guest" style="display: none;">Ihre IBAN wurde akzeptiert.</p>
+    </div>
+
+    <div id="bookedTicketsContainer" style="display: none;">
+        <h2>Ihre gebuchten Tickets</h2>
+      <!-- <ul id="bookedTicketsList"></ul>-->
+    </div>
+    
+    <div id="ticketOverviewContainer">
+        <h3>Ihre gewählten Tickets für:</h3>
+        <h2 id ="show-data"> </h2>
+        <ul id="ticketList"></ul>
+        <div id="popcornInfo" >
+            <p> <strong>Gratis-Popcorn für Sie!</strong><br> Keine Sorge, den Gutschein hierfür erhalten Sie zusammen mit Ihren Tickets. <br> Bitte beachten Sie, dass das Angebot auf ein Popcorn pro Buchung begrenzt ist.</p>
+        </div>
+        <button id="bookTicketsButton" class="book-tickets-btn">Tickets buchen</button>
+    </div>
+
+
+</div>
+
+  
+
+<!-- mainStyle (home/Info): Verlinkung der InfoSeiten unten -->
+
+<div class="div_mainStyle_navigationBeamBottom"> </div>
+
+<div class="div_mainStyle_navigationBottom">
+    <a href="/infopages/aboutcinemapageStructure.html">Unser Kino</a>
+    <a href="/infopages/contactpageStructure.html">Kontakt</a>
+    <a href="/infopages/aboutuspageStructure.html">Über Uns</a>
+    <a href="/infopages/careerpageStructure.html">Karriere</a>
+    <a href="/infopages/informationpageStructure.html">Information</a>
+    <a href="/infopages/legalpageStructure.html">Impressum</a>
+</div>
+
+<script src="/mainpages/kundeDashboardpageScript.js"></script>
+
+</body>
+</html>

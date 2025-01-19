@@ -12,8 +12,8 @@ const axios = require('axios');
 
 // ** Router Import**
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
-const routerCreateShowSeats = require ('./src/controller/createshowseatsController');
-const routerSeatReservations = require ('./src/controller/seatReservationsController');
+const routerCreateShowSeats = require('./src/controller/createshowseatsController');
+const routerSeatReservations = require('./src/controller/seatReservationsController');
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
@@ -32,6 +32,21 @@ app.use((err, req, res, next) => {
     console.error(err.stack); // Detaillierte Fehlerausgabe
     res.status(500).send('Etwas ist schief gelaufen!');
 });
+
+
+
+// Alle 1 Minute abgelaufene Sitzplatzreservierungen bereinigen
+setInterval(async () => {
+    try {
+        const response = await fetch('http://localhost:4000/api/seatReservations/expire', {
+            method: 'POST'
+        });
+        const result = await response.json();
+        console.log('Abgelaufene Reservierungen geprüft:', result.message);
+    } catch (error) {
+        console.error('Fehler beim Bereinigen abgelaufener Reservierungen:', error.message);
+    }
+}, 60 * 1000); // Alle 1 Minute prüfen
 
 
 
@@ -189,7 +204,7 @@ async function insertMoviesIntoDatabase(movies) {
 async function main() {
     try {
         const movies = await fetchMovies();
-       // console.log('Filme mit Details:', movies);
+        // console.log('Filme mit Details:', movies);
         await insertMoviesIntoDatabase(movies);
     } catch (error) {
         console.error('Fehler im Hauptablauf:', error);
@@ -281,7 +296,7 @@ app.post('/api/vorstellungen', async (req, res) => {
                     movie_duration
                 }
             ])
-            .select('show_id')  
+            .select('show_id')
             .single();
 
         if (error) {
@@ -371,7 +386,7 @@ app.get('/api/filme', async (req, res) => {
         .from('shows')
         .select('movie_id')
         .gte('date', now);
-      //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
+    //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
 
     if (showsError) {
         return res.status(500).json({ error: showsError.message });
@@ -482,7 +497,7 @@ function calculateEndTime(startTime, duration) {
 
 
 app.post('/api/tickets', async (req, res) => {
-    const { show_id, ticket_type, price } = req.body;
+    const { show_id, ticket_type, price, discount_name, user_mail } = req.body;
     console.log(req.body);
 
     if (!show_id || !ticket_type || !price) {
@@ -555,7 +570,7 @@ app.post('/api/tickets', async (req, res) => {
         // Schritt 5: Füge das Ticket hinzu
         const { data: newTicket, error: insertError } = await supabase
             .from('tickets')
-            .insert([{ show_id, ticket_type, price }])
+            .insert([{ show_id, ticket_type, price, discount_name, user_mail }])
             .single();
 
         if (insertError) {
@@ -573,6 +588,159 @@ app.post('/api/tickets', async (req, res) => {
     }
 });
 
+app.get('/api/tickets', async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        console.error("Fehlende E-Mail in der Anfrage");
+        return res.status(400).json({ error: 'E-Mail wird benötigt' });
+    }
+
+    try {
+        // Schritt 1: Hole alle Tickets des Benutzers
+        const { data: ticketsData, error: ticketsError } = await supabase
+            .from('tickets')
+            .select('ticket_id, show_id, ticket_type, price, discount_name')
+            .eq('user_mail', email);
+
+        if (ticketsError) {
+            throw new Error('Fehler beim Abrufen der Tickets: ' + ticketsError.message);
+        }
+
+        if (!ticketsData || ticketsData.length === 0) {
+            console.log("Keine Tickets gefunden für:", email);
+            return res.status(200).json([]); // Leere Liste zurückgeben
+        }
+
+        // Debugging
+        console.log("Gefundene Tickets:", ticketsData);
+
+        // Schritt 2: Hole die Details zu den Shows
+        const showIds = ticketsData.map(ticket => ticket.show_id);
+
+        const { data: showsData, error: showsError } = await supabase
+            .from('shows')
+            .select('show_id, movie_title, room_id, date, time')
+            .in('show_id', showIds); // Nutze die Liste der `show_id`
+
+        if (showsError) {
+            throw new Error('Fehler beim Abrufen der Show-Daten: ' + showsError.message);
+        }
+
+        // Debugging
+        console.log("Gefundene Shows:", showsData);
+
+        // Schritt 3: Verknüpfe die Daten
+        const ticketsWithShowDetails = ticketsData.map(ticket => {
+            const showDetails = showsData.find(show => show.show_id === ticket.show_id);
+            return {
+                ...ticket,
+                movie_title: showDetails?.movie_title || 'Unbekannt',
+                room_id: showDetails?.room_id || 'Unbekannt',
+                date: showDetails?.date || 'Unbekannt',
+                time: showDetails?.time || 'Unbekannt'
+            };
+        });
+
+        // Debugging
+        console.log("Tickets mit Show-Details:", ticketsWithShowDetails);
+
+        res.status(200).json(ticketsWithShowDetails);
+    } catch (err) {
+        console.error("Serverfehler:", err.message);
+        res.status(500).json({ error: 'Fehler beim Abrufen der Tickets: ' + err.message });
+    }
+});
+
+
+// User registration
+app.post("/api/register", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
+
+    try {
+        const { data, error } = await supabase.from("users").insert([{ email, password }]);
+        if (error) throw error;
+        res.status(200).json({ message: "Registration successful!" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// User login
+app.post("/api/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
+
+    try {
+        const { data } = await supabase.from("users").select("*").eq("email", email).eq("password", password);
+        if (data.length === 0) return res.status(401).json({ error: "Ungültige Zugangsdaten." });
+
+        res.status(200).json({
+            message: "Login successful!",
+            role: email.endsWith("@cineo.com") ? "employee" : "customer",
+        });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// Guest login
+app.post("/api/guest", (req, res) => {
+    const { email } = req.body;
+
+    if (!/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: "Ungültiges E-Mail Format." });
+
+    res.status(200).json({ message: "Guest login successful!" });
+});
+
+
+
+
+// API-Endpoint zum Abrufen und Speichern der IBAN
+app.get('/api/iban', async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        return res.status(400).json({ error: 'E-Mail wird benötigt' });
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('iban')
+        .eq('email', email)
+        .single();
+
+    if (error) {
+        return res.status(500).json({ error: 'Fehler beim Abrufen der IBAN' });
+    }
+
+    res.json(data);
+});
+
+
+app.post('/api/iban', async (req, res) => {
+    const { email, iban } = req.body;
+
+    if (!email || !iban) {
+        return res.status(400).json({ error: 'E-Mail und IBAN sind erforderlich' });
+    }
+
+    const { error } = await supabase
+        .from('users')
+        .update({ iban })
+        .eq('email', email);
+
+    if (error) {
+        return res.status(500).json({ error: 'Fehler beim Speichern der IBAN' });
+    }
+
+    res.json({ message: 'IBAN erfolgreich gespeichert' });
+});
+
+
 
 
 
@@ -584,7 +752,7 @@ app.get('/api/ticketpreise', async (req, res) => {
         // Ticketpreise aus der Tabelle 'ticket_categories' abrufen
         const { data: ticketpreise, error: ticketError } = await supabase
             .from('ticket_categories')
-            .select('ticket_id, ticket_price');
+            .select('ticket_id, ticket_price, ticket_name');
 
         if (ticketError) {
             throw ticketError;
@@ -605,7 +773,6 @@ app.get('/api/ticketpreise', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 
 
 // API-Endpunkt, um einen Rabatt zu löschen
@@ -728,3 +895,21 @@ app.get('/confirmation', (req, res) => {
 
 // Server wird gestartet
 app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
+
+
+/*
+const { ClerkExpressMiddleware } = require("@clerk/clerk-sdk-node");
+
+app.use(ClerkExpressMiddleware());
+app.use(express.static('mainpages'));
+
+    
+app.get("/protected", (req, res) => {
+    const user = req.auth;
+    if (user) {
+        res.json({ message: `Hallo, ${user.firstName}!` });
+    } else {
+        res.status(401).send("Nicht autorisiert.");
+    }
+});
+*/

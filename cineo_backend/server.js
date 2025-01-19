@@ -620,7 +620,7 @@ app.get('/api/tickets', async (req, res) => {
 
         const { data: showsData, error: showsError } = await supabase
             .from('shows')
-            .select('show_id, movie_title, date, time')
+            .select('show_id, movie_title, room_id, date, time')
             .in('show_id', showIds); // Nutze die Liste der `show_id`
 
         if (showsError) {
@@ -636,6 +636,7 @@ app.get('/api/tickets', async (req, res) => {
             return {
                 ...ticket,
                 movie_title: showDetails?.movie_title || 'Unbekannt',
+                room_id: showDetails?.room_id || 'Unbekannt',
                 date: showDetails?.date || 'Unbekannt',
                 time: showDetails?.time || 'Unbekannt'
             };

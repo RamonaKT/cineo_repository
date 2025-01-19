@@ -46,20 +46,38 @@ document.addEventListener('DOMContentLoaded', async function () {
                         const ticketItem = document.createElement('div');
                         const ticketHistory = document.createElement('div');
 
-                        ticketPic.classList.add('ticket-pic'); 
-                        ticketItem.classList.add('ticket-item'); 
+                        ticketPic.classList.add('ticket-pic');
+                        ticketItem.classList.add('ticket-item');
                         ticketHistory.classList.add('ticket-data');
 
                         ticketPic.innerHTML = '<img src="../images/ticket_icon.svg" class="ticket-pic"/>'
 
+
+                        // Datum und Uhrzeit formatieren
+                        const ticketDate = new Date(ticket.date);
+                        const ticketTime = new Date(`${ticket.date}T${ticket.time}`);
+
+                        const formattedDate = new Intl.DateTimeFormat('de-DE', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        }).format(ticketDate);
+
+                        const formattedTime = new Intl.DateTimeFormat('de-DE', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        }).format(ticketTime);
+
                         ticketHistory.innerHTML = `
-                        <strong>Film:</strong> ${ticket.movie_title} <br>
-                        <strong>Datum:</strong> ${ticket.date} <br>
-                        <strong>Uhrzeit:</strong> ${ticket.time} <br>
-                        <strong>Bereich:</strong> ${ticket.ticket_type} <br>
-                         <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} <br>
-                        <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€ 
-                    `;
+         <strong>Film: ${ticket.movie_title} </strong> <br>
+         <strong>Datum:</strong> ${formattedDate} <br>
+         <strong>Uhrzeit:</strong> ${formattedTime} <br>
+         <strong>Saal:</strong> ${ticket.room_id} <br>
+         <strong>Bereich:</strong> ${ticket.ticket_type} <br>
+         <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} <br>
+         <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€ 
+     `;
 
                         ticketItem.appendChild(ticketPic);
                         ticketItem.appendChild(ticketHistory);
@@ -92,9 +110,51 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Tickets anzeigen, wenn vorhanden
     if (showId && movieId && ticketData) {
+       
+        if (!showId || !movieId  || !userId) {
+            alert("Fehler: Ungültige URL-Parameter");
+            window.location.href = "/";
+            return;
+        }
+    
+        // Show- und Filmdaten abrufen und anzeigen
+        try {
+            // Abruf der Filmdetails
+            const movieResponse = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+            const movie = await movieResponse.json();
+    
+            const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+            const showtimes = await showResponse.json();
+            const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
+    
+            if (!selectedShow) {
+                alert("Vorstellung nicht gefunden.");
+                return;
+            }
+    
+            // Titel und Show-Details anzeigen
+            const showDataElement = document.getElementById("show-data");
+    
+            const showDateTime = new Date(`${selectedShow.date}T${selectedShow.time}`);
+            const formatter = new Intl.DateTimeFormat('de-DE', {
+                dateStyle: 'long',
+                timeStyle: 'short'
+            });
+    
+            // Show-Daten in das HTML-Element einfügen
+            showDataElement.textContent = `${movie.title} - ${formatter.format(showDateTime)}Uhr im Kinosaal ${selectedShow.room_id}`;
+    
+        } catch (error) {
+            console.error("Fehler beim Abrufen der Show-Daten:", error);
+            alert("Fehler beim Laden der Show-Daten. Bitte versuchen Sie es später erneut.");
+            return;
+        }
+
+
         const ticketOverviewContainer = document.getElementById("ticketOverviewContainer");
         const ticketList = document.getElementById("ticketList");
         const tickets = JSON.parse(decodeURIComponent(ticketData));
+
 
         ticketOverviewContainer.style.display = "flex";
         ticketList.style.display = "flex";
@@ -102,8 +162,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         tickets.forEach(ticket => {
             const listItem = document.createElement("li");
-            listItem.innerHTML = `<strong>Platznummer:</strong> ${ticket.seat_number} <strong>Reihe:</strong> ${ticket.row_id || 'Nicht angegeben'} <strong>Bereich:</strong> ${ticket.category}  <br>  <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} <!-- Rabatt anzeigen -->
-            <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€`;
+            listItem.innerHTML = `<strong>Platznummer:</strong> ${ticket.seat_number}&nbsp;&nbsp; <strong>Reihe:</strong> ${ticket.row_id || 'Nicht angegeben'}&nbsp;&nbsp; <strong>Bereich:</strong> ${ticket.category}  <br>
+              <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} &nbsp;&nbsp; <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€`;
             ticketList.appendChild(listItem);
         });
 

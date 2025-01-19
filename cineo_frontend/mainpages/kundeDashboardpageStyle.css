@@ -165,6 +165,11 @@ button:hover {
     margin-left: 2vw;
 }
 
+#show-data {
+    line-height: 2rem;
+    font-weight: lighter;
+    
+}
 
 #ticketOverviewContainer {
     display: none;
@@ -208,6 +213,12 @@ button:hover {
     padding: 2% 1%;
     line-height: 1.5rem;
 
+}
+
+#popcornInfo {
+    display: none;
+     margin-top: 20px;
+     font-size: 0.8rem;
 }
 
 .book-tickets-btn {

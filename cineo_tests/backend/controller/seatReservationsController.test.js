@@ -10,6 +10,7 @@ jest.mock('@supabase/supabase-js', () => {
       update: jest.fn(),
       eq: jest.fn(),
       in: jest.fn(),
+      single: jest.fn(),
     })),
   };
   return {
@@ -239,8 +240,18 @@ describe('POST /api/seatReservations/expire', () => {
             error: null,
           })
         ),
-        lt: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
+        lt: jest.fn(() =>
+            Promise.resolve({
+              data: null,
+              error: null,
+            })
+          ),
+        eq: jest.fn(() =>
+            Promise.resolve({
+              data: null,
+              error: null,
+            })
+          ),
       }));
   
       const response = await request(app).post('/api/seatReservations/expire');

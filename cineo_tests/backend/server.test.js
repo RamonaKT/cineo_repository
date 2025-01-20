@@ -21,19 +21,18 @@ jest.setTimeout(30000); // Timeout auf 30 Sekunden erhöhen
 
 const routeServer = require ('../../cineo_backend/server');
 
-jest.mock('@supabase/supabase-js', () => {
-    const mockClient = {
+jest.mock('@supabase/supabase-js', () => ({
+    createClient: jest.fn(() => ({
       from: jest.fn(() => ({
-        select: jest.fn(),
-        update: jest.fn(),
-        eq: jest.fn(),
-        in: jest.fn(),
+        select: jest.fn().mockResolvedValue({ data: [], error: null }),
+        insert: jest.fn().mockResolvedValue({ data: [], error: null }),
+        update: jest.fn().mockResolvedValue({ data: [], error: null }),
+        delete: jest.fn().mockResolvedValue({ data: [], error: null }),
+        eq: jest.fn().mockReturnThis(),
       })),
-    };
-    return {
-      createClient: jest.fn(() => mockClient),
-    };
-  });
+    })),
+  }));
+  
 
 jest.mock('axios');
 
@@ -49,6 +48,7 @@ const mockSupabaseClient = () => {
     };
   };
   
+ const supabaseMock = createClient();
 
 let app;
 beforeEach(() => {
@@ -59,6 +59,7 @@ beforeEach(() => {
   const supabaseUrl = 'https://bwtcquzpxgkrositnyrj.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o';
   
+  jest.mock('axios');
   // Mocken der process.exit-Methode, um den Test nicht zu unterbrechen
   jest.spyOn(process, 'exit').mockImplementation((code) => {
     if (code === 1) {
@@ -192,48 +193,56 @@ describe('Minimaler Test', () => {
   });
   
 
-  describe('Server und Supabase Mock Tests', () => {
-    let app;
-    beforeEach(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
-      app = express();
-      app.use(express.json());
-      app.use(routeServer);  // Der gemockte Server wird hier eingebunden
-    });
-  
-    it('sollte einen Film abrufen', async () => {
-      const table = 'movies';
-      const { data, error } = await supabaseMockHandlers.from(table).select();
-  
-      const movie_id=1;
-      expect(error).toBeNull();
-      expect(data).toEqual([{ movie_id: 1, title: 'Testfilm' }]);
-  
-      // Optional: Teste die tatsächliche API-Route mit Supertest
-      const response = await request(app).get('/api/filme/:movie_id');
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({ movie_id: 1, title: 'Testfilm' });
-    });
-  
-    it('sollte einen Fehler bei unbekannter Tabelle zurückgeben', async () => {
-      const table = 'unknown_table';
-      const { data, error } = await supabaseMockHandlers.from(table).select();
-  
-      expect(data).toBeNull();
-      expect(error).toBe('Unbekannte Tabelle');
-    });
-  
-    it('sollte einen Film über den gemockten Express-Server abrufen', async () => {
-      // Mock für den tatsächlichen Supabase-Aufruf in der API-Route
-      supabaseMockHandlers.from('movies').eq.mockResolvedValue({
-        data: [{ movie_id: 1, title: 'Testfilm' }],
-        error: null,
+  describe('API Tests for /api/filme', () => {
+    it('should return a movie when it exists', async () => {
+      const mockMovie = { movie_id: 1, title: 'Testfilm' };
+      supabaseMock.from.mockReturnValueOnce({
+        select: jest.fn().mockResolvedValue({ data: [mockMovie], error: null }),
+        eq: jest.fn().mockReturnThis(),
       });
   
-      // Teste, ob die API den Film korrekt zurückgibt
       const response = await request(app).get('/api/filme/1');
+  
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ movie_id: 1, title: 'Testfilm' });
+      expect(response.body).toEqual(mockMovie);
+      expect(supabaseMock.from).toHaveBeenCalledWith('movies');
+    });
+  
+    it('should return 404 if the movie does not exist', async () => {
+      supabaseMock.from.mockReturnValueOnce({
+        select: jest.fn().mockResolvedValue({ data: [], error: null }),
+        eq: jest.fn().mockReturnThis(),
+      });
+  
+      const response = await request(app).get('/api/filme/999');
+  
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({ error: 'Film nicht gefunden' });
+    });
+  
+    it('should handle database errors', async () => {
+      supabaseMock.from.mockReturnValueOnce({
+        select: jest.fn().mockResolvedValue({ data: null, error: { message: 'DB Fehler' } }),
+        eq: jest.fn().mockReturnThis(),
+      });
+  
+      const response = await request(app).get('/api/filme/1');
+  
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'DB Fehler' });
+    });
+  });
+  
+  describe('Supabase Error Handling', () => {
+    it('should handle unexpected Supabase behavior gracefully', async () => {
+      supabaseMock.from.mockReturnValueOnce({
+        select: jest.fn().mockRejectedValue(new Error('Unbekannter Fehler')),
+        eq: jest.fn().mockReturnThis(),
+      });
+  
+      const response = await request(app).get('/api/filme/1');
+  
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Unbekannter Fehler' });
     });
   });

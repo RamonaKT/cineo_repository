@@ -913,3 +913,5 @@ app.get("/protected", (req, res) => {
     }
 });
 */
+module.exports=app;
+module.exports = { app, supabase, calculateEndTime, calculateDiscountedPrice, calculateTotalPriceWithDiscounts };

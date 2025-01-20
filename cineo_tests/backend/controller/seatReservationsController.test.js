@@ -177,7 +177,8 @@ describe('POST /api/seatReservations/release', () => {
 
   it('sollte eine 404 zurückgeben, wenn der Sitzplatz nicht gefunden wurde', async () => {
     supabase.from.mockImplementationOnce(() => ({
-      update: jest.fn(() =>
+       eq: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
         Promise.resolve({
           data: null,
           error: { message: 'Sitzplatz nicht gefunden' },

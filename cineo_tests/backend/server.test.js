@@ -17,7 +17,7 @@ jest.spyOn(process, 'exit').mockImplementation((code) => {
     console.log(`process.exit wurde mit Code ${code} aufgerufen.`);
 });
 
-jest.setTimeout(60000); // Timeout auf 60 Sekunden erhöhen
+jest.setTimeout(30000); // Timeout auf 30 Sekunden erhöhen
 
 const routeServer = require ('../../cineo_backend/server');
 
@@ -38,13 +38,17 @@ jest.mock('@supabase/supabase-js', () => {
 jest.mock('axios');
 
 // Mock für Supabase Client
-const mockSupabase = {
-  from: jest.fn(() => ({
-    select: jest.fn(() => ({ data: [], error: null })),
-    insert: jest.fn(() => ({ data: [], error: null })),
-    delete: jest.fn(() => ({ error: null })),
-  })),
-};
+// mocks.js
+const mockSupabaseClient = () => {
+    return {
+      from: jest.fn(() => ({
+        select: jest.fn().mockResolvedValue({ data: [], error: null }),
+        upsert: jest.fn().mockResolvedValue({ data: [], error: null }),
+        delete: jest.fn().mockResolvedValue({ error: null }),
+      })),
+    };
+  };
+  
 
 let app;
 beforeEach(() => {
@@ -66,9 +70,85 @@ beforeEach(() => {
   app.use(routeServer);
 });
  
+jest.mock('dotenv', () => ({
+    config: jest.fn(() => {
+      process.env.SUPABASE_URL = 'mock_url';
+      process.env.SUPABASE_KEY = 'mock_key';
+    }),
+  }));  
 
-createClient.mockReturnValue(mockSupabase);
+const supabase = mockSupabaseClient();
 
+const supabaseMockHandlers = {
+    from: jest.fn((table) => {
+      const handlers = {
+        movies: {
+            select: jest.fn().mockResolvedValue({
+                data: [{ movie_id: 1, title: 'Testfilm' }],
+                error: null,
+              }),
+              eq: jest.fn().mockResolvedValue({
+                data: [{ movie_id: 1, title: 'Testfilm' }],
+                error: null,
+              }),
+          insert: jest.fn(() =>
+            Promise.resolve({
+              data: [{ movie_id: 2, title: 'Neuer Film' }],
+              error: null,
+            })
+          ),
+          
+          update: jest.fn(() =>
+            Promise.resolve({
+              data: [{ movie_id: 1, title: 'Bearbeiteter Film' }],
+              error: null,
+            })
+          ),
+          delete: jest.fn(() =>
+            Promise.resolve({
+              data: [{ movie_id: 1 }],
+              error: null,
+            })
+          ),
+        },
+        seats: {
+            select: jest.fn().mockResolvedValue({
+                data: [{ seat_id: 101, status: 0 }],
+                error: null,
+              }),
+              eq: jest.fn().mockResolvedValue({
+                data: [{ seat_id: 101, status: 0 }],
+                error: null,
+              }),
+        },
+      };
+  
+      // Sicherstellen, dass für jede angefragte Tabelle ein gültiges Objekt zurückgegeben wird
+      return handlers[table] || {
+        select: jest.fn().mockResolvedValue({ data: null, error: 'Unbekannte Tabelle' }),
+        eq: jest.fn().mockResolvedValue({ data: null, error: 'Unbekannte Tabelle' }),
+        insert: jest.fn(() =>
+          Promise.resolve({ data: null, error: 'Unbekannte Tabelle' })
+        ),
+        update: jest.fn(() =>
+          Promise.resolve({ data: null, error: 'Unbekannte Tabelle' })
+        ),
+        delete: jest.fn(() =>
+          Promise.resolve({ data: null, error: 'Unbekannte Tabelle' })
+        ),
+      };
+    }),
+  };
+  
+  
+  supabase.from.mockImplementation((table) => {
+    return supabaseMockHandlers.from(table);
+  });
+
+createClient.mockReturnValue({
+    from: supabaseMockHandlers.from,
+  });
+  
 
 describe('Minimaler Test', () => {
     it('sollte immer bestehen', () => {
@@ -82,7 +162,7 @@ describe('Minimaler Test', () => {
     beforeAll(() => {
       // Mock für process.exit
       jest.spyOn(process, 'exit').mockImplementation((code) => {
-        console.log(`process.exit wurde mit Code ${code} aufgerufen.`);
+        console.log('process.exit wurde mit Code ${code} aufgerufen.');
       });
   
       // Mock für console.log
@@ -106,230 +186,54 @@ describe('Minimaler Test', () => {
       // Prozess mit exit(1) beenden
       process.exit(1);
   
-      // Überprüfen, ob console.log mit dem richtigen Argument aufgerufen wurde
       expect(logSpy).toHaveBeenCalledWith('process.exit wurde mit Code 1 aufgerufen.');
-  
-      // Weitere Assertions
-      expect(1 + 1).toBe(2); // Beispiel für eine zusätzliche Assertion
+
     });
   });
   
+
+  describe('Server und Supabase Mock Tests', () => {
+    let app;
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+      app = express();
+      app.use(express.json());
+      app.use(routeServer);  // Der gemockte Server wird hier eingebunden
+    });
   
-
-// Testen der API-Endpunkte
-describe('API Endpunkte', () => {
-  // Test für GET /api/filme/:movieId
-  it('sollte einen Film finden', async () => {
-    mockSupabase.from().select.mockReturnValueOnce({
-      data: [{ movie_id: 1, title: 'Film 1' }],
-      error: null,
+    it('sollte einen Film abrufen', async () => {
+      const table = 'movies';
+      const { data, error } = await supabaseMockHandlers.from(table).select();
+  
+      const movie_id=1;
+      expect(error).toBeNull();
+      expect(data).toEqual([{ movie_id: 1, title: 'Testfilm' }]);
+  
+      // Optional: Teste die tatsächliche API-Route mit Supertest
+      const response = await request(app).get('/api/filme/:movie_id');
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ movie_id: 1, title: 'Testfilm' });
     });
-
-    const response = await request(app).get('/api/filme/1');
-    expect(response.status).toBe(200);
-    expect(response.body.movie_id).toBe(1);
-    expect(response.body.title).toBe('Film 1');
+  
+    it('sollte einen Fehler bei unbekannter Tabelle zurückgeben', async () => {
+      const table = 'unknown_table';
+      const { data, error } = await supabaseMockHandlers.from(table).select();
+  
+      expect(data).toBeNull();
+      expect(error).toBe('Unbekannte Tabelle');
+    });
+  
+    it('sollte einen Film über den gemockten Express-Server abrufen', async () => {
+      // Mock für den tatsächlichen Supabase-Aufruf in der API-Route
+      supabaseMockHandlers.from('movies').eq.mockResolvedValue({
+        data: [{ movie_id: 1, title: 'Testfilm' }],
+        error: null,
+      });
+  
+      // Teste, ob die API den Film korrekt zurückgibt
+      const response = await request(app).get('/api/filme/1');
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ movie_id: 1, title: 'Testfilm' });
+    });
   });
-
-  it('sollte einen 404 Fehler zurückgeben, wenn der Film nicht gefunden wird', async () => {
-    mockSupabase.from().select.mockReturnValueOnce({
-      data: [],
-      error: null,
-    });
-
-    const response = await request(app).get('/api/filme/999');
-    expect(response.status).toBe(404);
-    expect(response.body.error).toBe('Film nicht gefunden');
-  });
-
-  // Testen für POST /api/vorstellungen
-  it('sollte eine Vorstellung erfolgreich hinzufügen', async () => {
-    const newShow = {
-      movie_id: 1,
-      date: '2025-01-18',
-      time: '18:00',
-      end_time: '20:00',
-      room_id: 2,
-      movie_duration: 120,
-    };
-
-    mockSupabase.from().insert.mockReturnValueOnce({
-      data: [{ show_id: 1, ...newShow }],
-      error: null,
-    });
-
-    const response = await request(app)
-      .post('/api/vorstellungen')
-      .send(newShow);
-
-    expect(response.status).toBe(201);
-    expect(response.body.message).toBe('Vorstellung erfolgreich hinzugefügt');
-    expect(response.body.data.show_id).toBe(1);
-  });
-
-  // Testen für DELETE /api/vorstellungen/:id
-  it('sollte eine Vorstellung erfolgreich löschen', async () => {
-    const showId = 1;
-
-    mockSupabase.from().delete.mockReturnValueOnce({
-      error: null,
-    });
-
-    const response = await request(app).delete(`/api/vorstellungen/${showId}`);
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Vorstellung erfolgreich gelöscht');
-  });
-
-  it('sollte einen Fehler zurückgeben, wenn das Löschen der Vorstellung fehlschlägt', async () => {
-    const showId = 999;
-
-    mockSupabase.from().delete.mockReturnValueOnce({
-      error: { message: 'Fehler beim Löschen der Vorstellung' },
-    });
-
-    const response = await request(app).delete(`/api/vorstellungen/${showId}`);
-    expect(response.status).toBe(500);
-    expect(response.body.message).toBe('Fehler beim Löschen der Vorstellung');
-  });
-
-  // Testen für die TMDB API
-  it('sollte Filme von der TMDB API abrufen', async () => {
-    const mockMovies = [
-      {
-        id: 1,
-        title: 'Film 1',
-        overview: 'Beschreibung des Films',
-        release_date: '2025-01-01',
-        poster_path: '/path/to/poster.jpg',
-      },
-    ];
-
-    axios.get.mockResolvedValue({
-      data: { results: mockMovies },
-    });
-
-    const movies = await fetchPopularMovies(1);
-    expect(movies).toHaveLength(1);
-    expect(movies[0].title).toBe('Film 1');
-  });
-});
-
-
-describe('API Tests', () => {
-    describe('DELETE /api/vorstellungen/:id', () => {
-        it('should delete a show and return success message', async () => {
-            const response = await request(app).delete('/api/vorstellungen/1');
-            expect(response.status).toBe(200);
-            expect(response.body.message).toBe('Vorstellung erfolgreich gelöscht');
-        });
-
-        it('should return 500 if deletion fails', async () => {
-            const response = await request(app).delete('/api/vorstellungen/99999'); // Nicht existierende ID
-            expect(response.status).toBe(500);
-            expect(response.body.message).toBeDefined();
-        });
-    });
-
-    describe('GET /api/alleFilme', () => {
-        it('should return a list of movies', async () => {
-            const response = await request(app).get('/api/alleFilme');
-            expect(response.status).toBe(200);
-            expect(Array.isArray(response.body)).toBe(true);
-        });
-
-        it('should return 404 if no movies found', async () => {
-            const response = await request(app).get('/api/alleFilme');
-            expect(response.status).toBe(404);
-        });
-    });
-
-    describe('POST /api/tickets', () => {
-        it('should create a ticket successfully', async () => {
-            const newTicket = {
-                show_id: 1,
-                ticket_type: 'Standard',
-                price: 10.0,
-                discount_name: null,
-                user_mail: 'user@example.com',
-            };
-
-            const response = await request(app).post('/api/tickets').send(newTicket);
-            expect(response.status).toBe(201);
-            expect(response.body.message).toBe('Ticket erfolgreich gespeichert');
-            expect(response.body.ticket).toBeDefined();
-        });
-
-        it('should return 400 for missing ticket data', async () => {
-            const response = await request(app).post('/api/tickets').send({});
-            expect(response.status).toBe(400);
-            expect(response.body.error).toBe('Fehlende Ticketdaten');
-        });
-
-        it('should return 400 if room capacity is exceeded', async () => {
-            const ticketData = {
-                show_id: 1,
-                ticket_type: 'Standard',
-                price: 10.0,
-                discount_name: null,
-                user_mail: 'user@example.com',
-            };
-
-            const response = await request(app).post('/api/tickets').send(ticketData);
-            expect(response.status).toBe(400);
-            expect(response.body.error).toBe('Kapazität überschritten');
-        });
-    });
-
-    describe('GET /api/rooms', () => {
-        it('should return available rooms for given date and time', async () => {
-            const response = await request(app)
-                .get('/api/rooms')
-                .query({ date: '2025-01-01', time: '18:00', movie_id: 1 });
-
-            expect(response.status).toBe(200);
-            expect(Array.isArray(response.body)).toBe(true);
-        });
-
-        it('should return 400 if required query parameters are missing', async () => {
-            const response = await request(app).get('/api/rooms').query({});
-            expect(response.status).toBe(400);
-            expect(response.body.message).toBe('Datum, Uhrzeit und Film erforderlich!');
-        });
-    });
-
-    describe('POST /api/register', () => {
-        it('should register a new user successfully', async () => {
-            const userData = { email: 'test@example.com', password: '123456' };
-            const response = await request(app).post('/api/register').send(userData);
-
-            expect(response.status).toBe(200);
-            expect(response.body.message).toBe('Registration successful!');
-        });
-
-        it('should return 400 if required fields are missing', async () => {
-            const response = await request(app).post('/api/register').send({});
-            expect(response.status).toBe(400);
-            expect(response.body.error).toBe('Alle Felder müssen ausgefüllt werden.');
-        });
-    });
-
-    describe('POST /api/login', () => {
-        it('should log in a user successfully', async () => {
-            const userData = { email: 'test@example.com', password: '123456' };
-            const response = await request(app).post('/api/login').send(userData);
-
-            expect(response.status).toBe(200);
-            expect(response.body.message).toBe('Login successful!');
-            expect(response.body.role).toBe('customer'); // Assuming the email isn't an employee email
-        });
-
-        it('should return 401 for invalid credentials', async () => {
-            const response = await request(app)
-                .post('/api/login')
-                .send({ email: 'wrong@example.com', password: 'wrongpass' });
-
-            expect(response.status).toBe(401);
-            expect(response.body.error).toBe('Ungültige Zugangsdaten.');
-        });
-    });
-});

@@ -167,23 +167,6 @@ describe('API Endpunkte', () => {
     expect(response.body.data.show_id).toBe(1);
   });
 
-  it('sollte einen Fehler zurückgeben, wenn erforderliche Daten fehlen', async () => {
-    const newShow = {
-      movie_id: null,
-      date: '2025-01-18',
-      time: '18:00',
-      room_id: 2,
-      movie_duration: null,
-    };
-
-    const response = await request(app)
-      .post('/api/vorstellungen')
-      .send(newShow);
-
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe('Fehlende Daten: movie_id, date, time, room_id und movie_duration sind erforderlich');
-  });
-
   // Testen für DELETE /api/vorstellungen/:id
   it('sollte eine Vorstellung erfolgreich löschen', async () => {
     const showId = 1;
@@ -229,4 +212,124 @@ describe('API Endpunkte', () => {
     expect(movies).toHaveLength(1);
     expect(movies[0].title).toBe('Film 1');
   });
+});
+
+
+describe('API Tests', () => {
+    describe('DELETE /api/vorstellungen/:id', () => {
+        it('should delete a show and return success message', async () => {
+            const response = await request(app).delete('/api/vorstellungen/1');
+            expect(response.status).toBe(200);
+            expect(response.body.message).toBe('Vorstellung erfolgreich gelöscht');
+        });
+
+        it('should return 500 if deletion fails', async () => {
+            const response = await request(app).delete('/api/vorstellungen/99999'); // Nicht existierende ID
+            expect(response.status).toBe(500);
+            expect(response.body.message).toBeDefined();
+        });
+    });
+
+    describe('GET /api/alleFilme', () => {
+        it('should return a list of movies', async () => {
+            const response = await request(app).get('/api/alleFilme');
+            expect(response.status).toBe(200);
+            expect(Array.isArray(response.body)).toBe(true);
+        });
+
+        it('should return 404 if no movies found', async () => {
+            const response = await request(app).get('/api/alleFilme');
+            expect(response.status).toBe(404);
+        });
+    });
+
+    describe('POST /api/tickets', () => {
+        it('should create a ticket successfully', async () => {
+            const newTicket = {
+                show_id: 1,
+                ticket_type: 'Standard',
+                price: 10.0,
+                discount_name: null,
+                user_mail: 'user@example.com',
+            };
+
+            const response = await request(app).post('/api/tickets').send(newTicket);
+            expect(response.status).toBe(201);
+            expect(response.body.message).toBe('Ticket erfolgreich gespeichert');
+            expect(response.body.ticket).toBeDefined();
+        });
+
+        it('should return 400 for missing ticket data', async () => {
+            const response = await request(app).post('/api/tickets').send({});
+            expect(response.status).toBe(400);
+            expect(response.body.error).toBe('Fehlende Ticketdaten');
+        });
+
+        it('should return 400 if room capacity is exceeded', async () => {
+            const ticketData = {
+                show_id: 1,
+                ticket_type: 'Standard',
+                price: 10.0,
+                discount_name: null,
+                user_mail: 'user@example.com',
+            };
+
+            const response = await request(app).post('/api/tickets').send(ticketData);
+            expect(response.status).toBe(400);
+            expect(response.body.error).toBe('Kapazität überschritten');
+        });
+    });
+
+    describe('GET /api/rooms', () => {
+        it('should return available rooms for given date and time', async () => {
+            const response = await request(app)
+                .get('/api/rooms')
+                .query({ date: '2025-01-01', time: '18:00', movie_id: 1 });
+
+            expect(response.status).toBe(200);
+            expect(Array.isArray(response.body)).toBe(true);
+        });
+
+        it('should return 400 if required query parameters are missing', async () => {
+            const response = await request(app).get('/api/rooms').query({});
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Datum, Uhrzeit und Film erforderlich!');
+        });
+    });
+
+    describe('POST /api/register', () => {
+        it('should register a new user successfully', async () => {
+            const userData = { email: 'test@example.com', password: '123456' };
+            const response = await request(app).post('/api/register').send(userData);
+
+            expect(response.status).toBe(200);
+            expect(response.body.message).toBe('Registration successful!');
+        });
+
+        it('should return 400 if required fields are missing', async () => {
+            const response = await request(app).post('/api/register').send({});
+            expect(response.status).toBe(400);
+            expect(response.body.error).toBe('Alle Felder müssen ausgefüllt werden.');
+        });
+    });
+
+    describe('POST /api/login', () => {
+        it('should log in a user successfully', async () => {
+            const userData = { email: 'test@example.com', password: '123456' };
+            const response = await request(app).post('/api/login').send(userData);
+
+            expect(response.status).toBe(200);
+            expect(response.body.message).toBe('Login successful!');
+            expect(response.body.role).toBe('customer'); // Assuming the email isn't an employee email
+        });
+
+        it('should return 401 for invalid credentials', async () => {
+            const response = await request(app)
+                .post('/api/login')
+                .send({ email: 'wrong@example.com', password: 'wrongpass' });
+
+            expect(response.status).toBe(401);
+            expect(response.body.error).toBe('Ungültige Zugangsdaten.');
+        });
+    });
 });

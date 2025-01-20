@@ -119,7 +119,8 @@ describe('POST /api/seatReservations/reserve', () => {
     supabase.from.mockImplementationOnce(() => ({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
-        update: jest.fn(() =>
+        update: jest.fn().mockReturnThis(),
+        single: jest.fn(() =>
             Promise.resolve({
             status: 204,
             error: null,
@@ -177,6 +178,7 @@ describe('POST /api/seatReservations/release', () => {
 
   it('sollte eine 404 zurückgeben, wenn der Sitzplatz nicht gefunden wurde', async () => {
     supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
        eq: jest.fn().mockReturnThis(),
         update: jest.fn(() =>
         Promise.resolve({
@@ -226,3 +228,85 @@ describe('POST /api/seatReservations/check', () => {
     expect(response.body.message).toBe('Ungültige Sitzplatzauswahl');
   });
 });
+
+describe('POST /api/seatReservations/expire', () => {
+    it('sollte abgelaufene Reservierungen erfolgreich freigeben', async () => {
+      supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
+          Promise.resolve({
+            data: null,
+            error: null,
+          })
+        ),
+        lt: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+      }));
+  
+      const response = await request(app).post('/api/seatReservations/expire');
+      expect(response.body.message).toBe('Abgelaufene Reservierungen erfolgreich freigegeben.');
+      expect(response.status).toBe(200);
+    });
+  
+    it('sollte eine 500 zurückgeben, wenn ein Fehler beim Freigeben auftritt', async () => {
+      supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
+          Promise.resolve({
+            data: null,
+            error: { message: 'Fehler beim Freigeben abgelaufener Reservierungen.' },
+          })
+        ),
+        lt: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+      }));
+  
+      const response = await request(app).post('/api/seatReservations/expire');
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe('Fehler beim Freigeben abgelaufener Sitzplatzreservierungen.');
+      expect(response.body.error.message).toBe('Fehler beim Freigeben abgelaufener Reservierungen.');
+    });
+  });
+  
+  describe('POST /api/seatReservations/book', () => {
+    it('sollte einen Sitzplatz erfolgreich buchen', async () => {
+      supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
+          Promise.resolve({
+            data: null,
+            error: null,
+          })
+        ),
+        eq: jest.fn().mockReturnThis(),
+      }));
+  
+      const response = await request(app)
+        .post('/api/seatReservations/book')
+        .send({ seat_id: 3, user_id: '1234' });
+  
+      expect(response.body.message).toBe('Sitzplatz erfolgreich gebucht');
+      expect(response.status).toBe(200);
+    });
+  
+    it('sollte eine 500 zurückgeben, wenn ein Fehler beim Buchen auftritt', async () => {
+      supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        update: jest.fn(() =>
+          Promise.resolve({
+            data: null,
+            error: { message: 'Fehler beim Buchen des Sitzplatzes' },
+          })
+        ),
+        eq: jest.fn().mockReturnThis(),
+      }));
+  
+      const response = await request(app)
+        .post('/api/seatReservations/book')
+        .send({ seat_id: 3, user_id: '1234' });
+  
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe('Fehler beim Buchen des Sitzplatzes');
+    });
+  });
+  

@@ -76,25 +76,44 @@ describe('Minimaler Test', () => {
     });
   });
 
-describe('Test für process.exit', () => {
+  describe('Test für process.exit', () => {
+    let logSpy;
+  
     beforeAll(() => {
+      // Mock für process.exit
       jest.spyOn(process, 'exit').mockImplementation((code) => {
         console.log(`process.exit wurde mit Code ${code} aufgerufen.`);
       });
+  
+      // Mock für console.log
+      logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  
+      // Mock für Umgebungsvariablen
+      jest.mock('process', () => ({
+        env: {
+          SUPABASE_URL: 'https://bwtcquzpxgkrositnyrj.supabase.co',
+          SUPABASE_KEY: null,
+        },
+      }));
     });
   
     afterAll(() => {
-      // Mock zurücksetzen, um andere Tests nicht zu beeinflussen
+      // Mocks zurücksetzen
       jest.restoreAllMocks();
     });
   
     it('sollte process.exit mocken und nicht abbrechen', () => {
+      // Prozess mit exit(1) beenden
       process.exit(1);
-      expect(console.log).toHaveBeenCalledWith('process.exit wurde mit Code 1 aufgerufen.');
-      // Weitere Tests können hier folgen
-      expect(1 + 1).toBe(2); // Beispiel für weitere Assertions
+  
+      // Überprüfen, ob console.log mit dem richtigen Argument aufgerufen wurde
+      expect(logSpy).toHaveBeenCalledWith('process.exit wurde mit Code 1 aufgerufen.');
+  
+      // Weitere Assertions
+      expect(1 + 1).toBe(2); // Beispiel für eine zusätzliche Assertion
     });
-});
+  });
+  
   
 
 // Testen der API-Endpunkte

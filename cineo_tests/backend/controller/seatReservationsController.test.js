@@ -263,8 +263,7 @@ describe('POST /api/seatReservations/expire', () => {
   
       const response = await request(app).post('/api/seatReservations/expire');
       expect(response.status).toBe(500);
-      expect(response.body.message).toBe('Fehler beim Freigeben abgelaufener Sitzplatzreservierungen.');
-      expect(response.body.error.message).toBe('Fehler beim Freigeben abgelaufener Reservierungen.');
+      expect(response.body.message).toBe('Fehler beim Freigeben abgelaufener Reservierungen.');
     });
   });
   

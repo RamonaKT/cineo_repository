@@ -169,10 +169,11 @@ describe('API Endpunkte', () => {
 
   it('sollte einen Fehler zurückgeben, wenn erforderliche Daten fehlen', async () => {
     const newShow = {
-      movie_id: 1,
+      movie_id: null,
       date: '2025-01-18',
       time: '18:00',
       room_id: 2,
+      movie_duration: null,
     };
 
     const response = await request(app)

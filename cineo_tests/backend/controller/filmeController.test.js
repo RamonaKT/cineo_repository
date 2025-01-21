@@ -19,7 +19,6 @@ jest.mock('@supabase/supabase-js', () => {
 });
 
 // Route importieren (relativer Pfad)
-const routerSeatReservations = require('../../../cineo_backend/src/controller/filmeController');
 const routerFilme = require('../../../cineo_backend/src/controller/filmeController');
 
 // Mock-Datenbankinitialisierung

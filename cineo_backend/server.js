@@ -14,6 +14,8 @@ const axios = require('axios');
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
 const routerCreateShowSeats = require('./src/controller/createshowseatsController');
 const routerSeatReservations = require('./src/controller/seatReservationsController');
+const routerFilme = require('./src/controller/filmeController');
+const routerVorstellungen = require('./src/controller/vorstellungenController')
 
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
@@ -22,11 +24,11 @@ app.use(cors({
 app.use(express.json());
 
 // ** Router verwenden**
-//app.use(showLayoutController); 
 app.use('/api/saveLayout', routerLayout);             // Registriere den Router in der App
 app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);        // Registriere den Router in der App
-
-app.use('/api/seatReservations', routerSeatReservations)
+app.use('/api/seatReservations', routerSeatReservations);
+app.use('/api/filme', routerFilme);
+app.use('/api/vorstellungen', routerVorstellungen);
 
 app.use((err, req, res, next) => {
     console.error(err.stack); // Detaillierte Fehlerausgabe
@@ -214,102 +216,6 @@ async function main() {
 main();
 
 
-app.get('/api/filme/:movieId', async (req, res) => {
-    const movieId = req.params.movieId;
-
-    const { data, error } = await supabase
-        .from('movies')
-        .select('*')
-        .eq('movie_id', movieId);
-
-    if (error) {
-        return res.status(500).json({ error: error.message });
-    }
-
-    console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
-
-    if (data.length === 0) {
-        return res.status(404).json({ error: 'Film nicht gefunden' });
-    }
-
-    res.json(data[0]);
-});
-
-
-app.get('/api/vorstellungen/:movieId', async (req, res) => {
-    const movieId = req.params.movieId;
-
-    const { data, error } = await supabase
-        .from('shows')
-        .select('*')
-        .eq('movie_id', movieId);
-
-    if (error) {
-        return res.status(500).json({ error: error.message });
-    }
-
-    console.log("Daten:", data);  // Protokolliert die zurückgegebenen Daten
-
-    if (data.length === 0) {
-        return res.status(404).json({ error: 'Shows dieses Filmes nicht gefunden' });
-    }
-
-    res.json(data);
-
-});
-
-
-
-app.post('/api/vorstellungen', async (req, res) => {
-    const { movie_id, date, time, end_time, room_id, movie_duration } = req.body;
-
-    // Überprüfen, ob alle erforderlichen Daten vorhanden sind
-    if (!movie_id || !date || !time || !room_id || !movie_duration) {
-        return res.status(400).json({ message: 'Fehlende Daten: movie_id, date, time, room_id und movie_duration sind erforderlich' });
-    }
-
-    try {
-        // Holen des Filmtitels aus der 'movies'-Tabelle basierend auf movie_id
-        const { data: movieData, error: movieError } = await supabase
-            .from('movies')
-            .select('title')
-            .eq('movie_id', movie_id)
-            .single();
-
-        if (movieError || !movieData) {
-            return res.status(404).json({ message: 'Film nicht gefunden' });
-        }
-
-        const movieTitle = movieData.title; // Titel des Films
-
-        // Erstellen eines neuen Eintrags in der 'shows'-Tabelle
-        const { data, error } = await supabase
-            .from('shows')
-            .insert([
-                {
-                    movie_id,
-                    movie_title: movieTitle,  // Den Filmtitel speichern
-                    date: date,
-                    time: time,
-                    end_time,
-                    room_id,
-                    movie_duration
-                }
-            ])
-            .select('show_id')
-            .single();
-
-        if (error) {
-            return res.status(500).json({ message: 'Fehler beim Hinzufügen der Vorstellung', error: error.message });
-        }
-        res.status(201).json({ message: 'Vorstellung erfolgreich hinzugefügt', data });
-    } catch (error) {
-        console.error('Fehler beim Erstellen der Vorstellung:', error);
-        res.status(500).json({ message: 'Serverfehler', error: error.message });
-    }
-});
-
-
 app.get('/api/alleVorstellungen', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -333,26 +239,6 @@ app.get('/api/alleVorstellungen', async (req, res) => {
 
 
 
-app.delete('/api/vorstellungen/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const { error } = await supabase
-            .from('shows')
-            .delete()
-            .eq('show_id', id);
-
-        if (error) {
-            return res.status(500).json({ message: 'Fehler beim Löschen der Vorstellung', error: error.message });
-        }
-
-        res.status(200).json({ message: 'Vorstellung erfolgreich gelöscht' });
-    } catch (error) {
-        console.error('Fehler beim Löschen der Vorstellung:', error);
-        res.status(500).json({ message: 'Serverfehler', error: error.message });
-    }
-});
-
 
 // API-Endpunkt, um alle Filme abzurufen
 app.get('/api/alleFilme', async (req, res) => {
@@ -370,54 +256,6 @@ app.get('/api/alleFilme', async (req, res) => {
 
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
-
-
-
-
-
-app.get('/api/filme', async (req, res) => {
-
-    const now = new Date().toISOString(); // Aktuelles Datum und Uhrzeit
-
-
-
-    // Abrufen der movie_id's aus der shows-Tabelle
-    const { data: showsData, error: showsError } = await supabase
-        .from('shows')
-        .select('movie_id')
-        .gte('date', now);
-    //  .neq('movie_id', null); // Sicherstellen, dass movie_id in der shows-Tabelle nicht null ist
-
-    if (showsError) {
-        return res.status(500).json({ error: showsError.message });
-    }
-
-    if (!showsData || showsData.length === 0) {
-        return res.status(404).json({ error: 'Keine Shows gefunden' });
-    }
-
-    // Holen der movie_ids aus der shows-Tabelle
-    const movieIds = showsData.map(show => show.movie_id);
-
-    // Abrufen der Filme aus der movies-Tabelle, deren movie_id in der shows-Tabelle vorhanden ist
-    const { data, error } = await supabase
-        .from('movies')
-        .select('movie_id, title, image, duration')
-        .in('movie_id', movieIds); // Filtern der Filme, die in der shows-Tabelle existieren
-
-    if (error) {
-        return res.status(500).json({ error: error.message });
-    }
-
-    if (!data || data.length === 0) {
-        return res.status(404).json({ error: 'Keine Filme mit Vorstellungen gefunden' });
-    }
-
-    res.json(data);
-});
-
-
-
 
 
 app.get('/api/rooms', async (req, res) => {
@@ -480,7 +318,6 @@ app.get('/api/rooms', async (req, res) => {
 });
 
 
-
 // Funktion zum Berechnen der Endzeit basierend auf Filmdauer und Startzeit
 function calculateEndTime(startTime, duration) {
     const [startHour, startMinute] = startTime.split(':').map(Number);
@@ -493,7 +330,6 @@ function calculateEndTime(startTime, duration) {
 
     return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
 }
-
 
 
 app.post('/api/tickets', async (req, res) => {
@@ -914,4 +750,4 @@ app.get("/protected", (req, res) => {
 });
 */
 module.exports=app;
-module.exports = { app, supabase, calculateEndTime, calculateDiscountedPrice, calculateTotalPriceWithDiscounts, main, insertMoviesIntoDatabase, insertMoviesIntoDatabase, fetchMovieDetails };
+module.exports = { calculateEndTime,  main, insertMoviesIntoDatabase, insertMoviesIntoDatabase, fetchMovieDetails };

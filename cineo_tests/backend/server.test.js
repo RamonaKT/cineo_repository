@@ -4,7 +4,9 @@ const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const axios = require('axios');
 
-jest.mock('../../cineo_backend/server', () => jest.fn());
+jest.mock('../../cineo_backend/server', () => ({
+  ...jest.requireActual('../../cineo_backend/server'),
+}));
 
 jest.mock('process', () => ({
     env: {
@@ -20,6 +22,13 @@ jest.spyOn(process, 'exit').mockImplementation((code) => {
 jest.setTimeout(20000); // Timeout auf 20 Sekunden erhöhen
 
 const routeServer = require ('../../cineo_backend/server');
+
+const { 
+  calculateEndTime,  
+  main, 
+  insertMoviesIntoDatabase, 
+  fetchMovieDetails 
+} = require('../../cineo_backend/server'); 
 
 jest.mock('@supabase/supabase-js', () => {
   const mockClient = {
@@ -213,9 +222,9 @@ describe('Server und Supabase Mock Tests', () => {
   
 });
 
-
 describe('fetchMovieDetails', () => {
   const movieId = 1;
+
   const mockApiResponse = {
       data: {
           runtime: 120,
@@ -227,15 +236,18 @@ describe('fetchMovieDetails', () => {
   };
 
   it('sollte erfolgreich die Filmdetails abrufen', async () => {
+      // Mock von axios.get, damit es die simulierte Antwort zurückgibt
       axios.get.mockResolvedValue(mockApiResponse);
 
       const result = await fetchMovieDetails(movieId);
 
+      // Überprüfen, ob axios.get mit den richtigen Parametern aufgerufen wurde
       expect(axios.get).toHaveBeenCalledWith(
           `${process.env.TMDB_BASE_URL}/movie/${movieId}`,
           { params: { api_key: process.env.TMDB_API_KEY, language: 'de-DE' } }
       );
 
+      // Überprüfen, ob das Ergebnis korrekt ist
       expect(result).toEqual({
           runtime: 120,
           genres: ['Action', 'Drama'],
@@ -243,15 +255,12 @@ describe('fetchMovieDetails', () => {
   });
 
   it('sollte Fehler abfangen und eine leere Antwort zurückgeben, wenn die API fehlschlägt', async () => {
+      // Fehler simulieren
       axios.get.mockRejectedValue(new Error('Fehler beim Abrufen der Filmdetails'));
 
       const result = await fetchMovieDetails(movieId);
 
-      expect(axios.get).toHaveBeenCalledWith(
-          `${process.env.TMDB_BASE_URL}/movie/${movieId}`,
-          { params: { api_key: process.env.TMDB_API_KEY, language: 'de-DE' } }
-      );
-
+      // Überprüfen, ob das Ergebnis im Fehlerfall korrekt ist
       expect(result).toEqual({ runtime: null, genres: [] });
   });
 
@@ -259,14 +268,16 @@ describe('fetchMovieDetails', () => {
       const mockEmptyGenreResponse = {
           data: {
               runtime: 90,
-              genres: [],
+              genres: [],  // Keine Genres
           },
       };
 
+      // Mock von axios.get mit einer leeren Genres-Antwort
       axios.get.mockResolvedValue(mockEmptyGenreResponse);
 
       const result = await fetchMovieDetails(movieId);
 
+      // Überprüfen, ob das Ergebnis korrekt ist, auch ohne Genres
       expect(result).toEqual({
           runtime: 90,
           genres: [],

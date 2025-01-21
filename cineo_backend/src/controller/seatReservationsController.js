@@ -34,6 +34,10 @@ routerSeatReservations.post('/reserve', async (req, res) => {
     const reservedAt = new Date();
     const reservationExpiresAt = new Date(reservedAt.getTime() +  10 * 60 * 1000); // 10 Minuten gültig
 
+    if ((!seat_id) || (!session_id)) {
+        return res.status(400).json({ error: 'Fehlende Daten'});
+    }
+
     try {
         // Überprüfen, ob der Sitzplatz verfügbar oder abgelaufen ist
         const { data: seatData, error: seatError } = await supabase
@@ -170,6 +174,9 @@ routerSeatReservations.post('/book', async (req, res) => {
             .eq('seat_id', seat_id)
             .eq('reserved_by', user_id) // Prüfen, ob der Nutzer diesen Sitz reserviert hatte
 
+        if(error){
+            return res.status(500);
+        }
 
         return res.json({ message: 'Sitzplatz erfolgreich gebucht' });
     } catch (error) {

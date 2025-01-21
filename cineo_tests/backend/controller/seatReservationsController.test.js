@@ -113,6 +113,7 @@ describe('GET /api/seatReservations/seats', () => {
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Keine Sitzplätze gefunden');
   });
+
 });
 
 describe('POST /api/seatReservations/reserve', () => {
@@ -232,6 +233,15 @@ describe('POST /api/seatReservations/reserve', () => {
     expect(response.body.message).toBe('Sitzplatz bereits gebucht.');
     expect(response.status).toBe(409);
   });
+
+  it('sollte eine 400 zurückgeben, wenn die Sitzplatzdaten unvollständig sind', async () => {
+    const response = await request(app)
+        .post('/api/seatReservations/reserve')
+        .send({ seat_id: null, session_id: null });
+
+    expect(response.status).toBe(400);
+});
+
 });
 
 describe('POST /api/seatReservations/release', () => {
@@ -390,5 +400,6 @@ describe('POST /api/seatReservations/expire', () => {
       expect(response.status).toBe(500);
       expect(response.body.message).toBe('Fehler beim Buchen des Sitzplatzes');
     });
-  });
+
+});
   

@@ -35,8 +35,9 @@ Anwendererfahrung bieten zu können.
 
 Das Backend ist mit node.js programmiert wurden und ermöglicht den Austausch und die Verarbeitung der Daten zwischen Frontend und Datenbank. 
 Sämtliche Dateien wurden im cineo_backend Ordner abgelegt und ...
+Controller für gesonderte Funktionen können dort hoffentlich verbleiben, weil sonst auch Tests nur in einer file sind.
 
-Die alles was die Unit-Tests angeht, ist im Ordner cineo_tests zufinden...
+Der Ordner cineo_tests entält alle Tests. Momentan wird nur backend getestet, aber die Struktur bietet Platz für frontend-Tests und ordnet die Tests zu dem jeweiligen Bereich der zu testenden Datei zu. Innerhalb des cineo_tests-Ordner wird daher grob die Projektstruktur nachgezeichnet. Test-Dateien haben den gleichen Namen wie die zu testende Datei, nur die Endung ist mit ".test.js" angepasst.
 
 Der Server ist ein von Digital Ocean bereitgestellter Ubunto Server und ist nicht direkt in die Projektstruktur eingebunden, sondern mit dem Repository auf GitHub verknüpft. 
 Die CICD läuft unter GitHubs Actions und wurde als Workflow in die Datei 'CICD-pipline.yml' eingebunden. 

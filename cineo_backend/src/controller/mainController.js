@@ -8,8 +8,7 @@ app.use(bodyParser.json());
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-
-app.get('/alleVorstellungen', async (req, res) => {
+mainRouter.get('/alleVorstellungen', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('shows')
@@ -31,7 +30,7 @@ app.get('/alleVorstellungen', async (req, res) => {
 });
 
 // API-Endpunkt, um alle Filme abzurufen
-app.get('/alleFilme', async (req, res) => {
+mainRouter.get('/alleFilme', async (req, res) => {
     const { data, error } = await supabase
         .from('movies')
         .select('movie_id, title, image, duration'); // Füge "movie_id" zu den abgerufenen Feldern hinzu
@@ -47,7 +46,7 @@ app.get('/alleFilme', async (req, res) => {
     res.json(data); // Gibt die Filmdaten zurück, inklusive movie_id
 });
 
-app.get('/rooms', async (req, res) => {
+mainRouter.get('/rooms', async (req, res) => {
     const { date, time, movie_id } = req.query;
 
     if (!date || !time || !movie_id) {
@@ -106,7 +105,7 @@ app.get('/rooms', async (req, res) => {
     }
 });
 
-app.post('/tickets', async (req, res) => {
+mainRouter.post('/tickets', async (req, res) => {
     const { show_id, ticket_type, price, discount_name, user_mail } = req.body;
     console.log(req.body);
 
@@ -198,7 +197,7 @@ app.post('/tickets', async (req, res) => {
     }
 });
 
-app.get('/tickets', async (req, res) => {
+mainRouter.get('/tickets', async (req, res) => {
     const { email } = req.query;
 
     if (!email) {
@@ -263,7 +262,7 @@ app.get('/tickets', async (req, res) => {
 });
 
 // User registration
-app.post("/register", async (req, res) => {
+mainRouter.post("/register", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
@@ -278,7 +277,7 @@ app.post("/register", async (req, res) => {
 });
 
 // User login
-app.post("/login", async (req, res) => {
+mainRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
@@ -297,7 +296,7 @@ app.post("/login", async (req, res) => {
 });
 
 // Guest login
-app.post("/guest", (req, res) => {
+mainRouter.post("/guest", (req, res) => {
     const { email } = req.body;
 
     if (!/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: "Ungültiges E-Mail Format." });
@@ -306,7 +305,7 @@ app.post("/guest", (req, res) => {
 });
 
 // API-Endpoint zum Abrufen und Speichern der IBAN
-app.get('/iban', async (req, res) => {
+mainRouter.get('/iban', async (req, res) => {
     const { email } = req.query;
 
     if (!email) {
@@ -327,7 +326,7 @@ app.get('/iban', async (req, res) => {
 });
 
 
-app.post('/iban', async (req, res) => {
+mainRouter.post('/iban', async (req, res) => {
     const { email, iban } = req.body;
 
     if (!email || !iban) {
@@ -347,7 +346,7 @@ app.post('/iban', async (req, res) => {
 });
 
 // API-Endpunkt, um Ticketpreise und Rabatte abzurufen
-app.get('/ticketpreise', async (req, res) => {
+mainRouter.get('/ticketpreise', async (req, res) => {
     try {
         // Ticketpreise aus der Tabelle 'ticket_categories' abrufen
         const { data: ticketpreise, error: ticketError } = await supabase
@@ -376,7 +375,7 @@ app.get('/ticketpreise', async (req, res) => {
 
 
 // API-Endpunkt, um einen Rabatt zu löschen
-app.delete('/ticketrabatt/:name', async (req, res) => {
+mainRouter.delete('/ticketrabatt/:name', async (req, res) => {
     const { name } = req.params;
 
     try {
@@ -396,7 +395,7 @@ app.delete('/ticketrabatt/:name', async (req, res) => {
 
 
 // API-Endpunkt, um Grundpreise zu aktualisieren
-app.put('/ticketpreise/:ticket_id', async (req, res) => {
+mainRouter.put('/ticketpreise/:ticket_id', async (req, res) => {
     const { ticket_id } = req.params;
     const { ticket_price } = req.body;
 
@@ -416,7 +415,7 @@ app.put('/ticketpreise/:ticket_id', async (req, res) => {
 });
 
 // API-Endpunkt, um Rabatte hinzuzufügen (ohne Update-Prüfung)
-app.post('/ticketrabatt', async (req, res) => {
+mainRouter.post('/ticketrabatt', async (req, res) => {
     const { name, type, value } = req.body;
 
     try {

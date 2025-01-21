@@ -4,7 +4,7 @@ const movieId = new URLSearchParams(window.location.search).get('movie_id');
 // Session-ID als Benutzer-ID verwenden
 // Funktion zur Generierung einer UUID
 function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = (Math.random() * 16) | 0;
         const v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
@@ -17,6 +17,100 @@ if (!userId) {
     userId = `session-${generateUUID()}`; // Verwendung der benutzerdefinierten UUID-Funktion
     sessionStorage.setItem('session_id', userId);
 }
+
+
+let reservationTimer; // Timer-Variable
+let isReservationExpired = false; // Statusvariable für abgelaufene Reservierung
+let isNavigating = false; // Globaler Zustand
+
+document.addEventListener('DOMContentLoaded', () => {
+    const reservationDuration = 5 * 60 * 1000; // 5 Minuten Timer
+
+    reservationTimer = setTimeout(async () => {
+        try {
+            isReservationExpired = true;
+
+            if (selectedSeats.size > 0) {
+                console.log("Ausgewählte Sitzplätze:", selectedSeats);
+
+                const releasePromises = Array.from(selectedSeats).map(seatId =>
+                    fetch('http://localhost:4000/api/seatReservations/release', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            seat_id: seatId,
+                            session_id: userId,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Fehler bei Sitz ${seatId}`);
+                        }
+                        return response.json();
+                    }).then(data => {
+                        console.log(`Sitz ${seatId} freigegeben:`, data);
+                    }).catch(error => {
+                        console.error(`Fehler beim Freigeben von Sitz ${seatId}:`, error.message);
+                    })
+                );
+
+                await Promise.all(releasePromises);
+                console.log('Alle Reservierungen wurden freigegeben.');
+                selectedSeats.clear(); // Auswahl leeren
+            } else {
+                console.error("Keine Sitzplätze ausgewählt.");
+            }
+
+            // Zeige Alert-Meldung
+            alert('Ihre Reservierung ist abgelaufen. Sie werden zur Programmseite weitergeleitet.');
+
+            // Weiterleitung zur Programmseite
+            window.location.href = '/mainpages/programpageStructure.html';
+
+        } catch (error) {
+            console.error("Fehler beim Freigeben der Reservierungen:", error.message);
+        }
+    }, reservationDuration);
+
+
+    // Event Listener für das Verlassen der Seite
+    window.addEventListener('beforeunload', async (event) => {
+        if (isNavigating) {
+            console.log('Benutzer navigiert weiter, keine Freigabe erforderlich.');
+            return;
+        }
+
+        if (selectedSeats.size > 0) {
+            try {
+                const releasePromises = Array.from(selectedSeats).map(seatId =>
+                    fetch('http://localhost:4000/api/seatReservations/release', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            seat_id: seatId,
+                            session_id: userId,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Fehler beim Freigeben von Sitz ${seatId}`);
+                        }
+                        return response.json();
+                    }).then(data => {
+                        console.log(`Sitz ${seatId} freigegeben:`, data);
+                    }).catch(error => {
+                        console.error(`Fehler beim Freigeben von Sitz ${seatId}:`, error.message);
+                    })
+                );
+
+                await Promise.all(releasePromises);
+                console.log('Alle Reservierungen wurden freigegeben.');
+                selectedSeats.clear(); // Auswahl leeren
+            } catch (error) {
+                console.error("Fehler beim Freigeben der Reservierungen:", error.message);
+            }
+        }
+    });
+
+});
 
 // Farben für Sitzplatzkategorien
 const seatColors = {
@@ -79,6 +173,8 @@ function renderSeats(seats) {
             // Setze die Kategorie als data-Attribut
             seatElement.dataset.category = seat.category;
             seatElement.dataset.seatId = seat.seat_id;
+            seatElement.dataset.rowId = seat.row_id; // Reihennummer als Attribut
+            seatElement.dataset.seatNumber = seat.seat_number; // Platznummer als Attribut
 
             // Markiere nicht verfügbare Sitzplätze
             if (seat.status === 1 || seat.status === 2) {
@@ -97,7 +193,7 @@ function renderSeats(seats) {
         });
 
         console.log("Seat Container:", seatContainer);
-        
+
         seatContainer.appendChild(rowElement);
     });
     console.log("Container nach dem Hinzufügen:", seatContainer.innerHTML);
@@ -211,36 +307,40 @@ async function releaseSeat(seatId) {
     }
 }
 
+
 // Weiterleitung zur nächsten Seite mit ausgewählten Sitzplätzen
-document.getElementById('confirm-btn').addEventListener('click', async function () {
-    try {
-        const selectedSeatsIds = Array.from(selectedSeats);
-        console.log("Selected seats:", selectedSeats);
-        console.log("Session ID:", userId);
-        const response = await fetch('/api/seatReservations/check', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({selectedSeats: selectedSeatsIds, sessionId: userId })
-        });
+document.getElementById('confirm-btn').addEventListener('click', () => {
 
-        const result = await response.json();
-        const allReserved = result.allReserved === true;
-
-        if (allReserved) {
-            const seatIds = Array.from(selectedSeats).join(',');
-            const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seat_id=${seatIds}`;
-            window.location.href = nextPage;
-        } else {
-            alert("Fehler bei der Datenübertragung. Bitte Seite neuladen");
-            location.reload(true);
-        }
-    } catch (error) {
-        console.error('API-Aufruf fehlgeschlagen:', error);
+    if (selectedSeats.size === 0) {
+        // Wenn keine Sitzplätze ausgewählt wurden, zeigen wir eine Benachrichtigung an
+        alert('Bitte wählen Sie mindestens einen Sitzplatz aus, bevor Sie fortfahren.');
+        return;  // Verhindert die Weiterleitung
     }
-    
+
+    isNavigating = true; // Markiert, dass der Benutzer navigiert
+    // Timer wird beendet
+    clearTimeout(reservationTimer);
+
+    // Erstellen eines Arrays mit Sitzplatzinformationen (ID + Kategorie)
+    const selectedSeatsArray = Array.from(selectedSeats).map(seatId => {
+        const seatElement = document.querySelector(`div[data-seat-id='${seatId}']`);
+        return {
+            seatId,
+            category: seatElement?.dataset.category || null, // Kategorie des Sitzplatzes
+            rowId: seatElement?.dataset.rowId ? String(seatElement.dataset.rowId).slice(2) : null, // Entfernt die ersten 3 Ziffern
+            seatNumber: seatElement?.dataset.seatNumber || null // Platznummer 
+        };
+
+    });
+
+    // Kodieren der Daten in einem Query-Parameter
+    const encodedSeats = encodeURIComponent(JSON.stringify(selectedSeatsArray));
+
+    const nextPage = `ticketsStructure.html?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&seats=${encodedSeats}`;
+    window.location.href = nextPage;
+
 });
+
 
 // Prüft und gibt abgelaufene Reservierungen frei
 async function checkAndReleaseExpiredSeats() {

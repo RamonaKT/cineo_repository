@@ -1,7 +1,10 @@
 # Ignoriere Node Modules (global)
 node_modules/
 
-# Ignoriere Node Modules im backend 
+# Umgebungsvariablen
+#cineo_backend/.env
+
+# Abhängigkeiten
 cineo_backend/node_modules/
 
 # Ignoriere die IDEA Dateien

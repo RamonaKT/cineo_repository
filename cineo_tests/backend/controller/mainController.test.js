@@ -230,7 +230,7 @@ describe('POST /tickets', () => {
         select: jest.fn(() => ({
             
               eq: jest.fn().mockResolvedValueOnce({
-                data: null,
+                data: [{ticket_id: 1}, {ticket_id: 2}],
                 error: null,
               }),
             })),
@@ -272,17 +272,38 @@ describe('POST /tickets', () => {
     });
   
     it('soll 400 zurückgeben, wenn Kapazität überschritten wird', async () => {
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({ data: { room_id: 1 }, error: null }),
-      }));
-  
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({ data: { capacity: 1 }, error: null }),
-      }));
-  
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({ data: [{ ticket_id: 1 }], error: null }),
-      }));
+        supabase.from.mockImplementationOnce(() => ({
+            select: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  single: jest.fn().mockResolvedValueOnce({
+                    data: { room_id: 1 },
+                    error: null,
+                  }),
+                })),
+              })),
+          }));
+      
+          supabase.from.mockImplementationOnce(() => ({
+            select: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  single: jest.fn().mockResolvedValueOnce({
+                    data: { capacity: 1 },
+                    error: null,
+                  }),
+                })),
+              })),
+          }));
+      
+          supabase.from.mockImplementationOnce(() => ({
+            select: jest.fn(() => ({
+                
+                  eq: jest.fn().mockResolvedValueOnce({
+                    data: [{ticket_id: 1}, {ticket_id: 2}],
+                    error: null,
+                  }),
+                })),
+              
+          }));
   
       const response = await request(app).post('/api/tickets').send({
         show_id: 1,
@@ -304,7 +325,7 @@ describe('POST /tickets', () => {
                 data: [
                     {
                     ticket_id: 1,
-                    show_id: 101,
+                    show_id: 1,
                     ticket_type: 'Standard',
                     price: 15.99,
                     discount_name: 'SummerSale',
@@ -317,10 +338,12 @@ describe('POST /tickets', () => {
           
   
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({
+        select: jest.fn(() => ({
+        in: jest.fn().mockResolvedValue({
           data: [{ show_id: 1, movie_title: 'Film A', room_id: 1, date: '2023-01-01', time: '18:00' }],
           error: null,
         }),
+        })),
       }));
   
       const response = await request(app).get('/api/tickets').query({ email: 'test@example.com' });

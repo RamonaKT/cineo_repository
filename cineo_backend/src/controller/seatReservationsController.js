@@ -51,7 +51,7 @@ routerSeatReservations.post('/reserve', async (req, res) => {
         }
 
         // Wenn der Sitzplatz bereits reserviert ist und die Reservierung nicht abgelaufen ist, abbrechen
-        if (!(seatData.status === 0))
+        if (!(seatData.status === 0)) {
             const reservedAtTimestamp = new Date(seatData.reserved_at).getTime();
             const now = new Date().getTime();
             if (reservedAtTimestamp +  10 *  60 * 1000 > now) {

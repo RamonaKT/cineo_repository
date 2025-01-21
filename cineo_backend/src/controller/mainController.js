@@ -373,7 +373,6 @@ mainRouter.get('/ticketpreise', async (req, res) => {
     }
 });
 
-
 // API-Endpunkt, um einen Rabatt zu löschen
 mainRouter.delete('/ticketrabatt/:name', async (req, res) => {
     const { name } = req.params;
@@ -435,5 +434,17 @@ mainRouter.post('/ticketrabatt', async (req, res) => {
     }
 });
 
+// Funktion zum Berechnen der Endzeit basierend auf Filmdauer und Startzeit
+function calculateEndTime(startTime, duration) {
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const totalMinutes = startHour * 60 + startMinute + duration;
+
+    // Runden auf die nächste Viertelstunde
+    const roundedMinutes = Math.ceil(totalMinutes / 15) * 15;
+    const endHour = Math.floor(roundedMinutes / 60);
+    const endMinute = roundedMinutes % 60;
+
+    return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+}
 
 module.exports=mainRouter;

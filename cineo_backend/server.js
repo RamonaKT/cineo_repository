@@ -217,21 +217,6 @@ async function main() {
 
 main();
 
-
-// Funktion zum Berechnen der Endzeit basierend auf Filmdauer und Startzeit
-function calculateEndTime(startTime, duration) {
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const totalMinutes = startHour * 60 + startMinute + duration;
-
-    // Runden auf die nächste Viertelstunde
-    const roundedMinutes = Math.ceil(totalMinutes / 15) * 15;
-    const endHour = Math.floor(roundedMinutes / 60);
-    const endMinute = roundedMinutes % 60;
-
-    return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-}
-
-
 // Statische Dateien bereitstellen (für Bilder)
 app.use('/images', express.static(path.join(__dirname, '../cineo_frontend/images')));
 
@@ -306,5 +291,4 @@ app.get("/protected", (req, res) => {
     }
 });
 */
-module.exports=app;
-module.exports = { calculateEndTime,  main, insertMoviesIntoDatabase, insertMoviesIntoDatabase, fetchMovieDetails };
+

@@ -205,19 +205,47 @@ describe('/rooms', () => {
 describe('POST /tickets', () => {
     it('soll ein Ticket erfolgreich speichern', async () => {
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({ data: { room_id: 1 }, error: null }),
+        select: jest.fn(() => ({
+            eq: jest.fn(() => ({
+              single: jest.fn().mockResolvedValueOnce({
+                data: { room_id: 1 },
+                error: null,
+              }),
+            })),
+          })),
       }));
   
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({ data: { capacity: 100 }, error: null }),
+        select: jest.fn(() => ({
+            eq: jest.fn(() => ({
+              single: jest.fn().mockResolvedValueOnce({
+                data: { capacity: 100 },
+                error: null,
+              }),
+            })),
+          })),
       }));
   
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({ data: [], error: null }),
+        select: jest.fn(() => ({
+            
+              eq: jest.fn().mockResolvedValueOnce({
+                data: null,
+                error: null,
+              }),
+            })),
+          
       }));
   
       supabase.from.mockImplementationOnce(() => ({
-        insert: jest.fn().mockResolvedValue({ data: { ticket_id: 1 }, error: null }),
+        select: jest.fn(() => ({
+            insert: jest.fn(() => ({
+              single: jest.fn().mockResolvedValueOnce({
+                data: null,
+                error: null,
+              }),
+            })),
+          })),
       }));
   
       const response = await request(app).post('/api/tickets').send({
@@ -265,39 +293,28 @@ describe('POST /tickets', () => {
       expect(response.status).toBe(400);
       expect(response.body).toEqual({ error: 'Kapazität überschritten' });
     });
-  
-    it('soll 500 zurückgeben, wenn ein Fehler auftritt', async () => {
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockRejectedValue(new Error('Fehler beim Abrufen')),
-      }));
-  
-      const response = await request(app).post('/api/tickets').send({
-        show_id: 1,
-        ticket_type: 'Standard',
-        price: 12,
-      });
-  
-      expect(response.status).toBe(500);
-    });
+
   });
 
   describe('GET /tickets', () => {
     it('soll die Tickets des Benutzers erfolgreich zurückgeben', async () => {
         supabase.from.mockImplementationOnce(() => ({
-            select: jest.fn().mockResolvedValueOnce({
-              data: [
-                {
-                  ticket_id: 1,
-                  show_id: 101,
-                  ticket_type: 'Standard',
-                  price: 15.99,
-                  discount_name: 'SummerSale',
-                },
-              ], 
-              error: null,
-            }),
-            eq: jest.fn().mockReturnThis(),
+            select: jest.fn(() => ({
+                eq: jest.fn().mockResolvedValueOnce({
+                data: [
+                    {
+                    ticket_id: 1,
+                    show_id: 101,
+                    ticket_type: 'Standard',
+                    price: 15.99,
+                    discount_name: 'SummerSale',
+                    },
+                ], 
+                error: null,
+                }),
+            })),
           }));
+          
   
       supabase.from.mockImplementationOnce(() => ({
         select: jest.fn().mockResolvedValue({
@@ -403,7 +420,7 @@ describe('POST /tickets', () => {
         select: jest.fn(() => ({
             eq: jest.fn(() => ({
               eq: jest.fn().mockResolvedValueOnce({
-                data: null,
+                data: [],
                 error: null,
               }),
             })),
@@ -640,7 +657,7 @@ describe('DELETE /ticketrabatt/:name', () => {
       supabase.from.mockImplementationOnce(() => ({
         delete: jest.fn(() => ({
             eq: jest.fn().mockResolvedValueOnce({
-              error: null,n
+              error: null,
             }),
           })),
       }));

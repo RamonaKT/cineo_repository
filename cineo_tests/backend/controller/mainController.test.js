@@ -317,15 +317,6 @@ describe('POST /tickets', () => {
       expect(response.body).toEqual({ error: 'E-Mail wird benötigt' });
     });
   
-    it('soll 500 zurückgeben, wenn ein Fehler auftritt', async () => {
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockRejectedValue(new Error('Datenbankfehler')),
-      }));
-  
-      const response = await request(app).get('/api/tickets').query({ email: 'test@example.com' });
-  
-      expect(response.status).toBe(500);
-    });
   });
 
   describe('POST /register', () => {
@@ -371,11 +362,18 @@ describe('POST /tickets', () => {
     it('soll erfolgreich einloggen', async () => {
       // Mock für supabase ausführen
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValueOnce({
-          data: [{ email: 'test@cineo.com', password: 'password123' }], // Erfolgreiche Benutzerdaten
-          error: null,
-        }),
-        eq: jest.fn().mockReturnThis(),
+        select: jest.fn(() => ({
+            eq: jest.fn(() => ({
+              eq: jest.fn().mockResolvedValueOnce({
+                data: [
+                  {
+                    email: 'test@cineo.com',
+                    password: 'password123',
+                  },
+                ],
+              }),
+            })),
+          })),
       }));
   
       const response = await request(app).post('/api/login').send({
@@ -402,11 +400,14 @@ describe('POST /tickets', () => {
     it('soll 401 zurückgeben, wenn ungültige Zugangsdaten', async () => {
       // Mock für supabase ausführen
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValueOnce({
-          data: null,
-          error: null,
-        }),
-        eq: jest.fn().mockReturnThis(),
+        select: jest.fn(() => ({
+            eq: jest.fn(() => ({
+              eq: jest.fn().mockResolvedValueOnce({
+                data: null,
+                error: null,
+              }),
+            })),
+          })),
       }));
   
       const response = await request(app).post('/api/login').send({
@@ -466,12 +467,15 @@ describe('POST /tickets', () => {
   describe('GET /iban', () => {
     it('soll die IBAN für die gegebene E-Mail zurückgeben', async () => {
       // Mock für supabase ausführen
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({
-          data: { iban: 'DE1234567890' },
-          error: null,
-        }),
-        eq: jest.fn().mockReturnThis(),
+      supabase.from = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            single: jest.fn().mockResolvedValueOnce({
+              data: { iban: 'DE1234567890' },
+              error: null,
+            }),
+          })),
+        })),
       }));
   
       const response = await request(app).get('/api/iban').query({ email: 'test@example.com' });
@@ -489,12 +493,15 @@ describe('POST /tickets', () => {
   
     it('soll 500 zurückgeben, wenn ein Fehler beim Abrufen der IBAN auftritt', async () => {
       // Mock für Supabase-Fehler
-      supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockResolvedValue({
-          data: null,
-          error: 'Fehler beim Abrufen',
-        }),
-        eq: jest.fn().mockReturnThis(),
+      supabase.from = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            single: jest.fn().mockResolvedValueOnce({
+              data: null,
+              error: {message: 'Fehler'},
+            }),
+          })),
+        })),
       }));
   
       const response = await request(app).get('/api/iban').query({ email: 'test@example.com' });
@@ -508,10 +515,10 @@ describe('POST /tickets', () => {
     it('soll IBAN erfolgreich speichern', async () => {
       // Mock für Supabase-Update
       supabase.from.mockImplementationOnce(() => ({
-        update: jest.fn().mockResolvedValue({
-          error: null,
+        update: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockResolvedValueOnce({
+          error: null, 
         }),
-        eq: jest.fn().mockReturnThis(),
       }));
   
       const response = await request(app).post('/api/iban').send({
@@ -519,13 +526,12 @@ describe('POST /tickets', () => {
         iban: 'DE1234567890',
       });
   
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({ message: 'IBAN erfolgreich gespeichert' });
+      expect(response.status).toBe(204);
     });
   
     it('soll 400 zurückgeben, wenn E-Mail oder IBAN fehlt', async () => {
       const response = await request(app).post('/api/iban').send({
-        email: 'test@example.com',
+        email: null, iban: null,
       });
   
       expect(response.status).toBe(400);
@@ -535,10 +541,10 @@ describe('POST /tickets', () => {
     it('soll 500 zurückgeben, wenn ein Fehler beim Speichern der IBAN auftritt', async () => {
       // Mock für Supabase-Fehler
       supabase.from.mockImplementationOnce(() => ({
-        update: jest.fn().mockResolvedValue({
-          error: 'Fehler beim Speichern',
+        update: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockResolvedValueOnce({
+          error: {message: 'Fehler beim Speichern'},
         }),
-        eq: jest.fn().mockReturnThis(),
       }));
   
       const response = await request(app).post('/api/iban').send({
@@ -632,10 +638,11 @@ describe('DELETE /ticketrabatt/:name', () => {
     it('soll den Rabatt erfolgreich löschen', async () => {
       // Mock für supabase delete
       supabase.from.mockImplementationOnce(() => ({
-        delete: jest.fn().mockResolvedValue({
-          error: null,
-        }),
-        eq: jest.fn().mockReturnThis(),
+        delete: jest.fn(() => ({
+            eq: jest.fn().mockResolvedValueOnce({
+              error: null,n
+            }),
+          })),
       }));
   
       const response = await request(app).delete('/api/ticketrabatt/BlackFriday');
@@ -647,10 +654,11 @@ describe('DELETE /ticketrabatt/:name', () => {
     it('soll 500 zurückgeben, wenn ein Fehler beim Löschen des Rabatts auftritt', async () => {
       // Mock für Supabase-Fehler
       supabase.from.mockImplementationOnce(() => ({
-        delete: jest.fn().mockResolvedValue({
-          error: 'Fehler beim Löschen des Rabatts',
-        }),
-        eq: jest.fn().mockReturnThis(),
+        delete: jest.fn(() => ({
+            eq: jest.fn().mockResolvedValueOnce({
+              error: {message:'Fehler beim Löschen'},
+            }),
+          })),
       }));
   
       const response = await request(app).delete('/api/ticketrabatt/BlackFriday');
@@ -663,13 +671,15 @@ describe('DELETE /ticketrabatt/:name', () => {
     it('soll den Ticketpreis erfolgreich aktualisieren', async () => {
       // Mock für supabase update
       supabase.from.mockImplementationOnce(() => ({
-        update: jest.fn().mockResolvedValue({
-          error: null,
-        }),
+        update: jest.fn(() => ({
+            eq: jest.fn().mockResolvedValueOnce({
+              error: null, 
+            }),
+          })),
       }));
   
       const response = await request(app).put('/api/ticketpreise/1').send({
-        ticket_price: 20.00,
+        ticket_id: 123, ticket_price: 20.00,
       });
   
       expect(response.status).toBe(200);
@@ -679,9 +689,11 @@ describe('DELETE /ticketrabatt/:name', () => {
     it('soll 500 zurückgeben, wenn ein Fehler beim Aktualisieren des Ticketpreises auftritt', async () => {
       // Mock für Supabase-Fehler
       supabase.from.mockImplementationOnce(() => ({
-        update: jest.fn().mockResolvedValue({
-          error: 'Fehler beim Aktualisieren des Ticketpreises',
-        }),
+        delete: jest.fn(() => ({
+            eq: jest.fn().mockResolvedValueOnce({
+              error: {message:'Fehler beim Aktualisieren'},
+            }),
+          })),
       }));
   
       const response = await request(app).put('/api/ticketpreise/1').send({

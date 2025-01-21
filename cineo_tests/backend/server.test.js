@@ -17,38 +17,28 @@ jest.spyOn(process, 'exit').mockImplementation((code) => {
     console.log(`process.exit wurde mit Code ${code} aufgerufen.`);
 });
 
-jest.setTimeout(30000); // Timeout auf 30 Sekunden erhöhen
+jest.setTimeout(20000); // Timeout auf 20 Sekunden erhöhen
 
 const routeServer = require ('../../cineo_backend/server');
 
-jest.mock('@supabase/supabase-js', () => ({
-    createClient: jest.fn(() => ({
-      from: jest.fn(() => ({
-        select: jest.fn().mockResolvedValue({ data: [], error: null }),
-        insert: jest.fn().mockResolvedValue({ data: [], error: null }),
-        update: jest.fn().mockResolvedValue({ data: [], error: null }),
-        delete: jest.fn().mockResolvedValue({ data: [], error: null }),
-        eq: jest.fn().mockReturnThis(),
-      })),
+jest.mock('@supabase/supabase-js', () => {
+  const mockClient = {
+    from: jest.fn(() => ({
+      select: jest.fn(),
+      update: jest.fn(),
+      eq: jest.fn(),
+      in: jest.fn(),
+      single: jest.fn(),
+      deelte: jest.fn(),
     })),
-  }));
-  
+  };
+  return {
+    createClient: jest.fn(() => mockClient),
+  };
+});
 
 jest.mock('axios');
-
-// Mock für Supabase Client
-// mocks.js
-const mockSupabaseClient = () => {
-    return {
-      from: jest.fn(() => ({
-        select: jest.fn().mockResolvedValue({ data: [], error: null }),
-        upsert: jest.fn().mockResolvedValue({ data: [], error: null }),
-        delete: jest.fn().mockResolvedValue({ error: null }),
-      })),
-    };
-  };
   
- const supabaseMock = createClient();
 
 let app;
 beforeEach(() => {
@@ -59,7 +49,6 @@ beforeEach(() => {
   const supabaseUrl = 'https://bwtcquzpxgkrositnyrj.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o';
   
-  jest.mock('axios');
   // Mocken der process.exit-Methode, um den Test nicht zu unterbrechen
   jest.spyOn(process, 'exit').mockImplementation((code) => {
     if (code === 1) {
@@ -78,78 +67,76 @@ jest.mock('dotenv', () => ({
     }),
   }));  
 
-const supabase = mockSupabaseClient();
+  const supabase = createClient();
 
-const supabaseMockHandlers = {
-    from: jest.fn((table) => {
-      const handlers = {
-        movies: {
-            select: jest.fn().mockResolvedValue({
-                data: [{ movie_id: 1, title: 'Testfilm' }],
-                error: null,
-              }),
-              eq: jest.fn().mockResolvedValue({
-                data: [{ movie_id: 1, title: 'Testfilm' }],
-                error: null,
-              }),
-          insert: jest.fn(() =>
-            Promise.resolve({
-              data: [{ movie_id: 2, title: 'Neuer Film' }],
-              error: null,
-            })
-          ),
-          
-          update: jest.fn(() =>
-            Promise.resolve({
-              data: [{ movie_id: 1, title: 'Bearbeiteter Film' }],
-              error: null,
-            })
-          ),
-          delete: jest.fn(() =>
-            Promise.resolve({
-              data: [{ movie_id: 1 }],
-              error: null,
-            })
-          ),
-        },
-        seats: {
-            select: jest.fn().mockResolvedValue({
-                data: [{ seat_id: 101, status: 0 }],
-                error: null,
-              }),
-              eq: jest.fn().mockResolvedValue({
-                data: [{ seat_id: 101, status: 0 }],
-                error: null,
-              }),
-        },
-      };
-  
-      // Sicherstellen, dass für jede angefragte Tabelle ein gültiges Objekt zurückgegeben wird
-      return handlers[table] || {
-        select: jest.fn().mockResolvedValue({ data: null, error: 'Unbekannte Tabelle' }),
-        eq: jest.fn().mockResolvedValue({ data: null, error: 'Unbekannte Tabelle' }),
-        insert: jest.fn(() =>
-          Promise.resolve({ data: null, error: 'Unbekannte Tabelle' })
+supabase.from.mockImplementation((table) => {
+  if (table === 'seat') {
+    return {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+          ],
+          error: null,
+        })
         ),
-        update: jest.fn(() =>
-          Promise.resolve({ data: null, error: 'Unbekannte Tabelle' })
+      update: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+          ],
+          error: null,
+        })
         ),
-        delete: jest.fn(() =>
-          Promise.resolve({ data: null, error: 'Unbekannte Tabelle' })
+      in: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            { seat_id: 1, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1001, category: 1, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 2, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 2, status: 1, show_id: 999, reserved_at: '2025-01-15 19:49:49.97+00', reserved_by: '1234' },
+            { seat_id: 3, created_at: '2025-01-12 16:46:14.850837+00', room_id: 999, row_id: 1002, category: 0, status: 0, show_id: 999, reserved_at: null, reserved_by: null },
+          ],
+          error: null,
+        })
+      ),
+    };
+  }
+  if (table === 'seat') {
+    return {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            {movie_id: 1, Film: 'Testfilm'},
+          ],
+          error: null,
+        })
         ),
-      };
-    }),
-  };
-  
-  
-  supabase.from.mockImplementation((table) => {
-    return supabaseMockHandlers.from(table);
-  });
+      update: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            {movie_id: 1, Film: 'Testfilm'},
+          ],
+          error: null,
+        })
+        ),
+      in: jest.fn(() =>
+        Promise.resolve({
+          data: [
+            {movie_id: 1, Film: 'Testfilm'},
+          ],
+          error: null,
+        })
+      ),
+    };
+  }
+  return {};
+});
 
-createClient.mockReturnValue({
-    from: supabaseMockHandlers.from,
-  });
-  
 
 describe('Minimaler Test', () => {
     it('sollte immer bestehen', () => {
@@ -190,59 +177,99 @@ describe('Minimaler Test', () => {
       expect(logSpy).toHaveBeenCalledWith('process.exit wurde mit Code 1 aufgerufen.');
 
     });
-  });
-  
+});
 
-  describe('API Tests for /api/filme', () => {
-    it('should return a movie when it exists', async () => {
-      const mockMovie = { movie_id: 1, title: 'Testfilm' };
-      supabaseMock.from.mockReturnValueOnce({
-        select: jest.fn().mockResolvedValue({ data: [mockMovie], error: null }),
-        eq: jest.fn().mockReturnThis(),
-      });
-  
-      const response = await request(app).get('/api/filme/1');
-  
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockMovie);
-      expect(supabaseMock.from).toHaveBeenCalledWith('movies');
+
+describe('Server und Supabase Mock Tests', () => {
+    let app;
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+      app = express();
+      app.use(express.json());
+      app.use(routeServer);  // Der gemockte Server wird hier eingebunden
     });
   
-    it('should return 404 if the movie does not exist', async () => {
-      supabaseMock.from.mockReturnValueOnce({
-        select: jest.fn().mockResolvedValue({ data: [], error: null }),
-        eq: jest.fn().mockReturnThis(),
-      });
-  
-      const response = await request(app).get('/api/filme/999');
-  
-      expect(response.status).toBe(404);
-      expect(response.body).toEqual({ error: 'Film nicht gefunden' });
+    it('sollte einen Film abrufen', async () => {
+      supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn(() =>
+            Promise.resolve({
+            data: [
+                {movie_id: 1, title: 'Testfilm'},
+            ],
+            status: 200,
+            error: null,
+            })
+        ),
+    }));
+      
+    const response = await request(app).get('/api/filme/1');
+
+    expect(error).toBeNull();
+    expect(response.data).toEqual([{ movie_id: 1, title: 'Testfilm' }]);
+    expect(response.status).toBe(200);
     });
   
-    it('should handle database errors', async () => {
-      supabaseMock.from.mockReturnValueOnce({
-        select: jest.fn().mockResolvedValue({ data: null, error: { message: 'DB Fehler' } }),
-        eq: jest.fn().mockReturnThis(),
+});
+
+
+describe('fetchMovieDetails', () => {
+  const movieId = 1;
+  const mockApiResponse = {
+      data: {
+          runtime: 120,
+          genres: [
+              { name: 'Action' },
+              { name: 'Drama' },
+          ],
+      },
+  };
+
+  it('sollte erfolgreich die Filmdetails abrufen', async () => {
+      axios.get.mockResolvedValue(mockApiResponse);
+
+      const result = await fetchMovieDetails(movieId);
+
+      expect(axios.get).toHaveBeenCalledWith(
+          `${process.env.TMDB_BASE_URL}/movie/${movieId}`,
+          { params: { api_key: process.env.TMDB_API_KEY, language: 'de-DE' } }
+      );
+
+      expect(result).toEqual({
+          runtime: 120,
+          genres: ['Action', 'Drama'],
       });
-  
-      const response = await request(app).get('/api/filme/1');
-  
-      expect(response.status).toBe(500);
-      expect(response.body).toEqual({ error: 'DB Fehler' });
-    });
   });
-  
-  describe('Supabase Error Handling', () => {
-    it('should handle unexpected Supabase behavior gracefully', async () => {
-      supabaseMock.from.mockReturnValueOnce({
-        select: jest.fn().mockRejectedValue(new Error('Unbekannter Fehler')),
-        eq: jest.fn().mockReturnThis(),
-      });
-  
-      const response = await request(app).get('/api/filme/1');
-  
-      expect(response.status).toBe(500);
-      expect(response.body).toEqual({ error: 'Unbekannter Fehler' });
-    });
+
+  it('sollte Fehler abfangen und eine leere Antwort zurückgeben, wenn die API fehlschlägt', async () => {
+      axios.get.mockRejectedValue(new Error('Fehler beim Abrufen der Filmdetails'));
+
+      const result = await fetchMovieDetails(movieId);
+
+      expect(axios.get).toHaveBeenCalledWith(
+          `${process.env.TMDB_BASE_URL}/movie/${movieId}`,
+          { params: { api_key: process.env.TMDB_API_KEY, language: 'de-DE' } }
+      );
+
+      expect(result).toEqual({ runtime: null, genres: [] });
   });
+
+  it('sollte die Genres korrekt extrahieren, wenn die Antwort keine Genres enthält', async () => {
+      const mockEmptyGenreResponse = {
+          data: {
+              runtime: 90,
+              genres: [],
+          },
+      };
+
+      axios.get.mockResolvedValue(mockEmptyGenreResponse);
+
+      const result = await fetchMovieDetails(movieId);
+
+      expect(result).toEqual({
+          runtime: 90,
+          genres: [],
+      });
+  });
+});

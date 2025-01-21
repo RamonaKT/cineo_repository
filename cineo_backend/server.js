@@ -914,4 +914,4 @@ app.get("/protected", (req, res) => {
 });
 */
 module.exports=app;
-module.exports = { app, supabase, calculateEndTime, calculateDiscountedPrice, calculateTotalPriceWithDiscounts };
+module.exports = { app, supabase, calculateEndTime, calculateDiscountedPrice, calculateTotalPriceWithDiscounts, main, insertMoviesIntoDatabase, insertMoviesIntoDatabase, fetchMovieDetails };

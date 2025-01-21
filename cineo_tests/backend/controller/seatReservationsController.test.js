@@ -258,15 +258,16 @@ describe('POST /api/seatReservations/release', () => {
 
   it('sollte eine 500 zurückgeben, wenn der Sitzplatz nicht gefunden wurde', async () => {
     supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn().mockReturnThis(),
-       eq: jest.fn().mockReturnThis(),
-        update: jest.fn(() =>
-        Promise.resolve({
-          data: null,
-          error: { message: 'Sitzplatz nicht gefunden' },
-        })
-      ),
-    }));
+      update: jest.fn(() => ({
+          eq: jest.fn().mockReturnThis(), // eq-Aufrufe innerhalb von update
+          then: jest.fn((callback) =>
+              callback({
+                  status: 500, 
+                  error:  {message: 'Fehler ' },
+              })
+          ),
+      })),
+  }));
 
     const response = await request(app)
       .post('/api/seatReservations/release')

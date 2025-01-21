@@ -230,7 +230,7 @@ describe('POST /tickets', () => {
         select: jest.fn(() => ({
             
               eq: jest.fn().mockResolvedValueOnce({
-                data: [{ticket_id: 1}, {ticket_id: 2}],
+                data: [{ticket_id: 1}],
                 error: null,
               }),
             })),
@@ -238,14 +238,14 @@ describe('POST /tickets', () => {
       }));
   
       supabase.from.mockImplementationOnce(() => ({
-        select: jest.fn(() => ({
+        
             insert: jest.fn(() => ({
               single: jest.fn().mockResolvedValueOnce({
-                data: null,
+                data: {ticket_id: 1},
                 error: null,
               }),
             })),
-          })),
+          
       }));
   
       const response = await request(app).post('/api/tickets').send({

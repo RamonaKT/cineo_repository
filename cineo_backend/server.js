@@ -272,25 +272,12 @@ app.get('/confirmation', (req, res) => {
 
 
 // Server wird gestartet
-app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
+if (require.main === module) {
+    app.listen(4000, () => {
+      console.log('Server läuft auf http://localhost:4000');
+    });
+  }
 
-
-/*
-const { ClerkExpressMiddleware } = require("@clerk/clerk-sdk-node");
-
-app.use(ClerkExpressMiddleware());
-app.use(express.static('mainpages'));
-
-    
-app.get("/protected", (req, res) => {
-    const user = req.auth;
-    if (user) {
-        res.json({ message: `Hallo, ${user.firstName}!` });
-    } else {
-        res.status(401).send("Nicht autorisiert.");
-    }
-});
-*/
 
 module.exports=app;
-module.exports={main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails}
+module.exports={app,main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails};

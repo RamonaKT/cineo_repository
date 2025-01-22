@@ -356,8 +356,9 @@ document.getElementById('confirm-btn').addEventListener('click', () => {
         return {
             seatId,
             category: seatElement?.dataset.category || null, // Kategorie des Sitzplatzes
-            rowId: seatElement?.dataset.rowId ? String(seatElement.dataset.rowId).slice(2) : null, // Entfernt die ersten 3 Ziffern
-            seatNumber: seatElement?.dataset.seatNumber || null // Platznummer 
+          /*  rowId: seatElement?.dataset.rowId ? String(seatElement.dataset.rowId).slice(2) : null, */ // Entfernt die ersten 3 Ziffern
+            rowId: seatElement?.dataset.rowId || null,
+          seatNumber: seatElement?.dataset.seatNumber || null // Platznummer 
         };
 
     });

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">86.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>66/78</span>
+                <span class='fraction'>66/76</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">78.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/28</span>
+                <span class='fraction'>22/28</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.41% </span>
+                <span class="strong">86.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>65/77</span>
+                <span class='fraction'>65/75</span>
             </div>
         
             
@@ -250,12 +250,7 @@
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
 <a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L188'></a><a href='#L188'>188</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -273,10 +268,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -291,9 +282,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -365,7 +360,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -407,10 +401,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -467,10 +457,6 @@ routerSeatReservations.get('/seats', async (req, res) =&gt; {
             .select('*')
             .eq('show_id', show_id);
 &nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (error) {
-<span class="cstat-no" title="statement not covered" >            return res.status(500).json({ message: 'Fehler beim Laden der Sitzplätze', error });</span>
-        }
-&nbsp;
         if (!seats || seats.length === 0) {
             return res.status(404).json({ message: 'Keine Sitzplätze gefunden' });
         }          
@@ -486,6 +472,10 @@ routerSeatReservations.post('/reserve', async (req, res) =&gt; {
     const { seat_id, session_id } = req.body;
     const reservedAt = new Date();
     const reservationExpiresAt = new Date(reservedAt.getTime() +  10 * 60 * 1000); // 10 Minuten gültig
+&nbsp;
+    if ((!seat_id) || (!session_id)) {
+        return res.status(400).json({ error: 'Fehlende Daten'});
+    }
 &nbsp;
     try {
         // Überprüfen, ob der Sitzplatz verfügbar oder abgelaufen ist
@@ -556,7 +546,6 @@ routerSeatReservations.post('/release', async (req, res) =&gt; {
     }
 });
 &nbsp;
-&nbsp;
 // API-Endpunkt zum Freigeben eines Sitzplatzes
 routerSeatReservations.post('/check', async (req, res) =&gt; {
     const { selectedSeats, sessionId } = req.body;
@@ -601,10 +590,6 @@ routerSeatReservations.post('/expire', async (req, res) =&gt; {
             .lt('reservation_expires_at', now)
             .eq('status', 1);
 &nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (error) {
-<span class="cstat-no" title="statement not covered" >            return res.status(500).json({ message: 'Fehler beim Freigeben abgelaufener Sitzplatzreservierungen.', error });</span>
-        }
-&nbsp;
         return res.json({ message: 'Abgelaufene Reservierungen erfolgreich freigegeben.' });
     } catch (error) {
         return res.status(500).json({ message: 'Fehler beim Freigeben abgelaufener Reservierungen.', error: error.message });
@@ -628,8 +613,8 @@ routerSeatReservations.post('/book', async (req, res) =&gt; {
             .eq('seat_id', seat_id)
             .eq('reserved_by', user_id) // Prüfen, ob der Nutzer diesen Sitz reserviert hatte
 &nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (error) {
-<span class="cstat-no" title="statement not covered" >            return res.status(500).json({ message: 'Fehler beim Buchen des Sitzplatzes', error });</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if(error){
+<span class="cstat-no" title="statement not covered" >            return res.status(500);</span>
         }
 &nbsp;
         return res.json({ message: 'Sitzplatz erfolgreich gebucht' });
@@ -646,7 +631,7 @@ module.exports = routerSeatReservations;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-21T12:02:22.490Z
+                at 2025-01-22T07:10:15.027Z
             </div>
         <script src="prettify.js"></script>
         <script>

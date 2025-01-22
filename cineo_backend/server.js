@@ -292,3 +292,5 @@ app.get("/protected", (req, res) => {
 });
 */
 
+module.exports=app;
+module.exports={main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails}

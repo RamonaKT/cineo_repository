@@ -286,6 +286,7 @@ describe('POST /api/seatReservations/release', () => {
     expect(response.status).toBe(500);
     expect(response.body.message).toBe('Fehler beim Freigeben des Sitzplatzes');
   });
+
 });
 
 describe('POST /api/seatReservations/check', () => {
@@ -318,6 +319,7 @@ describe('POST /api/seatReservations/check', () => {
     expect(response.status).toBe(400);
     expect(response.body.message).toBe('Ungültige Sitzplatzauswahl');
   });
+
 });
 
 describe('POST /api/seatReservations/expire', () => {

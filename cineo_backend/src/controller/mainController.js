@@ -447,4 +447,37 @@ function calculateEndTime(startTime, duration) {
     return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
 }
 
+// API-Endpunkt zum Laden der Sitzplatzdaten
+mainRouter.get('/seatReservations/seats', async (req, res) => {
+    const { show_id } = req.query;
+
+    console.log(`[DEBUG] Request received: show_id=${show_id}`); // Eingabedaten prüfen
+
+    try {
+        const { data: seats, error } = await supabase
+            .from('seat')
+            .select('*')
+            .eq('show_id', show_id);
+
+        console.log(`[DEBUG] Query result: `, { seats, error }); // Ergebnis der Abfrage prüfen
+
+        if (error) {
+            console.error(`[ERROR] Supabase error: `, error);
+            return res.status(500).json({ message: 'Fehler bei der Datenbankabfrage', error });
+        }
+
+        if (!seats || seats.length === 0) {
+            console.log(`[INFO] Keine Sitzplätze gefunden für show_id=${show_id}`);
+            return res.status(404).json({ message: 'Keine Sitzplätze gefunden' });
+        }
+
+        console.log(`[DEBUG] Returning seats: `, seats); // Erfolgreiche Daten ausgeben
+        return res.json(seats);
+    } catch (error) {
+        console.error(`[ERROR] Fehler im API-Endpunkt: `, error.message);
+        return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplatzdaten', error: error.message });
+    }
+});
+
+
 module.exports=mainRouter;

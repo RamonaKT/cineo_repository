@@ -13,7 +13,7 @@ const axios = require('axios');
 // ** Router Import**
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
 const routerCreateShowSeats = require('./src/controller/createshowseatsController');
-const routerSeatReservations = require('./src/controller/seatReservationsController');
+/*const routerSeatReservations = require('./src/controller/seatReservationsController');*/
 const routerFilme = require('./src/controller/filmeController');
 const routerVorstellungen = require('./src/controller/vorstellungenController');
 
@@ -26,7 +26,7 @@ app.use(express.json());
 // ** Router verwenden**
 app.use('/api/saveLayout', routerLayout);             // Registriere den Router in der App
 app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);        // Registriere den Router in der App
-app.use('/api/seatReservations', routerSeatReservations);
+/*app.use('/api/seatReservations', routerSeatReservations);*/
 app.use('/api/filme', routerFilme);
 app.use('/api/vorstellungen', routerVorstellungen);
 

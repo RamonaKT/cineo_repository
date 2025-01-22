@@ -48,7 +48,7 @@ beforeEach(() => {
       process.env.SUPABASE_KEY = 'mock_key';
     }),
   })); 
-  
+  jest.mock('axios');
   jest.mock('process', () => ({
     env: {
       SUPABASE_URL: 'https://bwtcquzpxgkrositnyrj.supabase.co',
@@ -99,5 +99,91 @@ describe('Server Tests', () => {
     expect(fetchPopularMovies).toBeDefined();
     expect(fetchMovies).toBeDefined();
     expect(fetchMovieDetails).toBeDefined();
+  });
+});
+
+describe('Static File Tests', () => {
+  it('should load the homepage HTML correctly', async () => {
+    const response = await request(app).get('/');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('html');  // Überprüfen, ob HTML zurückgegeben wird
+  });
+
+  it('should load the program page HTML correctly', async () => {
+    const response = await request(app).get('/program');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('html');
+  });
+
+  it('should return 404 for missing static files', async () => {
+    const response = await request(app).get('/images/nonexistent-image.jpg');
+    expect(response.status).toBe(404); // Bild existiert nicht, also 404
+  });
+});
+
+describe('Error Handling', () => {
+  it('should handle errors properly', async () => {
+    // Simuliere einen Fehler in einem API-Endpunkt
+    app.get('/error', (req, res) => {
+      throw new Error('Test error');
+    });
+
+    const response = await request(app).get('/error');
+    expect(response.status).toBe(500);
+  });
+});
+
+describe('Database Tests', () => {
+  it('should check if a movie exists in the database', async () => {
+    const movieId = 123;
+    const mockExists = jest.fn().mockResolvedValue(true);
+    const mockMovieExists = jest.fn(() => ({ data: movieId }));
+    const { movieExists } = require('../../cineo_backend/server'); // importiere die Funktion
+
+    // Simuliere den Aufruf der Funktion
+    const result = await movieExists(movieId);
+    expect(result).toBe(true);
+    expect(mockExists).toHaveBeenCalledWith(movieId);
+  });
+});
+
+describe('TMDB API Tests', () => {
+  it('should fetch popular movies correctly', async () => {
+    const mockData = {
+      data: {
+        results: [{ id: 123, title: 'Test Movie' }]
+      }
+    };
+    axios.get.mockResolvedValue(mockData);
+
+    const movies = await fetchPopularMovies();
+    expect(movies).toHaveLength(1);
+    expect(movies[0].title).toBe('Test Movie');
+  });
+
+  it('should handle errors when fetching popular movies', async () => {
+    axios.get.mockRejectedValue(new Error('API Error'));
+
+    const movies = await fetchPopularMovies();
+    expect(movies).toHaveLength(0);  // Fehler sollte leere Liste zurückgeben
+  });
+});
+
+describe('Environment Variables', () => {
+  it('should load SUPABASE_URL and SUPABASE_KEY correctly', () => {
+    expect(process.env.SUPABASE_URL).toBe('https://bwtcquzpxgkrositnyrj.supabase.co');
+    expect(process.env.SUPABASE_KEY).toBe('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o');
+  });
+});
+
+describe('Interval Tests', () => {
+  it('should call the interval function every minute', () => {
+    jest.useFakeTimers();
+    const mockFunction = jest.fn();
+
+    // setInterval simulieren
+    setInterval(mockFunction, 60 * 1000);
+    jest.advanceTimersByTime(60 * 1000);  // Simuliere das Verstreichen von einer Minute
+    expect(mockFunction).toHaveBeenCalled();
   });
 });

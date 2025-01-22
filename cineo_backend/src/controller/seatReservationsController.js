@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const cors = require('cors');
-const { router } = require('../../server');
+/*const { router } = require('../../server');*/
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
 }));

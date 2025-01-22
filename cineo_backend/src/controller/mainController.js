@@ -8,6 +8,12 @@ app.use(bodyParser.json());
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+
+
+mainRouter.get('/hello' ,(req, res) => {
+    res.json({ message: 'Route funktioniert!' });
+});
+
 mainRouter.get('/alleVorstellungen', async (req, res) => {
     try {
         const { data, error } = await supabase

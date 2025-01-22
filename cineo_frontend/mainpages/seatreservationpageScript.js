@@ -128,29 +128,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSeats();
 });
 
-/*
-// Funktion zum Laden der Sitzplätze über das Backend
-async function loadSeats() {
-    try {
-        const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
-        const seats = await response.json();
-        console.log(showId);
 
-        if (response.ok) {
-            console.log(seats);
-            renderSeats(seats);
-        } else {
-            console.error('Fehler beim Laden der Sitzplätze:', seats);
-        }
-    } catch (error) {
-        console.error('Fehler beim Laden der Sitzplätze:', error);
-    }
-}*/
 
-const baseUrl = 'http://46.101.251.202';
 
-/*
-async function loadSeats() {
+/*async function loadSeats() {
     try {
         const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
         if (!response.ok) {
@@ -172,25 +153,35 @@ async function loadSeats() {
 }*/
 
 async function loadSeats() {
+    console.log('[DEBUG] Starte das Laden der Sitzplatzdaten'); // Debugging Startpunkt
+
     try {
-        const response = await fetch(`${baseUrl}/api/seatReservations/seats?show_id=${showId}`);
+        const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
+        console.log(`[DEBUG] API-Antwortstatus: ${response.status} - ${response.statusText}`);
+
         if (!response.ok) {
-            console.error(`Fehler: ${response.status} - ${response.statusText}`);
+            console.error(`[ERROR] API-Fehler: ${response.status} - ${response.statusText}`);
             throw new Error('Serverantwort war nicht erfolgreich');
         }
 
         const contentType = response.headers.get("content-type");
+        console.log(`[DEBUG] Content-Type der Antwort: ${contentType}`);
+
         if (!contentType || !contentType.includes("application/json")) {
             throw new Error("Antwort ist kein JSON");
         }
 
         const seats = await response.json();
-        console.log(seats);
+        console.log('[DEBUG] Sitzplatzdaten erhalten:', seats); // Sitzplatzdaten im Browser loggen
         renderSeats(seats);
     } catch (error) {
-        console.error('Fehler beim Laden der Sitzplätze:', error.message);
+        console.error('[ERROR] Fehler beim Laden der Sitzplätze:', error.message);
     }
 }
+
+
+
+
 
 
 // Funktion zum Rendern der Sitzplätze

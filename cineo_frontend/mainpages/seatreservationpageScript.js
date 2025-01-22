@@ -147,9 +147,33 @@ async function loadSeats() {
     }
 }*/
 
+const baseUrl = 'http://46.101.251.202';
+
+/*
 async function loadSeats() {
     try {
         const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
+        if (!response.ok) {
+            console.error(`Fehler: ${response.status} - ${response.statusText}`);
+            throw new Error('Serverantwort war nicht erfolgreich');
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Antwort ist kein JSON");
+        }
+
+        const seats = await response.json();
+        console.log(seats);
+        renderSeats(seats);
+    } catch (error) {
+        console.error('Fehler beim Laden der Sitzplätze:', error.message);
+    }
+}*/
+
+async function loadSeats() {
+    try {
+        const response = await fetch(`${baseUrl}/api/seatReservations/seats?show_id=${showId}`);
         if (!response.ok) {
             console.error(`Fehler: ${response.status} - ${response.statusText}`);
             throw new Error('Serverantwort war nicht erfolgreich');

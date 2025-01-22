@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Show- und Filmdaten abrufen und anzeigen
     try {
         // Abruf der Filmdetails
-        const movieResponse = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+        const movieResponse = await fetch(`/api/filme/${movieId}`);
         const movie = await movieResponse.json();
 
         const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);

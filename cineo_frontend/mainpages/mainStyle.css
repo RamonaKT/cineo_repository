@@ -1,4 +1,4 @@
-
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 /* Reset */
 * {
     margin: 0;
@@ -46,7 +46,8 @@ a {
     top: 1vh;
     left: 1vw;
     height: 10vh;
-    object-fit: contain;
+    object-fit: cover;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .img_mainStyle_accountLogin {
@@ -54,8 +55,9 @@ a {
     top: 1vh;
     right: 1vw;
     height: 10vh;
-    object-fit: contain;
+    object-fit: cover;
 }
+
 
 .h1_mainStyle_headingTopMiddle {
     position: absolute;
@@ -65,7 +67,7 @@ a {
     font-size: 5vh;
     text-align: center;
     color: white;
-    font-family: Futura, Serif;
+    font-family: "Lato", sans-serif;
 }
 
 /* Navigation oben */
@@ -83,16 +85,20 @@ a {
     border-radius: 5px;
 }
 
+
 .div_mainStyle_navigationTop a {
     color: #ffffff;
     margin: 0 5vw;
     font-size: 3vh;
     font-family: "Lato", sans-serif;
     font-weight: lighter;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
+
 
 .div_mainStyle_navigationTop a:hover {
     color: #5afff5;
+    transform: scale(1.2); /* Vergrößert den Link auf 120 % */
 }
 
 /* Navigations-Balken unten */
@@ -123,13 +129,14 @@ a {
 .div_mainStyle_navigationBottom a {
     color: #ffffff;
     margin: 0 5vw;
-    font-size: 2vh;
+    font-size: 2.5vh;
     font-family: "Lato", sans-serif;
     font-weight: normal;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .div_mainStyle_navigationBottom a:hover {
-    text-decoration: underline;
+    transform: scale(1.2); /* Vergrößert den Link auf 120 % */
 }
 
 .div_mainStyle_navigationBottom .a_mainStyle_highlightLinkBottom {

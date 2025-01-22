@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         // 2. API-Call, um die Filmdetails abzurufen
-        const response = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+        const response = await fetch(`/api/filme/${movieId}`);
         if (!response.ok) {
             throw new Error("Fehler beim Abrufen der Filmdetails");
         }
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Funktion, um die Vorstellungen abzurufen
 async function fetchShowtimes(movieId) {
     try {
-        const response = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+        const response = await fetch(`/api/vorstellungen/${movieId}`);
         if (!response.ok) {
             throw new Error("Fehler beim Abrufen der Vorstellungen");
         }

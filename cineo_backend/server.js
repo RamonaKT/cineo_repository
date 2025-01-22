@@ -272,8 +272,11 @@ app.get('/confirmation', (req, res) => {
 
 
 // Server wird gestartet
-app.listen(4000, () => console.log('Server läuft auf http://localhost:4000'));
-
+if (require.main === module) {
+    app.listen(4000, () => {
+      console.log('Server läuft auf http://localhost:4000');
+    });
+  }
 
 /*
 const { ClerkExpressMiddleware } = require("@clerk/clerk-sdk-node");
@@ -293,4 +296,4 @@ app.get("/protected", (req, res) => {
 */
 
 module.exports=app;
-module.exports={main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails}
+module.exports={app,main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails};

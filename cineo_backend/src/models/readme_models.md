@@ -1,1 +1,1 @@
-Kann beinhalten a) den Datenzugriff und b) das Model, die Datenstrukturen 
+Keine Datenmodelle bei uns, Datenstruktuzr muss je beim Aufruf stimmen

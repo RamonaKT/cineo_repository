@@ -1,1 +1,1 @@
-(Geschäfts-)Logik der Anwendung
+(Geschäfts-)Logik der Anwendung, also theoretisch, aber praktisch steht das je in den Skripts und nutzt server.js bzw. Controller

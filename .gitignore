@@ -14,3 +14,7 @@ cineo_backend/node_modules/.bin/
 
 #Ignoriere die .env Datei
 cineo_backend/.env
+
+#Ignoriere die Code-Coverage-Berichte
+coverage/
+

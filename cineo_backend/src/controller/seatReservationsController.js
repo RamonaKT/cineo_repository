@@ -11,6 +11,7 @@ app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
 }));
 
+
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 

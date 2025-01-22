@@ -1,19 +1,21 @@
 /* Karriere-Seite Hauptcontainer */
 .career-container {
     max-width: 800px;
-    margin: 40px auto;
+    margin: 60px auto;
     padding: 20px;
-    background-color: #2a002e; /* Dunkles Lila */
+    background-color: transparent; /* Dunkles Lila */
     color: #ffffff; /* Weißer Text */
     border-radius: 10px; /* Abgerundete Ecken */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Tieferer Schatten */
     text-align: center;
+    border: 2px solid #6f00b0;
+    font-family: "Lato", sans-serif;
 }
 
 /* Überschrift */
 .career-container h2 {
     font-size: 1.8rem;
-    color: #ff00ff; /* Magenta-Highlight für die Überschrift */
+    color: #ffffff; /* Magenta-Highlight für die Überschrift */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -39,7 +41,7 @@
     width: 150px;
     height: 150px;
     border-radius: 50%; /* Rundes Bild */
-    border: 3px solid #ff00ff; /* Magenta Rahmen */
+    border: 3px solid #ffffff; /* Magenta Rahmen */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Leichter Schatten */
 }
 
@@ -50,7 +52,7 @@
 
 .manager-details h3 {
     font-size: 1.2rem;
-    color: #ff00ff; /* Magenta-Farbe für den Titel */
+    color: #ffffff; /* Magenta-Farbe für den Titel */
     margin-bottom: 10px;
 }
 
@@ -62,7 +64,7 @@
 
 /* Links */
 .manager-details a {
-    color: #ff00ff; /* Magenta für Links */
+    color: #ffffff; /* Magenta für Links */
     text-decoration: none;
     font-weight: bold;
 }

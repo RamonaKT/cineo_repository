@@ -1,14 +1,8 @@
 /* Allgemeiner Container für Inhalte */
-.main-content {
-    display: flex;
-    flex-direction: column; /* Alles wird vertikal angeordnet */
-    align-items: center; /* Zentrierung aller Elemente */
-}
 
 /* Angebote Container */
 .offers-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Flexible Spalten */
+    align-items: flex-start;
     gap: 20px; /* Abstand zwischen den Kästen */
     max-width: 1200px;
     width: 100%; /* Volle Breite */
@@ -18,12 +12,24 @@
 
 /* Einzelne Angebote */
 .offer {
-    background-color: #40004e; /* Dunkles Lila */
+    background: linear-gradient(90deg, rgba(140, 82, 255, 0.6), rgba(92, 225, 230, 0.6));
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Schatten */
     text-align: center;
-    padding: 15px;
+    padding: 25px;
     transition: transform 0.3s ease-in-out;
+    width: 70%;
+    margin: 10px;
+    border: 1px solid white;
+
+}
+.offer h3{
+    font-size: 1.5vw;
+    margin-bottom: 3vh;
+}
+.offer p{
+    padding: 2px;
+    line-height: 1.4;
 }
 
 .offer:hover {
@@ -32,7 +38,7 @@
 
 /* Hinweis zu Angeboten */
 .offers-note {
-    background-color: #2a002e; /* Dunkles Lila */
+    background: transparent;
     color: #ffffff; /* Weißer Text */
     text-align: center;
     padding: 15px;
@@ -41,10 +47,12 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     font-size: 1em;
     max-width: 1200px; /* Gleiche Breite wie der Container */
-    width: 100%;
+    width: 50%;
+    border: 2px solid #6f00b0;
+
 }
 
 .offers-note strong {
-    color: #5afff5; /* Türkisfarbene Hervorhebung */
+    color: aqua; /* Türkisfarbene Hervorhebung */
     font-weight: bold;
 }

@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function fetchMovieDetails() {
     try {
-      const response = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+      const response = await fetch(`/api/filme/${movieId}`);
       const movie = await response.json();
 
       document.getElementById("movie-title").textContent = movie.title;
@@ -101,7 +101,7 @@ function toggleDescription(summaryElement, toggleButton, showtimesGrid, secondLi
 
   async function fetchShowtimes(movieId) {
     try {
-        const response = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+        const response = await fetch(`/api/vorstellungen/${movieId}`);
         if (!response.ok) {
             throw new Error("Fehler beim Abrufen der Vorführungen");
         }

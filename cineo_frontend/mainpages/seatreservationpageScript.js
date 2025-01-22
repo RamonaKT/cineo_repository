@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Ausgewählte Sitzplätze:", selectedSeats);
 
                 const releasePromises = Array.from(selectedSeats).map(seatId =>
-                    fetch('http://localhost:4000/api/seatReservations/release', {
+                    fetch('api/seatReservations/release', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedSeats.size > 0) {
             try {
                 const releasePromises = Array.from(selectedSeats).map(seatId =>
-                    fetch('http://localhost:4000/api/seatReservations/release', {
+                    fetch('/api/seatReservations/release', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

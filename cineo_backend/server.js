@@ -278,22 +278,6 @@ if (require.main === module) {
     });
   }
 
-/*
-const { ClerkExpressMiddleware } = require("@clerk/clerk-sdk-node");
-
-app.use(ClerkExpressMiddleware());
-app.use(express.static('mainpages'));
-
-    
-app.get("/protected", (req, res) => {
-    const user = req.auth;
-    if (user) {
-        res.json({ message: `Hallo, ${user.firstName}!` });
-    } else {
-        res.status(401).send("Nicht autorisiert.");
-    }
-});
-*/
 
 module.exports=app;
 module.exports={app,main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails};

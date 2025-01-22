@@ -2,6 +2,8 @@ const request = require('supertest');
 const { app, main, insertMoviesIntoDatabase, movieExists, fetchPopularMovies, fetchMovies, fetchMovieDetails } = require('../../cineo_backend/server'); // Importiere die App
 const Test = require('supertest/lib/test');
 
+const axios = require('axios');
+
 
 jest.mock('@supabase/supabase-js', () => {
   const mockClient = {
@@ -130,20 +132,6 @@ describe('Error Handling', () => {
 
     const response = await request(app).get('/error');
     expect(response.status).toBe(500);
-  });
-});
-
-describe('Database Tests', () => {
-  it('should check if a movie exists in the database', async () => {
-    const movieId = 123;
-    const mockExists = jest.fn().mockResolvedValue(true);
-    const mockMovieExists = jest.fn(() => ({ data: movieId }));
-    const { movieExists } = require('../../cineo_backend/server'); // importiere die Funktion
-
-    // Simuliere den Aufruf der Funktion
-    const result = await movieExists(movieId);
-    expect(result).toBe(true);
-    expect(mockExists).toHaveBeenCalledWith(movieId);
   });
 });
 

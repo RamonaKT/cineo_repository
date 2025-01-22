@@ -6,6 +6,11 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 
+const cors = require('cors');
+app.use(cors({
+    origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
+}));
+
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 

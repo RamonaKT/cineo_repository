@@ -7,6 +7,8 @@ node_modules/
 # Abhängigkeiten
 cineo_backend/node_modules/
 
+cineo_backend/node_modules/.bin/
+
 # Ignoriere die IDEA Dateien
 .idea/
 

@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const cors = require('cors');
+const { router } = require('../../server');
 app.use(cors({
     origin: '*',  // Alle Ursprünge zulassen (oder hier den spezifischen Ursprung angeben)
 }));
@@ -36,7 +37,9 @@ routerSeatReservations.get('/seats', async (req, res) => {
 });*/
 
 
-
+routerSeatReservations.get('/hello' ,(req, res) => {
+    res.json({ message: 'Route funktioniert!' });
+});
 
 
 

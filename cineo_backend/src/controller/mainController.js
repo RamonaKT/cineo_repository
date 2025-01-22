@@ -447,6 +447,8 @@ function calculateEndTime(startTime, duration) {
     return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
 }
 
+
+/*
 // API-Endpunkt zum Laden der Sitzplatzdaten
 mainRouter.get('/seatReservations/seats', async (req, res) => {
     const { show_id } = req.query;
@@ -477,7 +479,7 @@ mainRouter.get('/seatReservations/seats', async (req, res) => {
         console.error(`[ERROR] Fehler im API-Endpunkt: `, error.message);
         return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplatzdaten', error: error.message });
     }
-});
+});*/
 
 
 module.exports=mainRouter;

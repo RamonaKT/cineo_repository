@@ -36,14 +36,11 @@ routerSeatReservations.get('/seats', async (req, res) => {
     }
 });*/
 
-
 routerSeatReservations.get('/hello' ,(req, res) => {
     res.json({ message: 'Route funktioniert!' });
 });
 
 
-
-/*
 // API-Endpunkt zum Laden der Sitzplatzdaten
 routerSeatReservations.get('/seats', async (req, res) => {
     const { show_id } = req.query;
@@ -74,7 +71,7 @@ routerSeatReservations.get('/seats', async (req, res) => {
         console.error(`[ERROR] Fehler im API-Endpunkt: `, error.message);
         return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplatzdaten', error: error.message });
     }
-});*/
+});
 
 
 

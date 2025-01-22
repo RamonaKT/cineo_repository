@@ -129,8 +129,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-
-
 /*async function loadSeats() {
     try {
         const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
@@ -178,10 +176,6 @@ async function loadSeats() {
         console.error('[ERROR] Fehler beim Laden der Sitzplätze:', error.message);
     }
 }
-
-
-
-
 
 
 // Funktion zum Rendern der Sitzplätze
@@ -299,7 +293,6 @@ async function toggleSeatSelection(seatElement, seat) {
 }
 
 
-
 // Funktion zum Reservieren eines Sitzplatzes
 async function reserveSeat(seatId) {
     try {
@@ -326,7 +319,6 @@ async function reserveSeat(seatId) {
     }
 }
 
-
 // Funktion zum Freigeben eines Sitzplatzes
 async function releaseSeat(seatId) {
     const response = await fetch('/api/seatReservations/release', {
@@ -344,7 +336,6 @@ async function releaseSeat(seatId) {
         return false;
     }
 }
-
 
 // Weiterleitung zur nächsten Seite mit ausgewählten Sitzplätzen
 document.getElementById('confirm-btn').addEventListener('click', () => {

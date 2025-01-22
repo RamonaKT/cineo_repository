@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSeats();
 });
 
+/*
 // Funktion zum Laden der Sitzplätze über das Backend
 async function loadSeats() {
     try {
@@ -144,7 +145,29 @@ async function loadSeats() {
     } catch (error) {
         console.error('Fehler beim Laden der Sitzplätze:', error);
     }
+}*/
+
+async function loadSeats() {
+    try {
+        const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
+        if (!response.ok) {
+            console.error(`Fehler: ${response.status} - ${response.statusText}`);
+            throw new Error('Serverantwort war nicht erfolgreich');
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Antwort ist kein JSON");
+        }
+
+        const seats = await response.json();
+        console.log(seats);
+        renderSeats(seats);
+    } catch (error) {
+        console.error('Fehler beim Laden der Sitzplätze:', error.message);
+    }
 }
+
 
 // Funktion zum Rendern der Sitzplätze
 function renderSeats(seats) {

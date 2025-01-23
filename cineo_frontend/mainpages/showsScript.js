@@ -65,6 +65,14 @@ function renderShowtimes(showtimes) {
         return;
     }
 
+     // Sortiere die Vorstellungen nach Datum und Uhrzeit
+     showtimes.sort((a, b) => {
+        const dateA = new Date(`${a.date}T${a.time}`);
+        const dateB = new Date(`${b.date}T${b.time}`);
+        return dateA - dateB; // Aufsteigende Reihenfolge
+    });
+
+
     showtimes.forEach(showtime => {
         const formattedDate = formatDate(showtime.date); // Datum formatieren
         const formattedTime = formatTime(showtime.time); // Uhrzeit formatieren
@@ -74,7 +82,7 @@ function renderShowtimes(showtimes) {
         gridItem.innerHTML = `
             <div class="showtime-details">
                 <p><strong>Datum:</strong> ${formattedDate}</p>
-                <p><strong>Uhrzeit:</strong> ${formattedTime}</p>
+                <p><strong>Uhrzeit:</strong> ${formattedTime}Uhr</p>
                 <p><strong>Kino:</strong> ${showtime.room_id}</p>
             </div>
             <button class="select-ticket-button" data-show-id="${showtime.show_id}">

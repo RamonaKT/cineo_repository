@@ -74,7 +74,7 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-
+/*
 // API-Endpunkt zum Laden der Sitzplatzdaten
 app.get('/api/seatReservationsTest/seats', async (req, res) => {
     const { show_id } = req.query;
@@ -106,7 +106,7 @@ app.get('/api/seatReservationsTest/seats', async (req, res) => {
         return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplatzdaten', error: error.message });
     }
 });
-
+*/
 
 app.get('/api/hello' ,(req, res) => {
     res.json({ message: 'Route funktioniert!' });

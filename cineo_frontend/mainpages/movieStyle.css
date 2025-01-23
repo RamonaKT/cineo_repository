@@ -24,7 +24,7 @@ body {
     /* Vertikale Scrollbar bei Bedarf anzeigen */
     overflow-x: hidden;
 
-    transition: all 0.4s ease-out;
+   /* transition: all 0.4s ease-out;*/
     /* Animation für alle Layout-Änderungen */
 
 
@@ -37,7 +37,13 @@ body {
     font-family: "Lato", sans-serif;
     -webkit-text-stroke: 1.7px white;
     letter-spacing: 3px;
+
 }
+
+
+  
+
+
 
 ::-webkit-scrollbar {
     width: 10px;
@@ -81,7 +87,6 @@ body {
     /* Nimmt die volle Breite ein */
     height: 73vh;
     flex-direction: column;
-
 }
 
 
@@ -92,6 +97,21 @@ body {
     border-radius: 15px;
     border: 0.025vh solid #5afff5;
     margin: 5vh 0 0 6vw;
+    opacity: 0; /* Bild ist zu Beginn unsichtbar */
+    transform: translateX(-100%); /* Startposition ist außerhalb auf der linken Seite */
+    animation: image-fly-in 1s ease-out forwards; /* Animation anwenden */
+}
+
+/* Keyframes für das Einfliegen des Bildes */
+@keyframes image-fly-in {
+    0% {
+        transform: translateX(-100%); /* Bild ist außerhalb auf der linken Seite */
+        opacity: 0; /* Bild ist unsichtbar */
+    }
+    100% {
+        transform: translateX(0); /* Bild fliegt in seine endgültige Position */
+        opacity: 1; /* Bild ist sichtbar */
+    }
 }
 
 
@@ -111,7 +131,27 @@ body {
     padding: 0;
     /* Entfernt Innenabstand */
 
+
+    opacity: 0; /* Beginnt unsichtbar */
+    transform: translateX(-100%); /* Start von links außerhalb */
+    animation: line-animation 0.5s forwards; /* Animation anwenden */
+
 }
+
+
+/* Keyframes für die Animation */
+@keyframes line-animation {
+    0% {
+        transform: translateX(-100%); /* Linie außerhalb von links */
+        opacity: 0; /* Unsichtbar */
+    }
+    100% {
+        transform: translateX(0); /* Linie an ihren endgültigen Platz */
+        opacity: 1; /* Voll sichtbar */
+    }
+}
+
+
 
 .content-wrapper {
     position: absolute;
@@ -124,6 +164,21 @@ body {
     border-right: 1px solid;
     border-image: linear-gradient(to bottom, #220537, #5afff5, #220537) 1;
 
+ 
+    transform: translateX(-10%); /* Startposition ist außerhalb auf der linken Seite */
+    animation: content-fly-in 0.5s ease-out forwards; /* Animation anwenden */
+}
+
+/* Keyframes für das Einfliegen des Bildes */
+@keyframes content-fly-in {
+    0% {
+        transform: translateX(-10%); /* Bild ist außerhalb auf der linken Seite*/ 
+        opacity: 0; /* Bild ist unsichtbar */
+    }
+    100% {
+        transform: translateX(0); /* Bild fliegt in seine endgültige Position */
+        opacity: 1; /* Bild ist sichtbar */
+    }
 }
 
 #second-line {
@@ -137,6 +192,11 @@ body {
     margin-top: 9vh;
 
 
+    opacity: 0; /* Beginnt unsichtbar */
+    transform: translateX(-100%); /* Start von links außerhalb */
+    animation: line-animation 1s forwards; /* Animation anwenden */
+
+    animation-delay: 0.2s; /* Verzögerung für die zweite Linie */
 }
 
 #second-line.expanded {
@@ -188,7 +248,7 @@ body {
 
 .mehr-weniger-button {
     margin: 2vh 0 0 0;
-    width: fit-content;
+    width: 15vw;
     padding: 5px 40px;
     background-color: #560192;
     border-radius: 90px;
@@ -199,11 +259,16 @@ body {
     font-family: "Lato", sans-serif;
     cursor: pointer;
     box-shadow: 1px 1px 10px  #000000;
+    box-shadow: inset 0 0 0 0 #5afff46a;
+    transition: box-shadow 0.4s ease-out, color 0.4s ease, -webkit-text-stroke 0.4s ease;
 }
 
 
 .mehr-weniger-button:hover {
-    background-color: #7a02cf;
+  /*  background-color: #7a02cf;*/
+  box-shadow: inset 19vw 0 0 0 #5afff46a;
+ color: white;
+ -webkit-text-stroke: 1px  white;
 }
 
 /* CSS für die Showtimes Grid */
@@ -296,6 +361,22 @@ body {
     gap: 5vh;
 
 
+    transform: translateY(-10%); /* Startposition ist außerhalb auf der linken Seite */
+    animation: info-fly-in 1s ease-out forwards; /* Animation anwenden */
+
+}
+
+
+/* Keyframes für das Einfliegen des Bildes */
+@keyframes info-fly-in {
+    0% {
+        transform: translateY(-10%); /* Bild ist außerhalb auf der linken Seite */
+        opacity: 0; /* Bild ist unsichtbar */
+    }
+    100% {
+        transform: translateY(0); /* Bild fliegt in seine endgültige Position */
+        opacity: 1; /* Bild ist sichtbar */
+    }
 }
 
 .movie-info p {
@@ -305,22 +386,24 @@ body {
     font-size: 0.6em;
 }
 
+
+
 .movie-info .vertical-line {
     border: none;
     border-left: 0.01vw solid #5afff5;
     margin: 5vh 0 0 20vw;
     height: auto;
+    
 }
 
 .ticket-button {
     display: flex;
     align-self: center;
-    /*position: relative;*/
+
     justify-content: center;
     text-align: center;
     align-items: center;
-    text-decoration: none;
-    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 255));
+    text-decoration: none; 
     padding: 0.5em;
     font-family: "Lato", sans-serif;
     font-size: 0.6em;
@@ -328,6 +411,11 @@ body {
     letter-spacing: 0.15em;
     border-radius: 100px;
     margin: 5vh 0 0 0;
+    width: 19vw;
+    background: linear-gradient(to right, rgb(124, 59, 218), rgb(110, 76, 149), rgba(66, 41, 87, 255));
+    box-shadow: inset 0 0 0 0 #5afff44b;
+    transition: box-shadow 0.4s ease-out, border 0.6s ease;
+    border: 0.5px solid #220537;
 
 }
 
@@ -335,3 +423,11 @@ body {
     margin-left: 0.5vw;
     width: 2em;
 }
+
+.ticket-button:hover {
+    box-shadow: inset 19vw 0 0 0 #5afff47a;
+    border: 1px solid white;
+}
+
+
+

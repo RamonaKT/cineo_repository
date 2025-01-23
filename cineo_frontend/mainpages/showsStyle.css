@@ -54,6 +54,23 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
     height: 40vh;
+
+    opacity: 0; /* Starten mit unsichtbarem Element */
+    transform: translateY(-50px); /* Start außerhalb des Viewports */
+    animation: fadeInFromTop 0.6s ease-out forwards;
+}
+
+
+/* Animation für das Einfliegen */
+@keyframes fadeInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px); /* Start außerhalb des Bildschirms */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Endposition */
+    }
 }
 
 .showtime-grid-item:hover {
@@ -81,7 +98,8 @@ body {
     display: block;
     width: 100%;
     font-size: 1.5em;
-    transition: background-color 0.3s ease, border 0.3s ease; /* Übergang hinzufügen */
+     transition: background-color 0.3s ease, border 0.3s ease; /* Übergang hinzufügen */
+     border: 1px solid transparent;
 }
 
 .select-ticket-button:hover {

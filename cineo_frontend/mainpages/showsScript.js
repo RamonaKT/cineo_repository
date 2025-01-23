@@ -73,7 +73,7 @@ function renderShowtimes(showtimes) {
     });
 
 
-    showtimes.forEach(showtime => {
+    showtimes.forEach((showtime, index) => {
         const formattedDate = formatDate(showtime.date); // Datum formatieren
         const formattedTime = formatTime(showtime.time); // Uhrzeit formatieren
 
@@ -89,6 +89,10 @@ function renderShowtimes(showtimes) {
                 Tickets auswählen
             </button>
         `;
+
+         // Verzögerung basierend auf dem Index hinzufügen
+         gridItem.style.animationDelay = `${index * 0.2}s`; // Delay für jedes Element
+
         showtimesGrid.appendChild(gridItem);
     });
 

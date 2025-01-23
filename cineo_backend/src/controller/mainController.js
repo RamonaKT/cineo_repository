@@ -346,7 +346,8 @@ mainRouter.post('/iban', async (req, res) => {
         return res.status(500).json({ error: 'Fehler beim Speichern der IBAN' });
     }
 
-    res.status(204).json({ message: 'IBAN erfolgreich gespeichert' });
+    // Verwende einen passenden Status-Code (200 oder 201)
+    res.status(200).json({ message: 'IBAN erfolgreich gespeichert' });
 });
 
 // API-Endpunkt, um Ticketpreise und Rabatte abzurufen

@@ -154,7 +154,7 @@ async function loadSeats() {
     console.log('[DEBUG] Starte das Laden der Sitzplatzdaten'); // Debugging Startpunkt
 
     try {
-        const response = await fetch(`/api/seatReservationsTest/seats?show_id=${showId}`);
+        const response = await fetch(`/api/seatReservations/seats?show_id=${showId}`);
         console.log(`[DEBUG] API-Antwortstatus: ${response.status} - ${response.statusText}`);
 
         if (!response.ok) {

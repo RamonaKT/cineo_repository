@@ -13,7 +13,7 @@ const axios = require('axios');
 // ** Router Import**
 const routerLayout = require('./src/controller/showLayoutController'); // Importiere den Router
 const routerCreateShowSeats = require('./src/controller/createshowseatsController');
-const routerSeatReservations = require('./src/controller/seatReservationsController');
+/*const routerSeatReservations = require('./src/controller/seatReservationsController');*/
 const routerFilme = require('./src/controller/filmeController');
 const routerVorstellungen = require('./src/controller/vorstellungenController');
 
@@ -26,7 +26,7 @@ app.use(express.json());
 // ** Router verwenden**
 app.use('/api/saveLayout', routerLayout);             // Registriere den Router in der App
 app.use('/api/sitzplaetzeErstellen', routerCreateShowSeats);        // Registriere den Router in der App
-app.use('/api/seatReservations', routerSeatReservations);
+/*app.use('/api/seatReservations', routerSeatReservations);*/
 app.use('/api/filme', routerFilme);
 app.use('/api/vorstellungen', routerVorstellungen);
 
@@ -72,6 +72,45 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+
+
+// API-Endpunkt zum Laden der Sitzplatzdaten
+app.get('/api/seatReservationsTest/seats', async (req, res) => {
+    const { show_id } = req.query;
+
+    console.log(`[DEBUG] Request received: show_id=${show_id}`); // Eingabedaten prüfen
+
+    try {
+        const { data: seats, error } = await supabase
+            .from('seat')
+            .select('*')
+            .eq('show_id', show_id);
+
+        console.log(`[DEBUG] Query result: `, { seats, error }); // Ergebnis der Abfrage prüfen
+
+        if (error) {
+            console.error(`[ERROR] Supabase error: `, error);
+            return res.status(500).json({ message: 'Fehler bei der Datenbankabfrage', error });
+        }
+
+        if (!seats || seats.length === 0) {
+            console.log(`[INFO] Keine Sitzplätze gefunden für show_id=${show_id}`);
+            return res.status(404).json({ message: 'Keine Sitzplätze gefunden' });
+        }
+
+        console.log(`[DEBUG] Returning seats: `, seats); // Erfolgreiche Daten ausgeben
+        return res.json(seats);
+    } catch (error) {
+        console.error(`[ERROR] Fehler im API-Endpunkt: `, error.message);
+        return res.status(500).json({ message: 'Fehler beim Abrufen der Sitzplatzdaten', error: error.message });
+    }
+});
+
+
+app.get('/api/hello' ,(req, res) => {
+    res.json({ message: 'Route funktioniert!' });
+});
 
 
 // Funktion zum Abrufen beliebter Filme von einer bestimmten Seite

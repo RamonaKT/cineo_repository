@@ -33,9 +33,8 @@ Infopages unterteil. Das dient des Ordnung und Priorisierung des Frontends. Die 
 Die Specialpages und Infopages sind nicht Teil des Walkingskeletons, sondern eine freiwillige Erweiterung des Frontends, um weitere User Storys mit einzubinden und um eine abgeschlossene
 Anwendererfahrung bieten zu können. 
 
-Das Backend ist mit node.js programmiert wurden und ermöglicht den Austausch und die Verarbeitung der Daten zwischen Frontend und Datenbank. 
-Sämtliche Dateien wurden im cineo_backend Ordner abgelegt und ...
-Controller für gesonderte Funktionen können dort hoffentlich verbleiben, weil sonst auch Tests nur in einer file sind.
+DDas Backend ist mit node.js programmiert wurden und ermöglicht den Austausch und die Verarbeitung der Daten zwischen Frontend und Datenbank. 
+Sämtliche Dateien wurden im cineo_backend Ordner abgelegt und API Anfragen leigen im Ordner Controller. Die Struktur beitet Platz für weitere Dateien und Ordner, um Ordnung zu erhalten.
 
 Der Ordner cineo_tests entält alle Tests. Momentan wird nur backend getestet, aber die Struktur bietet Platz für frontend-Tests und ordnet die Tests zu dem jeweiligen Bereich der zu testenden Datei zu. Innerhalb des cineo_tests-Ordner wird daher grob die Projektstruktur nachgezeichnet. Test-Dateien haben den gleichen Namen wie die zu testende Datei, nur die Endung ist mit ".test.js" angepasst.
 

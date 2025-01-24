@@ -43,6 +43,11 @@ jobs:
 
             # Optionally restart any services
             sudo systemctl restart nginx
+
+
+            # Restart des pm2
+            pm2 restart server
+            
           EOF
 
       - name: Success Notification

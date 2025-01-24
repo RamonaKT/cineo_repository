@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Show- und Filmdaten abrufen und anzeigen
         try {
             // Abruf der Filmdetails
-            const movieResponse = await fetch(`http://localhost:4000/api/filme/${movieId}`);
+            const movieResponse = await fetch(`/api/filme/${movieId}`);
             const movie = await movieResponse.json();
     
-            const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+            const showResponse = await fetch(`/api/vorstellungen/${movieId}`);
             const showtimes = await showResponse.json();
             const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
     
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             try {
                 // Überprüfung der Sitzplatzreservierungen mit dem `/check`-Endpunkt
-                const checkResponse = await fetch("http://localhost:4000/api/seatReservations/check", {
+                const checkResponse = await fetch("/api/seatReservations/check", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ selectedSeats, sessionId: userId }),
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     };
 
                     // Buchung des Tickets
-                    const response = await fetch("http://localhost:4000/api/tickets", {
+                    const response = await fetch("/api/tickets", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload),

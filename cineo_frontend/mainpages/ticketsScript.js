@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const movieResponse = await fetch(`/api/filme/${movieId}`);
         const movie = await movieResponse.json();
 
-        const showResponse = await fetch(`http://localhost:4000/api/vorstellungen/${movieId}`);
+        const showResponse = await fetch(`/api/vorstellungen/${movieId}`);
         const showtimes = await showResponse.json();
         const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
 

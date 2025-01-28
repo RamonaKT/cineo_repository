@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
 
+
+        /*
         try {
             // Anfrage an den Server senden, um die gebuchten Tickets abzurufen
             const response = await fetch(`/api/tickets?email=${encodeURIComponent(email)}`);
@@ -96,8 +98,98 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.error('Netzwerkfehler beim Abrufen der gebuchten Tickets:', error);
             alert('Netzwerkfehler beim Laden der gebuchten Tickets.');
         }
-    }
+    }*/
 
+        try {
+            // Anfrage an den Server senden, um die gebuchten Tickets abzurufen
+            const response = await fetch(`/api/tickets?email=${encodeURIComponent(email)}`);
+            const tickets = await response.json();
+
+            if (response.ok) {
+                const bookedTicketsContainer = document.getElementById('bookedTicketsContainer');
+                bookedTicketsContainer.style.display = 'block';
+
+                if (tickets.length > 0) {
+                    tickets.forEach(ticket => {
+                        try {
+                            const ticketPic = document.createElement('div');
+                            const ticketItem = document.createElement('div');
+                            const ticketHistory = document.createElement('div');
+
+                            ticketPic.classList.add('ticket-pic');
+                            ticketItem.classList.add('ticket-item');
+                            ticketHistory.classList.add('ticket-data');
+
+                            ticketPic.innerHTML = '<img src="../images/ticket_icon.svg" class="ticket-pic"/>';
+
+                            // Debugging: Prüfen der Ticket-Daten
+                            console.log("Verarbeite Ticket:", ticket);
+
+
+                            // Datum und Uhrzeit validieren
+                            if (ticket.date === 'Unbekannt' || ticket.time === 'Unbekannt') {
+                                console.warn(`Show wurde bereits gelöscht`, ticket);
+                                throw new Error(`Ungültiges Datum oder Uhrzeit für Ticket: ${ticket.ticket_id}`);
+                            }
+
+                            // Datum und Uhrzeit validieren
+                            if (!ticket.date || isNaN(Date.parse(ticket.date))) {
+                                throw new Error(`Ungültiges Datum: ${ticket.date}`);
+                            }
+
+                            if (!ticket.time || !/^\d{2}:\d{2}:\d{2}$/.test(ticket.time)) {
+                                throw new Error(`Ungültige Uhrzeit: ${ticket.time}`);
+                            }
+
+                            // Datum und Uhrzeit formatieren
+                            const ticketDate = new Date(ticket.date);
+                            const ticketTime = new Date(`${ticket.date}T${ticket.time}`);
+
+                            const formattedDate = new Intl.DateTimeFormat('de-DE', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            }).format(ticketDate);
+
+                            const formattedTime = new Intl.DateTimeFormat('de-DE', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                            }).format(ticketTime);
+
+                            ticketHistory.innerHTML = `
+                                <strong>Film: ${ticket.movie_title} </strong> <br>
+                                <strong>Datum:</strong> ${formattedDate} <br>
+                                <strong>Uhrzeit:</strong> ${formattedTime} <br>
+                                <strong>Saal:</strong> ${ticket.room_id} <br>
+                                <strong>Bereich:</strong> ${ticket.ticket_type} <br>
+                                <strong>Rabatt:</strong> ${ticket.discount_name || 'Kein Rabatt'} <br>
+                                <strong>Preis:</strong> ${Number(ticket.price).toFixed(2)}€ 
+                            `;
+
+                            ticketItem.appendChild(ticketPic);
+                            ticketItem.appendChild(ticketHistory);
+                            bookedTicketsContainer.appendChild(ticketItem);
+
+                        } catch (innerError) {
+                            console.error("Fehler bei der Verarbeitung eines Tickets:", innerError.message);
+                        }
+                    });
+                } else {
+                    const message = document.createElement('p');
+                    message.textContent = 'Sie haben noch keine Tickets gebucht.';
+                    bookedTicketsContainer.appendChild(message);
+                }
+            } else {
+                console.error('Fehlerhafte Serverantwort:', tickets);
+                alert('Fehler beim Abrufen der Tickets. Bitte versuchen Sie es später erneut.');
+            }
+        } catch (error) {
+            console.error('Netzwerkfehler beim Abrufen der gebuchten Tickets:', error);
+            alert('Netzwerkfehler beim Laden der gebuchten Tickets.');
+        }
+
+    }
 
     if (ticketData) {
         const tickets = JSON.parse(decodeURIComponent(ticketData));
@@ -110,40 +202,40 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Tickets anzeigen, wenn vorhanden
     if (showId && movieId && ticketData) {
-       
-        if (!showId || !movieId  || !userId) {
+
+        if (!showId || !movieId || !userId) {
             alert("Fehler: Ungültige URL-Parameter");
             window.location.href = "/";
             return;
         }
-    
+
         // Show- und Filmdaten abrufen und anzeigen
         try {
             // Abruf der Filmdetails
             const movieResponse = await fetch(`/api/filme/${movieId}`);
             const movie = await movieResponse.json();
-    
+
             const showResponse = await fetch(`/api/vorstellungen/${movieId}`);
             const showtimes = await showResponse.json();
             const selectedShow = showtimes.find(show => show.show_id === parseInt(showId));
-    
+
             if (!selectedShow) {
                 alert("Vorstellung nicht gefunden.");
                 return;
             }
-    
+
             // Titel und Show-Details anzeigen
             const showDataElement = document.getElementById("show-data");
-    
+
             const showDateTime = new Date(`${selectedShow.date}T${selectedShow.time}`);
             const formatter = new Intl.DateTimeFormat('de-DE', {
                 dateStyle: 'long',
                 timeStyle: 'short'
             });
-    
+
             // Show-Daten in das HTML-Element einfügen
             showDataElement.textContent = `${movie.title} - ${formatter.format(showDateTime)}Uhr im Kinosaal ${selectedShow.room_id}`;
-    
+
         } catch (error) {
             console.error("Fehler beim Abrufen der Show-Daten:", error);
             alert("Fehler beim Laden der Show-Daten. Bitte versuchen Sie es später erneut.");

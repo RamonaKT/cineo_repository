@@ -126,6 +126,8 @@ function showNotification(message, type = "error") {
     }, 5000);
 }
 
+
+/*
 // Registrierung
 document.getElementById("registerButton").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
@@ -160,7 +162,50 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         console.error("Unexpected error:", err);
         showNotification("Unexpected error occurred.", "error");
     }
+});*/
+
+
+
+document.getElementById("registerButton").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (!email || !password || !confirmPassword) {
+        showNotification("Bitte füllen Sie alle Felder aus.", "error");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showNotification("Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showNotification(result.message, "success");
+        } else {
+            // Überprüfen, ob die Fehlermeldung zur bereits registrierten E-Mail passt
+            if (result.error === "Diese E-Mail ist bereits registriert.") {
+                showNotification("Diese E-Mail-Adresse ist bereits registriert. Bitte melden Sie sich an oder verwenden Sie eine andere E-Mail.", "error");
+            } else {
+                showNotification(result.error, "error");
+            }
+        }
+    } catch (err) {
+        console.error("Unerwarteter Fehler:", err);
+        showNotification("Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.", "error");
+    }
 });
+
 
 // Login
 document.getElementById("loginButton").addEventListener("click", async () => {
@@ -193,8 +238,8 @@ document.getElementById("loginButton").addEventListener("click", async () => {
             const ticketData = urlParams.get("ticket_data");
 
             const redirectUrl = `kundeDashboardpageStructure.html${showId && movieId && ticketData
-                    ? `?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&ticket_data=${encodeURIComponent(ticketData)}`
-                    : ""
+                ? `?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&ticket_data=${encodeURIComponent(ticketData)}`
+                : ""
                 }`;
 
 
@@ -247,8 +292,8 @@ document.getElementById("guestButton").addEventListener("click", async () => {
             const ticketData = urlParams.get("ticket_data");
 
             const redirectUrl = `kundeDashboardpageStructure.html${showId && movieId && ticketData
-                    ? `?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&ticket_data=${encodeURIComponent(ticketData)}`
-                    : ""
+                ? `?show_id=${showId}&movie_id=${movieId}&session_id=${userId}&ticket_data=${encodeURIComponent(ticketData)}`
+                : ""
                 }`;
 
             showNotification("Continuing as guest...", "success");

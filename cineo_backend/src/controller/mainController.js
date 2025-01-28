@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 // Supabase-Client initialisieren
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-mainRouter.get('/hello' ,(req, res) => {
+mainRouter.get('/hello', (req, res) => {
     res.json({ message: 'Route funktioniert!' });
 });
 
@@ -265,6 +265,7 @@ mainRouter.get('/tickets', async (req, res) => {
     }
 });
 
+/*
 // User registration
 mainRouter.post("/register", async (req, res) => {
     const { email, password } = req.body;
@@ -278,7 +279,48 @@ mainRouter.post("/register", async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
+});*/
+
+// User registration
+mainRouter.post("/register", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden." });
+    }
+
+    try {
+        // Prüfen, ob die E-Mail bereits existiert
+        const { data: existingUser, error: fetchError } = await supabase
+            .from("users")
+            .select("email")
+            .eq("email", email)
+            .single(); // Nur einen Datensatz abrufen
+
+        if (fetchError && fetchError.code !== "PGRST116") { // Supabase-Fehlercode für "Row not found"
+            throw fetchError;
+        }
+
+        if (existingUser) {
+            return res.status(400).json({ error: "Diese E-Mail ist bereits registriert." });
+        }
+
+        // E-Mail existiert nicht, Benutzer registrieren
+        const { data, error: insertError } = await supabase
+            .from("users")
+            .insert([{ email, password }]);
+
+        if (insertError) {
+            throw insertError;
+        }
+
+        res.status(200).json({ message: "Registrierung erfolgreich!" });
+    } catch (err) {
+        console.error("Fehler bei der Registrierung:", err.message);
+        res.status(500).json({ error: "Interner Serverfehler. Bitte versuchen Sie es später erneut." });
+    }
 });
+
 
 // User login
 mainRouter.post("/login", async (req, res) => {
@@ -487,4 +529,4 @@ mainRouter.get('/seatReservations/seats', async (req, res) => {
 });*/
 
 
-module.exports=mainRouter;
+module.exports = mainRouter;

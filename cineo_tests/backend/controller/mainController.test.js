@@ -566,7 +566,7 @@ describe('POST /tickets', () => {
         iban: 'DE1234567890',
       });
   
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
     });
   
     it('soll 400 zurückgeben, wenn E-Mail oder IBAN fehlt', async () => {

@@ -80,7 +80,7 @@ routerSeatReservations.get('/seats', async (req, res) => {
 routerSeatReservations.post('/reserve', async (req, res) => {
     const { seat_id, session_id } = req.body;
     const reservedAt = new Date();
-    const reservationExpiresAt = new Date(reservedAt.getTime() +  1 * 30 * 1000); // 10 Minuten gültig
+    const reservationExpiresAt = new Date(reservedAt.getTime() +  10 * 60 * 1000); // 10 Minuten gültig
 
     if ((!seat_id) || (!session_id)) {
         return res.status(400).json({ error: 'Fehlende Daten'});
@@ -102,7 +102,7 @@ routerSeatReservations.post('/reserve', async (req, res) => {
         if (!(seatData.status === 0)) {
             const reservedAtTimestamp = new Date(seatData.reserved_at).getTime();
             const now = new Date().getTime();
-            if (reservedAtTimestamp +  1 *  30 * 1000 > now) {
+            if (reservedAtTimestamp +  10 *  60 * 1000 > now) {
                 return res.status(409).json({ message: 'Sitzplatz bereits reserviert.' });
             }
             if (seatData.status === 2){

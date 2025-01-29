@@ -43,7 +43,7 @@ app.use((err, req, res, next) => {
 // Alle 1 Minute abgelaufene Sitzplatzreservierungen bereinigen
 setInterval(async () => {
     try {
-        const response = await fetch('/api/seatReservations/expire', {
+        const response = await fetch('http://46.101.251.202:4000/api/seatReservations/expire', {
             method: 'POST'
         });
         const result = await response.json();

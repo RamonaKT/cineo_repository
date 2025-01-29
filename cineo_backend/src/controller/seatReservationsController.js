@@ -36,12 +36,6 @@ routerSeatReservations.get('/seats', async (req, res) => {
     }
 });*/
 
-routerSeatReservations.get('/hello' ,(req, res) => {
-    res.json({ message: 'Route funktioniert!' });
-});
-
-
-
 
 // API-Endpunkt zum Laden der Sitzplatzdaten
 routerSeatReservations.get('/seats', async (req, res) => {

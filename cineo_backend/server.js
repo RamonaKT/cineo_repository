@@ -51,7 +51,7 @@ setInterval(async () => {
     } catch (error) {
         console.error('Fehler beim Bereinigen abgelaufener Reservierungen:', error.message);
     }
-}, 60 * 1000); // Alle 1 Minute prüfen
+}, 30 * 1000); // Alle 1 Minute prüfen
 
 
 

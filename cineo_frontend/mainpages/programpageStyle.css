@@ -92,8 +92,11 @@ width: 100%;
     /* Farbe der Scroll-Leiste beim Hover */
 }
 .movie-grid {
-    margin: 18vh 0 12vh 0; /* Horizontales Zentrieren */
+    position: absolute;
+    margin: 8vh 0 12vh 0; /* Horizontales Zentrieren */
     padding: 0 250px; /* Kein unnötiger Innenabstand */
+    padding-bottom: 150px;
+    padding-top: 100px;
     width: 100%; /* An die Breite des Viewports angepasst */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(14vw, 1fr)); /* Dynamische Spalten */
@@ -106,7 +109,8 @@ width: 100%;
 }
 .movie-card {
     height: 50vh;
-    background-color: #560192;
+   /* background-color: #5601926c;*/
+   background: linear-gradient(to right, rgb(124, 59, 218, 0.600), rgba(110, 76, 149, 0.600), rgba(66, 41, 87, 0.4));
     border: 1px solid #560192;
     border-radius: 8px;
     overflow: hidden;
@@ -124,7 +128,8 @@ width: 100%;
 }
 .movie-title {
     font-family: "Lato" , sans-serif ;
-    font-size: 1.5em;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
     font-weight: bold;
     color: #5afff5;
     margin-bottom: 5px;

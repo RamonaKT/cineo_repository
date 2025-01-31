@@ -386,7 +386,54 @@ body {
     font-size: 0.6em;
 }
 
+.movie-length-container {
+    width: 10vw;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5vw;
+    justify-content: center;
+}
 
+
+.clock-icon {
+    width: 2vw;
+    height: auto;
+}
+
+
+.small-arrow {
+    width: 1vw;
+    height: auto;
+    opacity: 0.8;
+}
+
+/*
+  
+  #movie-year {
+    border: 0.5px solid #5afff5;
+    border-radius: 200px;
+    padding: 8px 50px;
+  }*/
+
+  .movie-year-container {
+    position: relative;
+    width: 5vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  /*  border-top: 0.5px solid #5afff456;
+    border-bottom: 0.5px solid #5afff456;
+    border-radius: 10px;*/
+
+    border-bottom: 1px solid;
+    border-image: linear-gradient(to right,  #220537, #5afff488, #220537) 1;
+   
+    padding: 0.5vh 5vw;
+    
+  }
+
+
+ 
 
 .movie-info .vertical-line {
     border: none;

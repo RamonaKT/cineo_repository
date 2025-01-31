@@ -2,11 +2,13 @@
     margin-bottom: 10px;
 }
 
+/*
 .legend.item{
     display: inline-block;
     border: 2px solid black;
-    border-radius: 5px; /* Abgerundete Ecken */
-}
+    border-radius: 5px; 
+
+}*/
 
 .content-class{
     display: flex;
@@ -17,7 +19,23 @@
     align-content: center;
     justify-content: center;
     justify-items: center;
+    animation: fadeInFromTop 1s ease-out forwards;
+    padding-top: 200px;
+    padding-bottom: 200px;
+   
 }
+
+@keyframes fadeInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px); /* Start außerhalb des Bildschirms */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Endposition */
+    }
+}
+
 
 .leinwand {
     height: 40px;
@@ -33,12 +51,16 @@
     border: 2px solid black;
     display: flex;
     border-radius: 5px; /* Abgerundete Ecken */
+
+    opacity: 0; /* Starten mit unsichtbarem Element */
+    transform: translateY(-50px); /* Start außerhalb des Viewports */
+    animation: fadeInFromTop 0.6s ease-out forwards;
 }
 
 /* Stil für jeden Sitzplatz */
 .seat {
-    width: 40px;  /* Breite des Sitzplatzes */
-    height: 40px; /* Höhe des Sitzplatzes */
+    width: 50px;  /* Breite des Sitzplatzes */
+    height: 50px; /* Höhe des Sitzplatzes */
     margin: 5px;  /* Abstand zwischen den Sitzplätzen */
     display: inline-block;
     text-align: center; /* Text (z.B. Sitznummer) wird zentriert */
@@ -46,13 +68,31 @@
     cursor: pointer;  /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
     border: 2px solid black; /* Rand um den Sitzplatz */
     border-radius: 5px; /* Abgerundete Ecken */
-    transition: background-color 0.3s ease; /* Sanfter Übergang der Hintergrundfarbe */
-    z-index: 20;
-    position: relative;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
+    opacity: 0; /* Starten mit unsichtbarem Element */
+
+    animation: seatsFadeIn 0.6s ease-out forwards;
+
+    /* WICHTIG: `translateY(0)` als Startwert setzen */
+    transform: translateY(0) scale(1);
+
+     /* Übergangseffekte */
+     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
+
+
+
+/* Animation für das Einfliegen */
+@keyframes seatsFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px)  !important;/* Start außerhalb des Bildschirms */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0)  !important;/* Endposition */
+    }
+}
+
 
 .seat.unavailable {
     cursor: not-allowed;
@@ -70,12 +110,16 @@
     display: flex;
     flex-wrap: wrap; /* Sitzplätze werden umgebrochen */
     justify-content: center; /* Zentriert die Sitzplätze im Container */
-    max-width: 1000px;
+  /*  max-width: 1000px;*/
     margin: 20px auto;
     margin-top: 10px;
     gap: 10px; /* Abstand zwischen den Sitzplätzen */
     flex-direction: column;
+
 }
+
+
+
 
 /* Jede Reihe von Sitzplätzen */
 .row {
@@ -122,6 +166,8 @@
 /* Hover-Effekt für verfügbare Sitzplätze */
 .seat:hover:not(.unavailable) {
     background-color: pink; /* Leicht gelbe Hervorhebung bei Hover */
+    transform: translateY(0) scale(1.2);  /* WICHTIG: `translateY(0)` beibehalten */
+   
 }
 
 #tooltip {

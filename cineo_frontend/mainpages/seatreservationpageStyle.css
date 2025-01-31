@@ -68,10 +68,9 @@
     cursor: pointer;  /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
     border: 2px solid black; /* Rand um den Sitzplatz */
     border-radius: 5px; /* Abgerundete Ecken */
+
     opacity: 0; /* Starten mit unsichtbarem Element */
-
     animation: seatsFadeIn 0.6s ease-out forwards;
-
     /* WICHTIG: `translateY(0)` als Startwert setzen */
     transform: translateY(0) scale(1);
 

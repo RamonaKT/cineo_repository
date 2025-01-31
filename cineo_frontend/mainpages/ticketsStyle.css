@@ -23,7 +23,21 @@
     border-radius: 8px;
     /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
   
+    opacity: 0;
+    animation: fadeInFromSide 0.6s ease-out forwards;
 }
+
+/* Animation für das Einfliegen */
+@keyframes fadeInFromSide {
+    0% {
+        opacity: 0 ;
+        transform: translateX(-50px); /* Start außerhalb des Bildschirms */
+    }
+    100% {
+        opacity: 1 ;
+        transform: translateX(0); /* Endposition */
+    }
+  }
 
 
 /* Jede Ticket-Option 

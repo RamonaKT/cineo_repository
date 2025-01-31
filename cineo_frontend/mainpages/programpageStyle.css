@@ -103,10 +103,13 @@ width: 100%;
     gap: 16px; /* Abstand zwischen den Karten */
     overflow-y: auto;
 }
+
 /* Hover-Effekt */
 .movie-card:hover {
-    transform: scale(1.05); /* Vergrößert die Kachel um 5% */
+    transform: translateY(0) scale(1.05); /* Vergrößert die Kachel um 5% */
+  
 }
+
 .movie-card {
     height: 50vh;
    /* background-color: #5601926c;*/
@@ -116,16 +119,23 @@ width: 100%;
     overflow: hidden;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+   transform: translateY(0) scale(1);
+   cursor: pointer;
     transition: transform 0.3s ease-in-out; /* Sanfte Übergangsanimation für den Hover-Effekt */
+    opacity: 0; /* Starten mit unsichtbarem Element */
+    animation: fadeInFromTop 0.4s ease-out forwards;
 }
+
 .movie-card img {
     width: 100%;
     height: 80%;
     object-fit: cover;
 }
+
 .movie-details {
     padding: 10px;
 }
+
 .movie-title {
     font-family: "Lato" , sans-serif ;
     font-size: 1.4rem;
@@ -134,29 +144,16 @@ width: 100%;
     color: #5afff5;
     margin-bottom: 5px;
 }
-/*
-Filme-Container
-.film-container {
-display: grid;
-grid-template-columns: repeat(6, 1fr); 6 Filme pro Reihe
-gap: 20px;
-max-width: 800px; Begrenzte Breite für Filme
+
+
+/* Animation für das Einfliegen */
+@keyframes fadeInFromTop {
+    0% {
+        opacity: 0 ;
+        transform: translateY(-50px) !important; /* Start außerhalb des Bildschirms */
+    }
+    100% {
+        opacity: 1 ;
+        transform: translateY(0) !important; /* Endposition */
+    }
 }
-.movie-card {
-background-color: #560192;
-padding: 10px;
-text-align: center;
-border-radius: 10px;
-}
-.movie-card img {
-width: 150px;
-height: 225px;
-border-radius: 5px;
-}
-.movie-card a {
-text-decoration: none;
-color: #88e4ff;
-display: block;
-margin-top: 10px;
-font-size: 0.9em;
-font-weight: bold;

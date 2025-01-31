@@ -12,7 +12,7 @@ async function fetchMovies() {
 function renderMovies(movies) {
   const grid = document.getElementById('movie-grid');
   grid.innerHTML = ''; // Clear the grid
-  movies.forEach(movie => {
+  movies.forEach((movie, index) => {
     const card = document.createElement('div');
     card.classList.add('movie-card');
     console.log("movie.movie_id", movie.movie_id);
@@ -35,8 +35,11 @@ function renderMovies(movies) {
     /* details.appendChild(info);*/
     card.appendChild(cover);
     card.appendChild(details);
+
+    card.style.animationDelay = `${index * 0.2}s`; // Delay für jedes Element
     grid.appendChild(card);
   });
 }
+
 // Initialize
 fetchMovies();

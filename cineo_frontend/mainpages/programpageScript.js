@@ -1,4 +1,4 @@
-// Fetch movies from the backend and render them in the grid
+// Fetchen der Filme aus dem Backend und Rendern im Grid
 async function fetchMovies() {
   try {
     const response = await fetch('/api/filme');
@@ -8,16 +8,18 @@ async function fetchMovies() {
     console.error('Error fetching movies:', error);
   }
 }
-// Render movies in the grid
+// Rendern der Filme im Grid
 function renderMovies(movies) {
   const grid = document.getElementById('movie-grid');
-  grid.innerHTML = ''; // Clear the grid
+  grid.innerHTML = ''; 
   movies.forEach((movie, index) => {
+    const cardWrapper = document.createElement('div');
+    cardWrapper.classList.add('movie-card-wrapper');
     const card = document.createElement('div');
     card.classList.add('movie-card');
     console.log("movie.movie_id", movie.movie_id);
     card.addEventListener('click', () => {
-      console.log("Navigating to:", `/movie/${movie.movie_id}`); // Sollte die korrekte ID ausgeben
+      console.log("Navigating to:", `/movie/${movie.movie_id}`); 
       window.location.href = `/movie/${movie.movie_id}`;
     });
     const cover = document.createElement('img');
@@ -28,16 +30,17 @@ function renderMovies(movies) {
     const title = document.createElement('div');
     title.classList.add('movie-title');
     title.textContent = movie.title;
-    /*const info = document.createElement('div');
-    info.classList.add('movie-info');
-    info.textContent = `${movie.year} • ${movie.genre} • ${movie.length} min`;*/
+
     details.appendChild(title);
-    /* details.appendChild(info);*/
+  
     card.appendChild(cover);
     card.appendChild(details);
 
-    card.style.animationDelay = `${index * 0.2}s`; // Delay für jedes Element
-    grid.appendChild(card);
+    cardWrapper.style.animationDelay = `${index * 0.2}s`; // Delay für jedes Element
+
+    cardWrapper.appendChild(card);
+
+    grid.appendChild(cardWrapper);
   });
 }
 

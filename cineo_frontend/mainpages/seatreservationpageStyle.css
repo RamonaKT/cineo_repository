@@ -1,20 +1,13 @@
-#legend {
-    margin-bottom: 10px;
-}
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 
-/*
-.legend.item{
-    display: inline-block;
-    border: 2px solid black;
-    border-radius: 5px; 
 
-}*/
-
-.content-class{
+.content-class {
     display: flex;
     flex-direction: column;
-    align-items: stretch; /* Passt die Breite der Untercontainer an */
-    gap: 10px; /* Optional: Abstand zwischen den Untercontainern */
+    align-items: stretch;
+    /* Passt die Breite der Untercontainer an */
+    gap: 10px;
+    /* Optional: Abstand zwischen den Untercontainern */
     align-items: center;
     align-content: center;
     justify-content: center;
@@ -22,17 +15,36 @@
     animation: fadeInFromTop 1s ease-out forwards;
     padding-top: 200px;
     padding-bottom: 200px;
-   
+
+}
+
+#legend {
+    margin-bottom: 10px;
+    font-family: "Lato", sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+span {
+    font-family: "Lato", sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+
 }
 
 @keyframes fadeInFromTop {
     0% {
         opacity: 0;
-        transform: translateY(-50px); /* Start außerhalb des Bildschirms */
+        transform: translateY(-50px);
+        /* Start außerhalb des Bildschirms */
     }
+
     100% {
         opacity: 1;
-        transform: translateY(0); /* Endposition */
+        transform: translateY(0);
+        /* Endposition */
     }
 }
 
@@ -42,6 +54,9 @@
     width: 600px;
     background-color: #b089f2;
     text-align: center;
+    font-family: "Lato", sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
     justify-content: center;
     align-items: center;
     justify-items: center;
@@ -50,32 +65,41 @@
     margin-top: 15px;
     border: 2px solid black;
     display: flex;
-    border-radius: 5px; /* Abgerundete Ecken */
-
-    opacity: 0; /* Starten mit unsichtbarem Element */
-    transform: translateY(-50px); /* Start außerhalb des Viewports */
+    border-radius: 5px;
+    /* Abgerundete Ecken */
+    opacity: 0;
+    /* Starten mit unsichtbarem Element */
+    transform: translateY(-50px);
+    /* Start außerhalb des Viewports */
     animation: fadeInFromTop 0.6s ease-out forwards;
 }
 
 /* Stil für jeden Sitzplatz */
 .seat {
-    width: 50px;  /* Breite des Sitzplatzes */
-    height: 50px; /* Höhe des Sitzplatzes */
-    margin: 5px;  /* Abstand zwischen den Sitzplätzen */
+    width: 50px;
+    /* Breite des Sitzplatzes */
+    height: 50px;
+    /* Höhe des Sitzplatzes */
+    margin: 5px;
+    /* Abstand zwischen den Sitzplätzen */
     display: inline-block;
-    text-align: center; /* Text (z.B. Sitznummer) wird zentriert */
-    line-height: 40px; /* Text vertikal zentrieren */
-    cursor: pointer;  /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
-    border: 2px solid black; /* Rand um den Sitzplatz */
-    border-radius: 5px; /* Abgerundete Ecken */
-
-    opacity: 0; /* Starten mit unsichtbarem Element */
+    text-align: center;
+    /* Text (z.B. Sitznummer) wird zentriert */
+    line-height: 40px;
+    /* Text vertikal zentrieren */
+    cursor: pointer;
+    /* Zeigt den Cursor als Hand, wenn der Benutzer darüber fährt */
+    border: 2px solid black;
+    /* Rand um den Sitzplatz */
+    border-radius: 5px;
+    /* Abgerundete Ecken */
+    opacity: 0;
+    /* Starten mit unsichtbarem Element */
     animation: seatsFadeIn 0.6s ease-out forwards;
-    /* WICHTIG: `translateY(0)` als Startwert setzen */
     transform: translateY(0) scale(1);
 
-     /* Übergangseffekte */
-     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    /* Übergangseffekte */
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 
@@ -84,11 +108,14 @@
 @keyframes seatsFadeIn {
     0% {
         opacity: 0;
-        transform: translateY(-50px)  !important;/* Start außerhalb des Bildschirms */
+        transform: translateY(-50px) !important;
+        /* Start außerhalb des Bildschirms */
     }
+
     100% {
         opacity: 1;
-        transform: translateY(0)  !important;/* Endposition */
+        transform: translateY(0) !important;
+        /* Endposition */
     }
 }
 
@@ -100,19 +127,24 @@
 
 /* Stil für bereits reservierte Sitzplätze */
 .unavailable {
-    cursor: not-allowed; /* Cursor zeigt an, dass der Platz nicht verfügbar ist */
-    background-color: gray !important; /* Graue Farbe für reservierte Plätze */
+    cursor: not-allowed;
+    /* Cursor zeigt an, dass der Platz nicht verfügbar ist */
+    background-color: gray !important;
+    /* Graue Farbe für reservierte Plätze */
 }
 
 /* Container für Sitzplätze */
 #seats-container {
     display: flex;
-    flex-wrap: wrap; /* Sitzplätze werden umgebrochen */
-    justify-content: center; /* Zentriert die Sitzplätze im Container */
-  /*  max-width: 1000px;*/
+    flex-wrap: wrap;
+    /* Sitzplätze werden umgebrochen */
+    justify-content: center;
+    /* Zentriert die Sitzplätze im Container */
+    /*  max-width: 1000px;*/
     margin: 20px auto;
     margin-top: 10px;
-    gap: 10px; /* Abstand zwischen den Sitzplätzen */
+    gap: 10px;
+    /* Abstand zwischen den Sitzplätzen */
     flex-direction: column;
 
 }
@@ -123,7 +155,8 @@
 /* Jede Reihe von Sitzplätzen */
 .row {
     display: flex;
-    gap: 5px; /* Abstand zwischen den Sitzplätzen in der Reihe */
+    gap: 5px;
+    /* Abstand zwischen den Sitzplätzen in der Reihe */
     align-items: center;
     align-content: center;
     justify-content: center;
@@ -131,42 +164,60 @@
 
 /* Stil für ausgewählte Sitzplätze */
 .selected {
-    background-color: purple !important; /* Farbe für ausgewählte Plätze */
+    background-color: purple !important;
+    /* Farbe für ausgewählte Plätze */
 }
 
-.seat.selected{
-    background-color: purple!important;
+.seat.selected {
+    background-color: purple !important;
 }
 
 /* Farben für Sitzplatzkategorien */
 .seat[data-category="0"] {
-    background-color: lightgreen; /* Parkett */
+    background-color: lightgreen;
+    /* Parkett */
 }
 
 .seat[data-category="1"] {
-    background-color: gold; /* VIP */
+    background-color: gold;
+    /* VIP */
 }
 
 .seat[data-category="2"] {
-    background-color: lightblue; /* Loge */
+    background-color: lightblue;
+    /* Loge */
 }
 
 /* Stil für den Bestätigungsbutton */
 #confirm-btn {
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #5afff5 !important;
-    color: #220537;
+    font-family: "Lato", sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #5afff5;
+    color: #2e054b;
+    letter-spacing: 1px;
+    -webkit-text-stroke: 1px #2e054b;
     cursor: pointer;
-    border-radius: 5px; /* Abgerundete Ecken */
-    border: 2px solid black;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease, transform 0.3s ease-in-out, -webkit-text-stroke 0.3s ease-in-out;
+    border: 1px solid transparent;
+}
+
+#confirm-btn:hover {
+    background-color: #2e054b;
+    border: 1px solid rgba(92, 225, 230);
+    color: #5afff5;
+    transform: scale(1.1);
+    -webkit-text-stroke: 1px #5afff5;
+
 }
 
 /* Hover-Effekt für verfügbare Sitzplätze */
 .seat:hover:not(.unavailable) {
-    background-color: pink; /* Leicht gelbe Hervorhebung bei Hover */
-    transform: translateY(0) scale(1.2);  /* WICHTIG: `translateY(0)` beibehalten */
-   
+    background-color: pink;
+    transform: translateY(0) scale(1.2);
 }
 
 #tooltip {

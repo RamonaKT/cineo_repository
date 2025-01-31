@@ -2,8 +2,8 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #12001a;  /* Sehr dunkles Violett für Hintergrund */
-    color: #ffffff;  /* Weiß für Text */
+    color: #ffffff;
+    /* Weiß für Text */
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -15,15 +15,17 @@ body {
     max-width: 1000px;
     margin: 40px 0;
     padding: 40px;
-    background: linear-gradient(145deg, #290033, #52005f);  /* Farbverlauf für Tiefe */
+    background: linear-gradient(to right, rgb(124, 59, 218, 0.600), rgba(110, 76, 149, 0.600), rgba(66, 41, 87, 0.4));
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
 }
 
-h1, h2 {
+h1,
+h2 {
     text-align: center;
     margin-bottom: 30px;
-    color: #5afff5;  /* Helles Blau für Überschriften */
+    color: #5afff5;
+    /* Helles Blau für Überschriften */
 }
 
 section {
@@ -31,7 +33,7 @@ section {
     border: 1px solid #5afff5;
     padding: 30px;
     border-radius: 8px;
-    background-color: #2b0036;  /* Dunkles, leicht aufgelockertes Violett */
+    background-color: #2205379a;
 }
 
 ul {
@@ -45,7 +47,8 @@ li {
     align-items: center;
     padding: 18px;
     margin: 15px 0;
-    background: linear-gradient(90deg, #7d1a87, #5c005d);  /* Verlauf für einzelne Elemente */
+    background: linear-gradient(90deg, rgb(124, 59, 218, 0.600), rgba(110, 76, 149, 0.600));
+    /* Verlauf für einzelne Elemente */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
@@ -59,19 +62,22 @@ form {
 
 label {
     font-weight: bold;
-    color: #5afff5;  
+    color: #5afff5;
 }
 
-input, select, button {
+input,
+select,
+button {
     padding: 14px;
     font-size: 1em;
     border-radius: 6px;
     border: 1px solid #5afff5;
-    background-color: #4a0256;  /* Dunkleres Violett für Inputs */
+    background-color: rgb(124, 59, 218, 0.600);
     color: #ffffff;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     outline: 2px solid #43b7af;
 }
 
@@ -105,7 +111,7 @@ li button:hover {
 
 /* Filterbereich – sanfter Verlauf für weiche Optik */
 .filter {
-    background: linear-gradient(90deg, #5afff5, #7d1a87); 
+    background: linear-gradient(90deg, #5afff5, #7d1a87);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 30px;

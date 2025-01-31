@@ -108,10 +108,6 @@ app.get('/api/seatReservationsTest/seats', async (req, res) => {
 });
 */
 
-app.get('/api/hello' ,(req, res) => {
-    res.json({ message: 'Route funktioniert!' });
-});
-
 
 // Funktion zum Abrufen beliebter Filme von einer bestimmten Seite
 async function fetchPopularMovies(page = 1) {

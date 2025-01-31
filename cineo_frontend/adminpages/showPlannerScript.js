@@ -64,6 +64,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     setTimeout(() => movieDropdown.size = 1, 200); // Kleiner Delay für UX
                 });
 
+                movieDropdown.addEventListener('change', () => {
+                    const selectedOption = movieDropdown.options[movieDropdown.selectedIndex];
+                    movieSearchInput.value = selectedOption.textContent; // Setzt den Namen ins Suchfeld
+
+                    // Dropdown schließen (verhindert, dass es offen bleibt)
+                    setTimeout(() => movieDropdown.size = 1, 200);
+                });
+
             } else {
                 console.error('Fehler beim Abrufen der Filme:', movies.message);
             }
@@ -93,6 +101,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('Öffnungszeiten werden überschritten:', rooms.message);
                 responseMessage.textContent = `Fehler: ${rooms.message}`;
                 responseMessage.style.color = 'red';
+                responseMessage.style.marginTop = '50px';
+
+                // Fehlernachricht nach 3 Sekunden ausblenden
+                setTimeout(() => {
+                    responseMessage.textContent = '';
+                }, 3000);
+
                 return;
             }
 
@@ -112,6 +127,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Fehler beim Laden der Räume:', error);
             responseMessage.textContent = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
             responseMessage.style.color = 'red';
+
+            // Fehlernachricht nach 3 Sekunden ausblenden
+            setTimeout(() => {
+                responseMessage.textContent = '';
+            }, 5000);
         }
     }
 
@@ -178,9 +198,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 body: JSON.stringify(showData),
             });
-    
+
             const result = await showResponse.json();
-    
+
             if (showResponse.ok) {
                 responseMessage.textContent = 'Vorstellung erfolgreich hinzugefügt!';
                 responseMessage.style.color = '#5afff5';
@@ -190,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 //const showId = result.data?.show_id;
                 const showId = parseInt(result.data.show_id, 10); // show_id als Integer
                 const roomIdInt = parseInt(roomId, 10);  // room_id als Integer
-    
+
                 // Payload-Daten mit sicherem Integer
                 const payloadData = {
                     room_id: roomIdInt, // room_id als Integer gesetzt
@@ -200,9 +220,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 try {
                     // Debug-Ausgabe der finalen Daten vor dem Senden
                     console.log("Daten, die gesendet werden:", JSON.stringify(payloadData, null, 2));
-            
+
                     const seatCreationResult = await createSeats(payloadData);
-            
+
                     if (seatCreationResult || seatCreationResult.status === 'success') {
                         console.log("Sitzplätze erfolgreich gespeichert");
                         responseMessage.textContent += ' ' + seatCreationResult.message;
@@ -215,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.error("Fehler beim Absenden der Erstellung:", error);
                     alert(`Fehler: ${error.message || 'Unbekannter Fehler'}`);
                 }
-                
+
 
             } else {
                 responseMessage.textContent = `Fehler: ${result.message}`;

@@ -18,6 +18,8 @@
     color: white;
     margin-bottom: 5vh;
     word-spacing: 0.2em;
+    opacity: 0; /* Starten mit unsichtbarem Element */
+    animation: fadeInFromSide 0.7s ease-out forwards;
 }
 
 .ticket-img {
@@ -26,6 +28,8 @@
     width: 15vw;
     height: auto;
     margin-bottom: 5vh;
+    opacity: 0; /* Starten mit unsichtbarem Element */
+    animation: fadeInFromSide 0.7s ease-out forwards;
 }
 
 
@@ -38,4 +42,19 @@
     color: #5afff5;
     margin-bottom: 5vh;
     word-spacing: 0.2em;
+    opacity: 0; /* Starten mit unsichtbarem Element */
+    animation: fadeInFromSide 2s ease-out forwards;
 }
+
+
+/* Animation für das Einfliegen */
+@keyframes fadeInFromSide {
+    0% {
+        opacity: 0 ;
+        transform: translateX(-50px); /* Start außerhalb des Bildschirms */
+    }
+    100% {
+        opacity: 1 ;
+        transform: translateX(0); /* Endposition */
+    }
+  }

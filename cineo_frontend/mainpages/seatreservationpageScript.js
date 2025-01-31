@@ -221,6 +221,8 @@ function renderSeats(seats) {
             // Füge Event Listener für Hover hinzu
             handleSeatHover(seatElement, seat);
 
+  // Verzögerung basierend auf dem Index hinzufügen
+  seatElement.style.animationDelay = `${rowIndex * 0.2}s`; // Delay für jedes Element
             rowElement.appendChild(seatElement);
         });
 

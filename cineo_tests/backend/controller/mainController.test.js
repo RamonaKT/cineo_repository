@@ -361,8 +361,19 @@ describe('POST /tickets', () => {
 
   describe('POST /register', () => {
     it('soll erfolgreich registrieren', async () => {
+
       supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          single: jest.fn().mockResolvedValueOnce({ data: null, error: null }),
+        })),
+      })),
+      }));
+
+      supabase.from.mockImplementationOnce(() => ({
+
         insert: jest.fn().mockResolvedValue({ data: [{ id: 1 }], error: null }),
+
       }));
   
       const response = await request(app).post('/api/register').send({
@@ -371,7 +382,7 @@ describe('POST /tickets', () => {
       });
   
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ message: 'Registration successful!' });
+      expect(response.body).toEqual({ message: 'Registrierung erfolgreich!' });
     });
   
     it('soll 400 zurückgeben, wenn Daten fehlen', async () => {
@@ -383,18 +394,29 @@ describe('POST /tickets', () => {
       expect(response.body).toEqual({ error: 'Alle Felder müssen ausgefüllt werden.' });
     });
   
-    it('soll 500 zurückgeben, wenn ein Fehler auftritt', async () => {
-      supabase.from.mockImplementationOnce(() => ({
-        insert: jest.fn().mockRejectedValue(new Error('Einfügefehler')),
-      }));
+    it('soll 500 zurückgeben, wenn ein Server-Fehler auftritt', async () => {
   
+      supabase.from.mockImplementationOnce(() => ({
+        select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          single: jest.fn().mockResolvedValueOnce({ data: null, error: null }),
+        })),
+      })),
+      }));
+
+      supabase.from.mockImplementationOnce(() => ({
+
+        insert: jest.fn().mockRejectedValue(new Error('Einfügefehler')),
+
+      }));
+
       const response = await request(app).post('/api/register').send({
         email: 'test@example.com',
         password: 'password123',
       });
   
-      expect(response.status).toBe(400);
-      expect(response.body).toEqual({ error: 'Einfügefehler' });
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Interner Serverfehler. Bitte versuchen Sie es später erneut.' });
     });
   });
 

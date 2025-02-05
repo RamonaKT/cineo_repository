@@ -1,7 +1,8 @@
 const request = require('supertest');
 const { app, main, insertMoviesIntoDatabase, movieExists, fetchPopularMovies, fetchMovies, fetchMovieDetails } = require('../../cineo_backend/server'); // Importiere die App
 const Test = require('supertest/lib/test');
-
+const { createClient } = require('@supabase/supabase-js');
+const express = require('express');
 const axios = require('axios');
 
 
@@ -13,7 +14,7 @@ jest.mock('@supabase/supabase-js', () => {
       eq: jest.fn(),
       in: jest.fn(),
       single: jest.fn(),
-      deelte: jest.fn(),
+      delete: jest.fn(),
     })),
   };
   return {
@@ -32,18 +33,14 @@ jest.mock('dotenv', () => ({
 
 jest.mock('process', () => ({
   env: {
-    SUPABASE_URL: 'https://bwtcquzpxgkrositnyrj.supabase.co',
-    SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o',
+    SUPABASE_URL: 'mock_url',
+    SUPABASE_KEY: 'mock_key',
   },
 }));
 
 beforeEach(() => {
   jest.clearAllMocks();
   jest.resetAllMocks();
-  process.env.SUPABASE_URL = 'https://bwtcquzpxgkrositnyrj.supabase.co';
-  process.env.SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o';
-  const supabaseUrl = 'https://bwtcquzpxgkrositnyrj.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o';
   jest.mock('dotenv', () => ({
     config: jest.fn(() => {
       process.env.SUPABASE_URL = 'mock_url';
@@ -53,17 +50,12 @@ beforeEach(() => {
   jest.mock('axios');
   jest.mock('process', () => ({
     env: {
-      SUPABASE_URL: 'https://bwtcquzpxgkrositnyrj.supabase.co',
-      SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o',
+      SUPABASE_URL: 'mock_url',
+      SUPABASE_KEY: 'mock_key',
     },
   }));
 });
 
-describe('Minimaler Test', () => {
-  it('should assert that true is true', () => {
-    expect(true).toBe(true);
-  });
-});
 
 describe('Server Tests', () => {
   it('should load the homepage', async () => {
@@ -159,8 +151,8 @@ describe('TMDB API Tests', () => {
 
 describe('Environment Variables', () => {
   it('should load SUPABASE_URL and SUPABASE_KEY correctly', () => {
-    expect(process.env.SUPABASE_URL).toBe('https://bwtcquzpxgkrositnyrj.supabase.co');
-    expect(process.env.SUPABASE_KEY).toBe('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNxdXpweGdrcm9zaXRueXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTI5NTksImV4cCI6MjA0OTc2ODk1OX0.UYjPNnhS250d31KcmGfs6OJtpuwjaxbd3bebeOZJw9o');
+    expect(process.env.SUPABASE_URL).toBe('mock_url');
+    expect(process.env.SUPABASE_KEY).toBe('mock_key');
   });
 });
 

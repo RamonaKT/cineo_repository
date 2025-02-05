@@ -31,6 +31,7 @@ app.use('/api/filme', routerFilme);
 app.use('/api/vorstellungen', routerVorstellungen);
 
 const mainRouter = require ('./src/controller/mainController');
+const { Server } = require('http');
 app.use('/api', mainRouter); //für die Reste xD
 
 app.use((err, req, res, next) => {
@@ -315,4 +316,4 @@ if (require.main === module) {
 
 
 module.exports=app;
-module.exports={app,main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails};
+module.exports={app,Server,main,insertMoviesIntoDatabase,movieExists,fetchPopularMovies,fetchMovies,fetchMovieDetails};

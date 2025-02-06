@@ -127,44 +127,6 @@ function showNotification(message, type = "error") {
 }
 
 
-/*
-// Registrierung
-document.getElementById("registerButton").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (!email || !password || !confirmPassword) {
-        showNotification("Bitte füllen Sie alle Felder aus.", "error");
-        return;
-    }
-
-    if (password !== confirmPassword) {
-        showNotification("Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.", "error");
-        return;
-    }
-
-    try {
-        const response = await fetch("/api/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            showNotification(result.message, "success");
-        } else {
-            showNotification(result.error, "error");
-        }
-    } catch (err) {
-        console.error("Unexpected error:", err);
-        showNotification("Unexpected error occurred.", "error");
-    }
-});*/
-
-
 
 document.getElementById("registerButton").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
@@ -296,7 +258,7 @@ document.getElementById("guestButton").addEventListener("click", async () => {
                 : ""
                 }`;
 
-            showNotification("Continuing as guest...", "success");
+            showNotification("Weiterleitung als Gast...", "success");
             setTimeout(() => {
                 window.location.href = redirectUrl;
             }, 2000);

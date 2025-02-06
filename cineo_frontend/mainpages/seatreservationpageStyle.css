@@ -13,9 +13,9 @@
     justify-content: center;
     justify-items: center;
     animation: fadeInFromTop 1s ease-out forwards;
-    padding-top: 180px;
+    padding-top: 20px;
     padding-bottom: 200px;
-
+    margin-top: 20vh;
 }
 
 #legend {

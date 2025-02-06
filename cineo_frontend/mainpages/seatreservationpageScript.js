@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Ausgewählte Sitzplätze:", selectedSeats);
 
                 const releasePromises = Array.from(selectedSeats).map(seatId =>
-                    fetch('api/seatReservations/release', {
+                    fetch('/api/seatReservations/release', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

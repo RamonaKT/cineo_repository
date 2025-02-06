@@ -64,6 +64,12 @@ Hier finden Sie die benötigten Schritte um mit dem Projekt arbeiten zu können:
      Viel Spass :)
 
 
+Für Greg:
+Unser Server: http://46.101.251.202:4000
+
+Wenn du die Mitarbeiterseiten testen möchtest, regestriere dich mit einer Mail, die mit @cineo.com endet.
+Wenn du ein Ticket buchen möchtet verwende irgendeine beliebige Mail :)
+
 
 
 Wer verwaltet das Projekt und trägt dazu bei?

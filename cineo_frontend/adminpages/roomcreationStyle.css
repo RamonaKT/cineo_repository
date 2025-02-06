@@ -1,16 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
+
 
 .contentbox {
+    margin-top: 5vh;
     display: flex;
     flex-direction: column;
     align-content: center;
     align-items: center;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+}
+
+.roominput {
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+}
+
+#rowInput {
+    letter-spacing: 1px;
+    font-size: 1.2rem;
 }
 
 .seat-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 5vh;
 }
 
 .row {
@@ -30,18 +45,23 @@
     font-size: 14px;
     font-weight: bold;
     transition: background-color 0.3s;
+
 }
 
+
 .available {
-    background-color: #90EE90; /* Lichtgrün für Parkett */
+    background-color: #90EE90;
+    /* Lichtgrün für Parkett */
 }
 
 .vip {
-    background-color: #FFD700; /* Gold für VIP */
+    background-color: #FFD700;
+    /* Gold für VIP */
 }
 
 .logen {
-    background-color: #ADD8E6; /* Hellblau für Loge */
+    background-color: #ADD8E6;
+    /* Hellblau für Loge */
 }
 
 .category-label {
@@ -52,26 +72,29 @@
 }
 
 .category-label div {
-    width: 80px;
-    height: 40px;
+    width: 100px;
+    height: 60px;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
     color: white;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    -webkit-text-stroke: 0.5px white;
 }
 
 .parkett-label {
-    background-color: #90EE90;
+    background-color: #90ee90b9;
 }
 
 .vip-label {
-    background-color: #FFD700;
+    background-color: #ffd900ae;
 }
 
 .logen-label {
-    background-color: #ADD8E6;
+    background-color: #add8e6b6;
 }
 
 .button-container {
@@ -80,18 +103,24 @@
 }
 
 button {
-    padding: 10px 20px;
+    padding: 15px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #4CAF50;
+    /*  background-color: #4CAF50;*/
+    letter-spacing: 1px;
+    background-color: #8264be;
     color: white;
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s;
+    border: 1px solid aqua;
 }
 
 button:hover {
-    background-color: #45a049;
+    /* background-color: #45a049;*/
+    background-color: #4c238a;
+    color: aqua;
+
 }
 
 input {
